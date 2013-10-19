@@ -1,0 +1,29 @@
+* Stochastic theory. Optimal Control and Estimation, Robert F Stengel
+* thrun book: upto chapter 7
+* LIDAR as graphical model
+* Modeling mobility and sensors of neato
+* Pro Git 
+* basics of sensors
+pipeline: 
+misc/kinect
+misc/structured lighting
+VR/sensors/indoor scene segmentation...structured lighting
+VR/sensors/experimental chacterization of flash LADARS
+VR/sensors/3D mapping...simulation
+* more MATLAB
+* data logging: simple, as per mshomin
+* MRPL
+lectures/
+labs/
+neato API
+mobile robot exercises
+simulator
+
+---------
+
+Experimental Characterization of Commercial Flash Ladar Devices
+
+Scanning from a moving platform introduces motion artifacts: also true for 360 count laser. Examine effects of range, reflectivity and angle of incidence on range measurements.
+What is saturation of a sensor?
+
+
