@@ -51,6 +51,8 @@ L97: ?
 L104: don't know about web sockets
 L188: why sending velocity here, when setting it is enough and then simUpdate will carry things out?
 L297: so many variables, ask meaning
+what if you clear the variables, how does the robot still persist?
+does robot 'disappear' if moved too far out of the map?
 
 in simRobot.m
 written by Al?
@@ -59,6 +61,13 @@ what is a sliding vector?
 i think here is one place where non-idealities can be incorporated: in the FIFO, in the delays
 check the logging here
 L178: why this way to get time?
+sendVelocities decoupled from updating state
+
+in lineMap.m
+how exactly is raycast working?
+is the test t <= 1 required? yes, because the ray itself is of finite length!
+L42: so t also gives directly the fraction of range of ray
+L92: ng is for removing spurious edges, confirm
 
 clarify roles of Publisher and Subscriber, don't know about the sockets bit
 SimSubscriber?
