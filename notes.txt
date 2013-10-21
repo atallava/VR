@@ -10,7 +10,9 @@ misc/structured lighting
 VR/sensors/indoor scene segmentation...structured lighting
 VR/sensors/experimental chacterization of flash LADARS
 VR/sensors/3D mapping...simulation
-* more MATLAB
+
+* what are existing simulators doing? gazebo, VREP, webots
+
 * data logging: simple, as per mshomin
 
 * MRPL
@@ -23,8 +25,45 @@ mobile robot exercises
 How do you shutdown the simulator?
 OOP in MATLAB
 subclasses do not inherit superclass attributes
+
 in lineObject.m:
 why is there an empty private Access methods block?
+any style guide followed for matlab by shomin?
+i am guessing path is storing a set of poses
+cyclic refers to the type of motion of the lineObject, not whether the shape is cyclic or not
+what if time exceeds the time in the path? error will be thrown. should have a check which will allow object to stop.
+ellipses to break line in code
+think about implementing collision checks in the simulator
+the handle abstract class is important
+what is the meta.class
+mshomin said that probably won't bother with the bumper sensors
+option for introducing delay: right now different frequency updates are just hardcoded.
+we should devise tests for each simulator version before releasing it on the course
+any way of telling what a particular .m file is?
+
+in neato.m
+L56: how is this encoder delay decided?
+L67: why the check on nargins?
+L68: how does the constructor automatically know what r is? a constructor can only return one argument, and that is the object constructed
+L84: functions of stamper and last_update. not very well documented
+L88: timer is quite subtle
+L97: ?
+L104: don't know about web sockets
+L188: why sending velocity here, when setting it is enough and then simUpdate will carry things out?
+L297: so many variables, ask meaning
+
+in simRobot.m
+written by Al?
+why does the instance have to be fired up right before start in the case of real-time?
+what is a sliding vector?
+i think here is one place where non-idealities can be incorporated: in the FIFO, in the delays
+check the logging here
+L178: why this way to get time?
+
+clarify roles of Publisher and Subscriber, don't know about the sockets bit
+SimSubscriber?
+
+candidates for non-idealities (only by looking at code): delays, FIFO, frequency of updates, will need to tinker with the time values in timer, misalignment of laser scan
 
 ---------
 
