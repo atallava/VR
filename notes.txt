@@ -22,9 +22,7 @@ neato API
 mobile robot exercises
 
 * simulator
-How do you shutdown the simulator?
 OOP in MATLAB
-subclasses do not inherit superclass attributes
 
 in lineObject.m:
 why is there an empty private Access methods block?
@@ -41,17 +39,26 @@ option for introducing delay: right now different frequency updates are just har
 we should devise tests for each simulator version before releasing it on the course
 any way of telling what a particular .m file is?
 
+cell evaln in matlab editor
+sensor simulations: steep angle, each scan is not instantaneous: parameter to be chosen in number of rays
+delay in scan itself: use one-shot timers for events
+laser delay not used right now
+
 in neato.m
-L56: how is this encoder delay decided?
+L56: how is this encoder delay decided? approximately
 L67: why the check on nargins?
 L68: how does the constructor automatically know what r is? a constructor can only return one argument, and that is the object constructed
-L84: functions of stamper and last_update. not very well documented
+L84: functions of stamper and last_update. 
+robot has only one clock on the gumstick. so encoder may be late, but sensor is less well-characterized
+hokuyo on robot might be basis for ground truth
 L88: timer is quite subtle
-L97: ?
+L97: ? 
+warning turned off generally will flush warning queue. so this line ensures that all other warnings will remain there.
 L104: don't know about web sockets
 L188: why sending velocity here, when setting it is enough and then simUpdate will carry things out?
 L297: so many variables, ask meaning
-what if you clear the variables, how does the robot still persist?
+one plot handle per continuous line segment
+what if you clear the variables, how does the robot still persist? because of the timer. check test_raycast.m L11
 does robot 'disappear' if moved too far out of the map?
 
 in simRobot.m
@@ -62,6 +69,9 @@ i think here is one place where non-idealities can be incorporated: in the FIFO,
 check the logging here
 L178: why this way to get time?
 sendVelocities decoupled from updating state
+mex: compiles C++ to shared object which can be called by MATLAB
+in neato only want to do simulation update
+think about using one-shot timer for velocity update first
 
 in lineMap.m
 how exactly is raycast working?
@@ -69,7 +79,6 @@ is the test t <= 1 required? yes, because the ray itself is of finite length!
 L42: so t also gives directly the fraction of range of ray
 L92: ng is for removing spurious edges, confirm
 
-clarify roles of Publisher and Subscriber, don't know about the sockets bit
 SimSubscriber?
 
 candidates for non-idealities (only by looking at code): delays, FIFO, frequency of updates, will need to tinker with the time values in timer, misalignment of laser scan
