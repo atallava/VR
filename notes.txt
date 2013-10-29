@@ -115,5 +115,11 @@ Understand the range-return data likelihood. How/why is P(S/M) = \Pi_i P(s_i/M)?
 Took one-fifths as training and four-fifths as test? Isn't the ratio the other way around generally?
 What is the measure of peaks/ jerkiness of a pdf? As such, even in the case of reconstruction of the real world to get \sigma_0 and \sigma_a, the real world is not known: a model is fit.
 
+********
 
-
+neato sensor triangulation algebraic error, look for papers
+paper on structured light
+angular separation of returns
+systematic bias
+other sims: gazebo, open scene graph, openGL, ODE
+metrics for . see same failures.
