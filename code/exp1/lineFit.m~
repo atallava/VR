@@ -1,0 +1,3 @@
+function line = lineFit(points,r,c)
+
+end

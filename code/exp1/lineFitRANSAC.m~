@@ -1,0 +1,59 @@
+function best_line = lineFitRANSAC(points, num_iter, min_pits, t, d)
+%pts is an nx2 array, where n is the number of points
+
+%num_iter: number of iterations to be performed
+%min_pts: minimum pts needed to fit model
+%t: threshold for deciding if point belongs to model
+%d: number of close data points required to decide a model is good
+
+best_line = zeros(3,1);
+best_score = 0;
+best_consensus_set = [];
+for i = 1:num_iter
+    %get minimum points at random
+    sample_idx = randperm(size(pts,1), min_pts);
+    sample_pts = pts(sample_idx,:);
+    %get line
+    [~, line] = getLine(sample_pts);
+    %get consensus set
+    consensus_set = sample_idx;
+    rest_idx = 1:length(pts); rest_idx(sample_idx) = [];
+    for j = 1:length(rest_idx)
+        if distToLine(pts(rest_idx(j),:)', line) < t
+            consensus_set(end+1) = rest_idx(j);
+        end
+    end
+    %check if model is good    
+    if length(consensus_set) > best_score
+    %score is number of points in consensus_set
+        if length(consensus_set) > best_score
+            best_score = length(consensus_set);
+            best_consensus_set = consensus_set;
+            best_line = line;
+        end
+    end
+end
+
+if ~isempty(best_consensus_set)
+    %get average distance of best_consensus_set to best_line
+    avg_dist = 0;
+    for i = 1:length(best_consensus_set)
+        avg_dist = avg_dist + distToLine(pts(best_consensus_set(i),:)',best_line);
+    end
+    avg_dist = avg_dist/length(best_consensus_set);
+else
+    avg_dist = -1; %indicates that no consensus_set has been found
+end
+
+end
+
+function [avg_error, line] = getLine(pts)
+%pts is an nx2 array, where n is the number of points
+%returns least-squares fit line
+A = pts; A(:,end+1) = ones(length(pts),1);
+[eigenvecs, ~] = eig(A'*A);
+line = eigenvecs(:,1);
+distances = (A*line)/norm(line(1:3));
+distances = abs(distances);
+avg_error = sum(distances)/length(distances);
+end
