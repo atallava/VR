@@ -1,0 +1,15 @@
+function degTurn(rob)
+%turn a neato 1 degree counter-clockwise
+%TODO: report back the actual angle turned using encoder data
+wheel_base = 0.248;
+T = deg2rad(1)*wheel_base/(2*v);
+t1 = tic;
+while true
+  sendVelocity(rob,-v,v);
+  if toc(t1) >= T
+    sendVelocity(rob,0.0,0.0);
+    break;
+  end
+  pause(0.001);
+end
+end
