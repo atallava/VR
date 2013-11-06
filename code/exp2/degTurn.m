@@ -1,8 +1,8 @@
 function [ds,dth] = degTurn(rob)
 %turn a neato 1 degree counter-clockwise
 %report back the actual dislacement angle turned from encoder data
-v = 0.001;
-wheel_base = 0.2349;
+v = 0.0008;
+wheel_base = 0.248;
 T = deg2rad(1)*wheel_base/(2*v);
 l_old = rob.encoders.data.left; r_old = rob.encoders.data.right;
 t1 = tic;

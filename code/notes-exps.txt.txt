@@ -1,0 +1,14 @@
+exp2
+* timber might be crooked, but probably better to use consistent piece than add a number of wooden pieces. think of how to eliminate errors due to this: look for systematic errors in world coordinates
+* neato doesn't listen to all velocities
+* neato will drift under such small velocities. what to do? manually rearranging is not nice. could argue that anyway rotating the robot does not imply rotation about the sensor axis -> what would such a motion be? actual drift is in the shape of a rectangle
+* on the runs
+run1.mat is at 10 blocks out. but robot didn't seem to complete one full rotation
+run2.mat is the same environ as run1.mat, just rotated robot some more for complete 360 deg data.
+run3.mat is at 8 blocks out
+run4.mat is at 6 blocks out
+run5.mat, 4
+run6.mat, 2
+run7,mat, 1
+* laser spins at 5Hz, not 10Hz. So ideally should be pausing 0.2 seconds before collecting data. this means that for run1-run4.mat, pick every other measurement. this also implies working with 50 data points. let that be consistent then across all runs
+* run6 and run7 are performed with a different wooden board, because the old one was suddenly warped. there goes repeatibility. divide experiments into two sets then: near and far range.
