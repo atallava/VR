@@ -22,7 +22,7 @@ poses = zeros(100,3);
 v = 1; %robot velocity
 T = 5; %duration of run
 
-laser.startSensor(2);
+laser.startSensor(1);
 pause(0.1);
 
 pose_update_timer = timer;
