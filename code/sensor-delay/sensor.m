@@ -5,7 +5,7 @@ classdef sensor < handle
         world; %currently a static lineMap
         pose = [0 0 0]; %sensor location in absolute coordinates
         range; %range returns
-        num_returns = 4; %number of returns, evenly divided among 2pi
+        num_returns = 10; %number of returns, evenly divided among 2pi
         range_update_id = 1; %which return to update
         range_update_type;
         sensor_status = 0; %on or off
