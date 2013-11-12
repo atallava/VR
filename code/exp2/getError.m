@@ -1,4 +1,4 @@
-function error = getError(ranges, j)
+function error = getError(ranges, j, plot_option)
 %ranges is a full set of readings for a pose of the robot, it is MxNx360
 %err is a matrix of form [return_id true_range angle_of_incidence ...
 %range_error];
@@ -73,24 +73,24 @@ for i = 1:M
     error(error_id:error_id+num_returns(i)-1,:) = [return_cols' true_ranges' return_angle_incidence' return_error'];
     error_id = error_id+num_returns(i);
     
-    %{
-    %plot to check    
-    if any(plot_ids == i)
-         scatter(coords(1,box_ids(line_ids1(line_ids2))),coords(2,box_ids(line_ids1(line_ids2))));
-         hold on;
-         box_pts = [int_box; int_box(1,:)]; %just to draw a closed int_box
-         %draw interest box_ids
-         plot(box_pts(:,1),box_pts(:,2),'r');
-         axis equal;
-         title(gca,sprintf('%d',i));
-         xlim = get(gca,'XLim'); ylim = get(gca,'YLim');
-         pts_line = [(-lines(3,i)-lines(2,i)*ylim(1))/lines(1,i) (-lines(3,i)-lines(2,i)*ylim(2))/lines(1,i); ylim(1) ylim(2)];
-         plot(pts_line(1,:),pts_line(2,:),'g--');
-         set(gca,'XLim',xlim,'YLim',ylim);
-         waitforbuttonpress;
-         close(gcf);
-    end    
-%}
+    if plot_option ~= 0
+        %plot to check
+        if any(plot_ids == i)
+            scatter(coords(1,box_ids(line_ids1(line_ids2))),coords(2,box_ids(line_ids1(line_ids2))));
+            hold on;
+            box_pts = [int_box; int_box(1,:)]; %just to draw a closed int_box
+            %draw interest box_ids
+            plot(box_pts(:,1),box_pts(:,2),'r');
+            axis equal;
+            title(gca,sprintf('%d',i));
+            xlim = get(gca,'XLim'); ylim = get(gca,'YLim');
+            pts_line = [(-lines(3,i)-lines(2,i)*ylim(1))/lines(1,i) (-lines(3,i)-lines(2,i)*ylim(2))/lines(1,i); ylim(1) ylim(2)];
+            plot(pts_line(1,:),pts_line(2,:),'g--');
+            set(gca,'XLim',xlim,'YLim',ylim);
+            waitforbuttonpress;
+            close(gcf);
+        end
+    end
 end
 
 remove_id = find(sum(error,2) == 0);
