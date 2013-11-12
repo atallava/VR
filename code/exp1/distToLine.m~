@@ -1,6 +1,0 @@
-function dist = distToLine(pt, line)
-%pt is a 2x1 column vector
-%line is a 3x1 column vector
-dist = [pt' 1]*line;
-dist = abs(dist)/norm(line(1:3));
-end

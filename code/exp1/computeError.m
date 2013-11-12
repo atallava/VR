@@ -1,6 +1,6 @@
 function error = computeError(lx,ly,wall_id_r,wall_id_c,line)
 
-ranges = arrayfun(@(i) getRangeToLine(i,line), wall_id_c);
+ranges = arrayfun(@(i) getRangeToLine(deg2rad(i-1),line), wall_id_c);
 ids = sub2ind(size(lx),wall_id_r,wall_id_c);
 range_err = lx(ids).^2+ly(ids).^2; range_err = ranges-range_err.^0.5;
 
