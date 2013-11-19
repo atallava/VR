@@ -1,0 +1,145 @@
+* Stochastic theory. Optimal Control and Estimation, Robert F Stengel
+* thrun book: upto chapter 7
+* LIDAR as graphical model
+* Modeling mobility and sensors of neato
+* Pro Git 
+* basics of sensors
+pipeline: 
+misc/kinect
+misc/structured lighting
+VR/sensors/indoor scene segmentation...structured lighting
+VR/sensors/experimental chacterization of flash LADARS
+VR/sensors/3D mapping...simulation
+
+* what are existing simulators doing? gazebo, VREP, webots
+
+* data logging: simple, as per mshomin
+
+* MRPL
+lectures/
+labs/
+neato API
+mobile robot exercises
+
+* simulator
+OOP in MATLAB
+
+in lineObject.m:
+why is there an empty private Access methods block?
+any style guide followed for matlab by shomin?
+i am guessing path is storing a set of poses
+cyclic refers to the type of motion of the lineObject, not whether the shape is cyclic or not
+what if time exceeds the time in the path? error will be thrown. should have a check which will allow object to stop.
+ellipses to break line in code
+think about implementing collision checks in the simulator
+the handle abstract class is important
+what is the meta.class
+mshomin said that probably won't bother with the bumper sensors
+option for introducing delay: right now different frequency updates are just hardcoded.
+we should devise tests for each simulator version before releasing it on the course
+any way of telling what a particular .m file is?
+
+cell evaln in matlab editor
+sensor simulations: steep angle, each scan is not instantaneous: parameter to be chosen in number of rays
+delay in scan itself: use one-shot timers for events
+laser delay not used right now
+
+in neato.m
+L56: how is this encoder delay decided? approximately
+L67: why the check on nargins?
+L68: how does the constructor automatically know what r is? a constructor can only return one argument, and that is the object constructed
+L84: functions of stamper and last_update. 
+robot has only one clock on the gumstick. so encoder may be late, but sensor is less well-characterized
+hokuyo on robot might be basis for ground truth
+L88: timer is quite subtle
+L97: ? 
+warning turned off generally will flush warning queue. so this line ensures that all other warnings will remain there.
+L104: don't know about web sockets
+L188: why sending velocity here, when setting it is enough and then simUpdate will carry things out?
+L297: so many variables, ask meaning
+one plot handle per continuous line segment
+what if you clear the variables, how does the robot still persist? because of the timer. check test_raycast.m L11
+does robot 'disappear' if moved too far out of the map?
+
+in simRobot.m
+written by Al?
+why does the instance have to be fired up right before start in the case of real-time?
+what is a sliding vector?
+i think here is one place where non-idealities can be incorporated: in the FIFO, in the delays
+check the logging here
+L178: why this way to get time?
+sendVelocities decoupled from updating state
+mex: compiles C++ to shared object which can be called by MATLAB
+in neato only want to do simulation update
+think about using one-shot timer for velocity update first
+
+in lineMap.m
+how exactly is raycast working?
+is the test t <= 1 required? yes, because the ray itself is of finite length!
+L42: so t also gives directly the fraction of range of ray
+L92: ng is for removing spurious edges, confirm
+
+SimSubscriber?
+
+candidates for non-idealities (only by looking at code): delays, FIFO, frequency of updates, will need to tinker with the time values in timer, misalignment of laser scan
+
+* how is a lidar/ laser sensor calibrated?
+assume real points in world known -> what would you do?
+assume real points not known. can do a simultaneous error estimate? iterative procedure? how does SLAM work.
+
+---------
+
+Experimental Characterization of Commercial Flash Ladar Devices
+
+Scanning from a moving platform introduces motion artifacts: also true for 360 count laser. Examine effects of range, reflectivity and angle of incidence on range measurements.
+What is saturation of a sensor?
+
+
+3D Mapping for high-fidelity unmanned ground vehicle lidar simulation, Browning et al, 2012
+
+Reference to some plane simulation work by Boeing. A bunch of existing simulators mentioned: gazebo, usarsim, rivet. Simple additive sensor noise alone is poorly suited to capturing large variation in plants etc. So: experimentally gathered data for characterizing noise; estimation/ prediction using such noise; can suc h complex noise be represented by a combination of some functions in some space? Blades of grass -> Ben mentioned Al speaking of simulation at this level. 
+Authors extend 3D mapping: represent the real world as volumes with a stochastic model for range returns and permeability which together capture the statistical distribution of the lidar range without recovering the surface. This is similar to what Al was saying about the properties being stored at the world location rather than the sensor. Range noise and mixed-pixel effects are built into the model.
+Related works has a lot on sensor modeling. Should be very relevant work. For surfaces with ~lambertian reflectance and with surface geometries >> beam width, range error is dominated by limits of physical sensor, is small and ~ Gaussian.
+
+L-structures: very interesting.
+sources of non-idealities: pose of robot, sensor calibration (pose of sensor wrt robot), laser pointing (error in pointing direction caused by encoders, non-zero beam width), laser in atmosphere, laser-material interaction, sensing of returned beam. Said that typical RMS deviation is of the order of 1-30mm. Absolute range will depend on calibration though. I like the idea though, of arriving at your expected calibration with a particular distribution. Makes work easy (not breaking head trying to get to exactness), complete (explicitly accounting for error). Don't want to double count error! 
+Use histograms in the voxels instead of Gaussians? Too expensive probably. 
+How is \Delta_r picked? Check out laser model by Baltasavias. \sigma_0 and \sigma_a are picked to fit some local residual error, I don't understand how that works.
+If put information on the world model rather than sensor, then can simulate motion blur easily. Is a beam simulated as a bunch of rays? 
+
+I will probably also assume that laser and detector are located at the same position.
+
+Haha, back to physics-based graphics which Sidd suggested I look into.
+
+Understand the range-return data likelihood. How/why is P(S/M) = \Pi_i P(s_i/M)?
+Took one-fifths as training and four-fifths as test? Isn't the ratio the other way around generally?
+What is the measure of peaks/ jerkiness of a pdf? As such, even in the case of reconstruction of the real world to get \sigma_0 and \sigma_a, the real world is not known: a model is fit.
+
+********
+
+paper on structured light
+angular separation of returns
+systematic bias
+other sims: gazebo, open scene graph, openGL, ODE
+metrics for . see same failures.
+
+**********
+
+* try getting coefficients for simple models
+* look at the plots of return ids: 1, 180, 200, 40
+* 'anomaly' metrics
+* looking at same data in different coordinate frames can render quantities constant
+* what are the various non-idealities? how will you test for each of them?
+systematic errors, errors in each return, temperature error, errors in formulae, is it isotropic?
+* think about of the structure of the paper
+motivation for this work
+what are the things to model that come to mind? 
+geometric effects, temperature effects, 
+simple box test to discover whether laser zero is aligned with robot heading
+anomaly detection- how? describe behaviour by some parameters, then look at the distribution of these parameters. throw in all possible parameters.
+the data collection
+explanation of some error, strong reasons for modeling the rest directly via data
+an application of this work: show that for some algorithm, the simulator provides data that is as bad as reality
+* work backwards from the goal of the paper
+
+

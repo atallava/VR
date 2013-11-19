@@ -1,6 +1,6 @@
 function error = getError(ranges, j, plot_option)
 %ranges is a full set of readings for a pose of the robot, it is MxNx360
-%err is a matrix of form [return_id true_range angle_of_incidence ...
+%error is a matrix of form [return_id true_range angle_of_incidence j...
 %range_error];
 
 load('processed_data1','box','theta','angles','dpose');
@@ -17,7 +17,7 @@ M = size(ranges,1); %number of orientations
 N = size(ranges,2); %number of measurements at a particular orientation
 num_returns = zeros(1,M); %number of returns from wood
 lines = zeros(3,M); %best fit lines
-error = zeros(360*N,4);
+error = zeros(360*N,5);
 error_id = 1;
 for i = 1:M
     if mod(i,100) == 0
@@ -70,7 +70,7 @@ for i = 1:M
     %angle at which ray strikes board
     return_angle_incidence = atan2(coords(2,box_ids(line_ids1(line_ids2))),coords(1,box_ids(line_ids1(line_ids2))))+pi/2-alpha;
     
-    error(error_id:error_id+num_returns(i)-1,:) = [return_cols' true_ranges' return_angle_incidence' return_error'];
+    error(error_id:error_id+num_returns(i)-1,:) = [return_cols' true_ranges' return_angle_incidence' ones(numel(return_cols),1) return_error'];
     error_id = error_id+num_returns(i);
     
     if plot_option ~= 0
