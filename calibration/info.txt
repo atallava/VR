@@ -1,0 +1,28 @@
+contents of data_Jan12:
+* each data set has 100 independent measurements of the same world. each of the 100 measurements was collected at intervals of 0.03 seconds.
+* bias_readings, readingsi, i in {1,2,...11} are range readings from the first pixel. They were taken by placing a planar wooden in front of the robot
+* in bias_readings, the board was right in front of the robot
+* in reading1, it was 30cm ahead of the bias_readings position
+* in reading2-6, it was 29-25cm
+* in reading7-11, it was 31-35cm
+* reading_full is readings from all pixels taken by placing the robot sensor roughly in the middle of square walls of side approximately 122cm.
+* reading_full_line1 is in the same environment, with a 61cm board with ends at (-30.5,-30.5), (30.5,-30.5) relative to the robot sensor.
+* reading_full_line2 is identical to reading_full_line1 but with board ends at
+(30.5,-30.5), (30.5,30.5)
+* reading_full_line3 is with the board at an arbitrary position
+
+* pointDistance between real_env and sim_env is 34.2048. There were 221 false hits. That is a very large number.
+
+reading_posts.mat has data for picking out drops in certain pixels due to the posts holding up the plastic casing on the neato that houses the laser
+
+stats with getLinesSimple:
+* reading_full_line1. \sigma_r = 0.0904, \sigma_th = 0.0168. \mu_r = 0.3169, \mu_th = -3.0926. 35 failure cases, quite large, mainly because of the minimum-length criterion. 
+* 100 generated cases with the simulator. \sigma_r = 2*10^-4, \sigma_th = 6.1644*10^-3.  \mu_r = 0.4050, \mu_th = 3.1416. no failures.
+
+stats with findLinesHT:
+* the variance will depend on the discretization of theta. For this set of experiments, 'RhoResolution': 1, 'Theta': -90:0.5:89.5
+* reading_full_line1. \sigma_r = 0.0006, \sigma_th = 0.0024. \mu_r = 0.2918, \mu_th = -3.0830. 2 failure cases. I think caused by insufficient points. The sigma in r is much lesser than the simple line-finder, but this may be because of the resolution of rho-sampling. should rule this out.
+* 100 generated cases with simulator. \sigma_r = 2*10^-4, \sigma_th = 6.2735*10^-4. \mu_r = 0.4050, \mu_th = 3.1416
+
+contents of data_jan15:
+* 2500 independent measurements of the same world with a time interval of 0.3 seconds. I collected a larger amount of data than before to try and see random range behaviour. Whatever the behavior is, certainly not Gaussian.

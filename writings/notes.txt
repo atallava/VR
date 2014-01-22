@@ -87,34 +87,6 @@ candidates for non-idealities (only by looking at code): delays, FIFO, frequency
 assume real points in world known -> what would you do?
 assume real points not known. can do a simultaneous error estimate? iterative procedure? how does SLAM work.
 
----------
-
-Experimental Characterization of Commercial Flash Ladar Devices
-
-Scanning from a moving platform introduces motion artifacts: also true for 360 count laser. Examine effects of range, reflectivity and angle of incidence on range measurements.
-What is saturation of a sensor?
-
-
-3D Mapping for high-fidelity unmanned ground vehicle lidar simulation, Browning et al, 2012
-
-Reference to some plane simulation work by Boeing. A bunch of existing simulators mentioned: gazebo, usarsim, rivet. Simple additive sensor noise alone is poorly suited to capturing large variation in plants etc. So: experimentally gathered data for characterizing noise; estimation/ prediction using such noise; can suc h complex noise be represented by a combination of some functions in some space? Blades of grass -> Ben mentioned Al speaking of simulation at this level. 
-Authors extend 3D mapping: represent the real world as volumes with a stochastic model for range returns and permeability which together capture the statistical distribution of the lidar range without recovering the surface. This is similar to what Al was saying about the properties being stored at the world location rather than the sensor. Range noise and mixed-pixel effects are built into the model.
-Related works has a lot on sensor modeling. Should be very relevant work. For surfaces with ~lambertian reflectance and with surface geometries >> beam width, range error is dominated by limits of physical sensor, is small and ~ Gaussian.
-
-L-structures: very interesting.
-sources of non-idealities: pose of robot, sensor calibration (pose of sensor wrt robot), laser pointing (error in pointing direction caused by encoders, non-zero beam width), laser in atmosphere, laser-material interaction, sensing of returned beam. Said that typical RMS deviation is of the order of 1-30mm. Absolute range will depend on calibration though. I like the idea though, of arriving at your expected calibration with a particular distribution. Makes work easy (not breaking head trying to get to exactness), complete (explicitly accounting for error). Don't want to double count error! 
-Use histograms in the voxels instead of Gaussians? Too expensive probably. 
-How is \Delta_r picked? Check out laser model by Baltasavias. \sigma_0 and \sigma_a are picked to fit some local residual error, I don't understand how that works.
-If put information on the world model rather than sensor, then can simulate motion blur easily. Is a beam simulated as a bunch of rays? 
-
-I will probably also assume that laser and detector are located at the same position.
-
-Haha, back to physics-based graphics which Sidd suggested I look into.
-
-Understand the range-return data likelihood. How/why is P(S/M) = \Pi_i P(s_i/M)?
-Took one-fifths as training and four-fifths as test? Isn't the ratio the other way around generally?
-What is the measure of peaks/ jerkiness of a pdf? As such, even in the case of reconstruction of the real world to get \sigma_0 and \sigma_a, the real world is not known: a model is fit.
-
 ********
 
 paper on structured light
