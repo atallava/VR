@@ -1,11 +1,13 @@
 % required in workspace: rob object of class neato, rstate object of class
 % robState, rob's laser must be turned on
 
-filename = 'data_XXJan.mat';
+filename = 'data_22Jan.mat';
 num_runs = 20;
 num_range_data = 500;
 for i = 1:num_runs
-     % collect laser data
+    fprintf('run %d\n',i);
+    % collect laser data
+    fprintf('collecting laser data\n');
     ranges = zeros(360,num_range_data);
     for j = 1:num_range_data
         ranges(:,j) = rob.laser.data.ranges;
@@ -13,13 +15,15 @@ for i = 1:num_runs
     end
     
     % write to file
+    fprintf('writing to file\n');
     varname1 = strcat('readings',int2str(i));
     varname2 = strcat('pose',int2str(i));
     S.(varname1) = ranges;
     S.(varname2) = rstate.pose;
-    save(filename,'-strcat','S');
+    save(filename,'-struct','S');
     
     % move the robot ahead
+    fprintf('moving robot\n');
     t1 = tic;
     while toc(t1) < 2.5
         rob.sendVelocity(0.02,0.02);
