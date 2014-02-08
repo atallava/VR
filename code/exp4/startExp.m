@@ -1,5 +1,7 @@
 function data = startExp(rob)
 % assumes laser is on
+% using keyboard inputs, drive around robot and collect ranges
+% data returned is a struct array of encoder and range readings
 
 v = struct('left',0,'right',0);
 W = 0.235;
@@ -8,7 +10,7 @@ T = [1 -0.5*W; ...
 data = struct('u',{},'z',{});
 data_count = 1;
 
-num_obs = 10;
+num_obs = 500;
 ranges = zeros(360,num_obs);
 
 enc = encHistory(rob);
@@ -22,6 +24,10 @@ while true
             % move forward
             v.left = 0.2; v.right = 0.2;
             moveRob(rob, v, 2);
+        case 'sf'
+            % short move forward
+            v.left = 0.2; v.right = 0.2;
+            moveRob(rob, v, 1);
         case 'ff'
             % longer move forward
             v.left = 0.2; v.right = 0.2;
@@ -66,12 +72,14 @@ while true
             % take down data
             pause(0.1);
             data(data_count).u = enc.encArray;
+            fprintf('Collecting data set %d \n', data_count);
             for i = 1:num_obs
                 ranges(:,i) = rob.laser.data.ranges;
                 pause(0.3);
             end
             data(data_count).z = ranges;
             data_count = data_count + 1;            
+            beep; beep; % alert grad student
             fprintf('Observations taken. Continue moving around. \n');
             enc.Reset();
             pause(0.1);
