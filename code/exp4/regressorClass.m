@@ -44,7 +44,7 @@ classdef regressorClass < handle
             
             Y = zeros(size(X,1),obj.nTargets);
             for i = 1:obj.nTargets
-                if ~isa(obj.models{i},'NonLinearModel')
+                if ~obj.isModel(obj.models{i})
                     % no model to predict
                     Y(:,i) = NaN(size(X,1),1);
                     continue;
@@ -57,6 +57,13 @@ classdef regressorClass < handle
                 end
             end
                 
+        end
+        
+        function res = isModel(obj,model)
+            res = false;
+            if isa(model,'NonLinearModel')
+                res = true;
+            end
         end
     end
     

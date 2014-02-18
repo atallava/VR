@@ -1,5 +1,5 @@
 function params = fitNormal(data)
-% same work as fitNWithDrops, but a function
+% same work as fitNWithDrops, but a function instead of a class
 % params: [mu;sigma;pZero]
 if nargin == 0
     % if empty call, return the length of params

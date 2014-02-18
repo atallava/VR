@@ -2,6 +2,7 @@
 clear all; clc;
 load data_Feb7
 load processed_data
+rng('shuffle')
 
 totalPoses = size(poses,2);
 frac = 0.7;
@@ -53,7 +54,7 @@ clc;
 Xtest = poses';
 Xtest = Xtest(testPoseIds,:);
 predictedParamArray = zeros(length(testPoseIds),nMLEParams,length(pixelIds));
-for i = rh.nPixels
+for i = 1:rh.nPixels
     predictedParamArray(:,:,i) = regPixel(i).predict(Xtest);
 end
 
@@ -61,20 +62,35 @@ end
 clc;
 
 score = 0;
-for i = 1%:length(testPoseIds)
-    for j = 10%:length(pixelIds)
+for i = 1:length(testPoseIds)
+    for j = 1:length(pixelIds)
         score = score+nllNormWithDrops(predictedParamArray(i,:,j),data(testPoseIds(i)).z(pixelIds(j),:));
     end
 end
 score = score/length(pixelIds);
 
 %% visualize a sample from prediction
-
+clc;
 hf = figure;
+hold on; axis equal;
 
+for i = randn(length(testPoseIds),1)
+    randomObs = randi(rh.nObs);
+    poseId = testPoseIds(i);
+    xRob = poses(1,poseId); yRob = poses(2,poseId); thRob = poses(3,poseId);
+    plot(xRob,yRob,'go');
+    
+    xReal = xRob+data(poseId).z(pixelIds,randomObs)'.*cos(rh.bearings+thRob);
+    yReal = yRob+data(poseId).z(pixelIds,randomObs)'.*sin(rh.bearings+thRob);
+    plot(xReal,yReal,'b+');
+   
+    rangeSim = drawFromNormWithDrops(squeeze(predictedParamArray(i,:,:)));
+    xSim = xRob+rangeSim.*cos(rh.bearings+thRob);
+    ySim = yRob+rangeSim.*sin(rh.bearings+thRob);
+    plot(xSim,ySim,'ro');
+end
 
-
-
+hold off;
 
 
 
