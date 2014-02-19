@@ -1,5 +1,5 @@
 %% generate poses from encoder readings
-% very flimsy currently
+% very flimsy currently. no filtering
 clear all; clear classes; clc;
 
 load data_Feb7
@@ -18,11 +18,22 @@ for i = 1:nPoses
     rstate.reset(poses(:,i));
 end
 
-%% downsample range data
+%% generate observation array
+% obsArray has all observed ranges
+% obsArray is of size poses x pixels x observations
+nObs = size(data(1).z,2);
+
+obsArray = zeros(nPoses,360,nObs);
+
+for i = 1:nPoses
+    obsArray(i,:,:) = data(i).z(:,:);
+end
+
+%% downsample range data and put into histogram
+% save processed data
 skip = 36;
 ranges = {};
 pixelIds = 1:36:360;
-nObs = size(data(1).z,2);
 bearings = deg2rad(pixelIds-1);
 
 rh = rangeHistograms(nObs,length(pixelIds),nPoses,bearings);
@@ -32,7 +43,7 @@ for i = 1:nPoses
     end
 end
 
-save('processed_data.mat','poses','rh');
+save('processed_data.mat','poses','rh','obsArray');
 %% plot poses sequentially
 
 close all;
