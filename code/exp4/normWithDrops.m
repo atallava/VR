@@ -22,7 +22,7 @@ classdef normWithDrops < handle
                 else
                     % input is parameters
                     if length(input) ~= 3
-                        warning('NEED 3 VALUES IF CHOSE TO INPUT PARAMETERS');
+                        warning('NEED 3 VALUES IF CHOSE TO INPUT PARAMETERS TO NORMWITHDROPS');
                     end
                     obj.mu = input(1);
                     obj.sigma = input(2);
@@ -57,7 +57,11 @@ classdef normWithDrops < handle
         function res = negLogLike(obj,data)
            % negative log likelihood of data
            if obj.pZero < 1
-               vec1 = pdf('normal',data,obj.mu,obj.sigma)*(1-obj.pZero);
+               if obj.sigma ~= 0
+                   vec1 = pdf('normal',data,obj.mu,obj.sigma)*(1-obj.pZero);
+               else
+                   vec1 = (data == obj.mu)*(1-obj.pZero);
+               end
                vec2 = (data == 0)*obj.pZero;
                res = -log(sum(vec1+vec2));
            else

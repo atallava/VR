@@ -66,12 +66,14 @@ for i = 1:length(testPoseIds)
     for j = 1:length(pixelIds)
         realRanges = obsArray(testPoseIds(i),pixelIds(j),:);
         realRanges = squeeze(realRanges);
-        %fprintf('%d,%d,%f\n',i,j,fitArray(i,j).negLogLike(realRanges));
-        % use nll method of class
-        %score = score+fitArray(i,j).negLogLike(realRanges);
+        params = predictedParamArray(i,:,j); params = squeeze(params);
+        
+        % use nll method part of class
+        tempObj = feval(fitName,params,1);
+        score = score+tempObj.negLogLike(realRanges);
         
         % use nll function
-        score = score+nllNormWithDrops(predictedParamArray(i,:,j),data(testPoseIds(i)).z(pixelIds(j),:));
+        %score = score+nllNormWithDrops(params,data(testPoseIds(i)).z(pixelIds(j),:));
     end
 end
 score = score/length(pixelIds);
