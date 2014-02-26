@@ -81,14 +81,16 @@ end
 score = score/length(pixelIds);
 
 
-%% visualize a sample from prediction
+%% visualize samples from prediction
 clc;
+clear params;
 
 while true
-hf = figure; axis equal;
-xlabel('x'); ylabel('y');
-hold on;
 for i = randperm(length(testPoseIds),1)
+    % visualize real vs simulated observations for some test pose
+    hf1 = figure; axis equal;
+    xlabel('x'); ylabel('y');
+    hold on;
     randomObs = randi(rh.nObs);
     poseId = testPoseIds(i);
     xRob = poses(1,poseId); yRob = poses(2,poseId); thRob = poses(3,poseId);
@@ -97,6 +99,7 @@ for i = randperm(length(testPoseIds),1)
     xReal = xRob+data(poseId).z(pixelIds,randomObs)'.*cos(rh.bearings+thRob);
     yReal = yRob+data(poseId).z(pixelIds,randomObs)'.*sin(rh.bearings+thRob);
     plot(xReal,yReal,'b+');
+    title(sprintf('pose: (%f,%f,%f)',xRob,yRob,thRob));
    
     % use class method to sample from pdf
     rangeSim = sampleFromParamArray(squeeze(predictedParamArray(i,:,:)),fitName);
@@ -107,9 +110,32 @@ for i = randperm(length(testPoseIds),1)
     xSim = xRob+rangeSim.*cos(rh.bearings+thRob);
     ySim = yRob+rangeSim.*sin(rh.bearings+thRob);
     plot(xSim,ySim,'ro');
+    hold off;
+    
+    % visualize real and simulated pmfs for a particular pixel index
+    pmfPixel = 1;
+    hf2 = figure;
+    subplot(2,1,1);
+    pmfReal = rh.H(poseId,:,pmfPixel);
+    pmfReal = pmfReal/sum(pmfReal);
+    bar(rh.xCenters,pmfReal);
+    title('real pmf');
+    subplot(2,1,2);
+    params = predictedParamArray(i,:,pmfPixel);
+    tempObj = feval(fitName,params,1);
+    pmfSim = tempObj.snap2PMF(rh.xCenters);
+    bar(rh.xCenters,pmfSim);
+    title('simulation pmf');
+    suptitle(sprintf('pixel %d',pixelIds(pmfPixel)));
+    
+    % some fancy positioning for visibility
+    figpos1 = get(hf1,'Position'); figpos2 = get(hf2,'Position');
+    figwidth = figpos1(3); figshift = floor(figwidth*0.5+10);
+    figpos1(1) = figpos1(1)-figshift; figpos2(1) = figpos2(1)+figshift;
+    set(hf1,'Position',figpos1); set(hf2,'Position',figpos2);
 end
 waitforbuttonpress;
-hold off;
+close(hf1,hf2);
 end
 
 

@@ -37,10 +37,13 @@ avgScore = avgScore/(length(testPoseIds)*rh.nPixels);
 
 %% visualize sample from predictions
 clc;
-hf = figure;
-hold on; axis equal;
 
+while true
 for i = randperm(length(testPoseIds),1)
+    % visualize real vs simulated observations for some test pose
+    hf1 = figure; axis equal;
+    xlabel('x'); ylabel('y');
+    hold on;
     randomObs = randi(rh.nObs);
     poseId = testPoseIds(i);
     xRob = poses(1,poseId); yRob = poses(2,poseId); thRob = poses(3,poseId);
@@ -49,12 +52,38 @@ for i = randperm(length(testPoseIds),1)
     xReal = xRob+data(poseId).z(pixelIds,randomObs)'.*cos(rh.bearings+thRob);
     yReal = yRob+data(poseId).z(pixelIds,randomObs)'.*sin(rh.bearings+thRob);
     plot(xReal,yReal,'b+');
+    title(sprintf('pose: (%f,%f,%f)',xRob,yRob,thRob));
    
     rangeSim = sampleFromHistArray(squeeze(predHistArray(i,:,:)),rh.xCenters);
     
     xSim = xRob+rangeSim.*cos(rh.bearings+thRob);
     ySim = yRob+rangeSim.*sin(rh.bearings+thRob);
     plot(xSim,ySim,'ro');
+    hold off;
+    
+    % visualize real and simulated pmfs for a particular pixel index
+    pmfPixel = 1;
+    hf2 = figure;
+    subplot(2,1,1);
+    pmfReal = rh.H(poseId,:,pmfPixel);
+    pmfReal = pmfReal/sum(pmfReal);
+    bar(rh.xCenters,pmfReal);
+    title('real pmf');
+    subplot(2,1,2);
+    pmfSim = predHistArray(i,:,pmfPixel);
+    pmfSim = pmfSim/sum(pmfSim);
+    bar(rh.xCenters,pmfSim);
+    title('simulation pmf');
+    suptitle(sprintf('pixel %d',pixelIds(pmfPixel)));
+    
+    % some fancy positioning for visibility
+    figpos1 = get(hf1,'Position'); figpos2 = get(hf2,'Position');
+    figwidth = figpos1(3); figshift = floor(figwidth*0.5+10);
+    figpos1(1) = figpos1(1)-figshift; figpos2(1) = figpos2(1)+figshift;
+    set(hf1,'Position',figpos1); set(hf2,'Position',figpos2);
+end
+waitforbuttonpress;
+close(hf1,hf2);
 end
 
-hold off;
+

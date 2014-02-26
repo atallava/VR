@@ -69,6 +69,22 @@ classdef normWithDrops < handle
            end
         end
         
+        function res = snap2PMF(obj,centers)
+            % centers is a vector of equally spaced values starting from
+            % zero and ending at the maximum range value of a sensor
+            % snap the pdf to a pmf about centers
+            
+            binSize = centers(2)-centers(1);
+            prob = pdf('normal',centers,obj.mu,obj.sigma);
+            % assuming small bin sizes
+            % assuming negligible probability mass outside centers
+            res = prob*binSize;
+            % should sum to one under assumptions, but extra check
+            res = res/norm(res); 
+            res = res*(1-obj.pZero);
+            res(1) = res(1)+obj.pZero;           
+        end
+        
         function res = sample(obj,nSamples)
             % sample with current parameters
             if nargin < 2
