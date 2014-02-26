@@ -1,6 +1,5 @@
 classdef rangeHistograms < handle
-    %UNTITLED Summary of this class goes here
-    %   Detailed explanation goes here
+   % H is a massive array of poses x histogram x pixels
     
     properties (SetAccess = private)
         H
@@ -11,7 +10,7 @@ classdef rangeHistograms < handle
         maxRange = 4;
         deltaRange = 1e-3; % 1mm
         nCenters;
-        xcenters;
+        xCenters;
     end
     
     methods
@@ -29,14 +28,14 @@ classdef rangeHistograms < handle
            if floor(obj.nCenters) ~= obj.nCenters
                warning('NUMBER OF CENTERS IN HISTOGRAM HAS TO BE AN INTEGER');
            end
-           obj.H = zeros(obj.nCenters,obj.nPoses,obj.nPixels);
-           obj.xcenters = linspace(0,obj.maxRange,obj.nCenters);
+           obj.H = zeros(obj.nPoses,obj.nCenters,obj.nPixels);
+           obj.xCenters = linspace(0,obj.maxRange,obj.nCenters);
         end
         
         function obj = fillHistogram(obj,poseId,pixelId,ranges)
             % ranges is a vector of values collected over nObs observations
             % convert to a histogram and store
-            obj.H(:,poseId,pixelId) = hist(ranges,obj.xcenters);
+            obj.H(poseId,:,pixelId) = hist(ranges,obj.xCenters);
         end
        
         function h = getHistogram(obj,poseId,pixelId)
@@ -48,7 +47,7 @@ classdef rangeHistograms < handle
             % convert a histogram to a vector of values
             vec = [];
             for i = 1:obj.nCenters
-                vec = [vec ones(1,obj.H(i,poseId,pixelId))*obj.xcenters(i)];
+                vec = [vec ones(1,obj.H(i,poseId,pixelId))*obj.xCenters(i)];
             end
         end
         function res = getHistograms(obj)

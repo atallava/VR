@@ -34,12 +34,14 @@ end
 skip = 36;
 ranges = {};
 pixelIds = 1:36:360;
+nPixels = length(pixelIds);
 bearings = deg2rad(pixelIds-1);
 
-rh = rangeHistograms(nObs,length(pixelIds),nPoses,bearings);
+rh = rangeHistograms(nObs,nPixels,nPoses,bearings);
 for i = 1:nPoses
-    for j = pixelIds
-        rh.fillHistogram(i,j,data(i).z(j,:));
+    for j = 1:nPixels
+        px = pixelIds(j);
+        rh.fillHistogram(i,j,data(i).z(px,:));
     end
 end
 
