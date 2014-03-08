@@ -9,9 +9,6 @@ xw = [0 3.66 3.66 0 0];
 yw = [0 0 1.83 1.83 0];
 xobs = [1.525 2.135];
 yobs = [.915 .915];
-xoff = 0.097; yoff = 0.152;
-xw = xw-0.097; yw = yw-0.152;
-xobs = xobs-xoff; yobs = yobs-yoff;
 
 lines_p1 = [xw(1:end-1) xobs(1); yw(1:end-1) yobs(1)];
 lines_p2 = [xw(2:end) xobs(2); yw(2:end) yobs(2)];
