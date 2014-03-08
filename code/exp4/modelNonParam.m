@@ -1,5 +1,7 @@
+%end to end non-parametric modeler
+
 %% initialize
-clear all; clc;
+clear all; clear classes; clc;
 load data_Feb7
 load processed_data
 rng('shuffle')

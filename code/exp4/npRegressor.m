@@ -1,5 +1,5 @@
 function Y = npRegressor(XTrain,YTrain,X,kernelName)
-% an implementation of a non parametrix regressor
+%npRegressor an implementation of a non parametric regressor
 % Xtrain is observations x Xdimension
 % Ytrain is observations x Ydimension
 % X is queries x Xdimension

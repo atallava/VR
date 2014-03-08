@@ -1,19 +1,26 @@
+%end to end parametric modeler 
+
 %% initialize
 clear all; clear classes; clc;
 load data_Feb7
 load processed_data
+load poses_from_range_matching
 rng('shuffle')
 
-totalPoses = size(poses,2);
+
+poses = posesFromRangeMatching;
+totalPoses = 20; %only first 20 poses have legible range readings
 frac = 0.7;
-%trainPoseIds = randperm(totalPoses,floor(frac*totalPoses));
-trainPoseIds = 1:totalPoses;
+trainPoseIds = randperm(totalPoses,floor(frac*totalPoses));
+%trainPoseIds = [1 3 5];
+%trainPoseIds = 1:totalPoses;
 testPoseIds = setdiff(1:totalPoses,trainPoseIds);
+%testPoseIds = [2 4];
 pixelIds = rad2deg(rh.bearings)+1;
-Xtrain = poses';
-Xtrain = Xtrain(trainPoseIds,:);
-Xtest = poses';
-Xtest = Xtest(testPoseIds,:);
+XTrain = poses';
+XTrain = XTrain(trainPoseIds,:);
+XTest = poses';
+XTest = XTest(testPoseIds,:);
 
 %% fit distributions to data
 clc;
@@ -22,7 +29,7 @@ clc;
 fitName = 'normWithDrops';
 fitArray = fitModel(fitName,obsArray,rh,trainPoseIds);
 nMLEParams = fitArray{1}.nParams;
-paramArray = paramObjects2Array(fitArray);
+trainParamArray = paramObjects2Array(fitArray);
 %{
 % use the mle function
 nMLEParams = fitNormal();
@@ -55,10 +62,10 @@ weights0 = {zeros(1,4), zeros(1,4), zeros(1,5)};
 for i = 1:rh.nPixels
     regPixel(i) = regressorClass(nMLEParams);
     try
-        regPixel(i).regress(fnArray,Xtrain,paramArray(:,:,i),weights0);
+        regPixel(i).regress(fnArray,XTrain,trainParamArray(:,:,i),weights0);
     catch
         fprintf('pixelId: %d \n',pixelIds(i));
-        warning('REGRESS FAILED');
+        error('REGRESS FAILED');
     end
 end
 
@@ -76,8 +83,17 @@ clc;
 
 predParamArray = zeros(length(testPoseIds),nMLEParams,length(pixelIds));
 for i = 1:rh.nPixels
-    predParamArray(:,:,i) = regPixel(i).predict(Xtest);
+    predParamArray(:,:,i) = regPixel(i).predict(XTest);
 end
+
+%% alternate: predict parameters via NN-regression
+
+predParamArray = zeros(length(testPoseIds),nMLEParams,rh.nPixels);
+
+for i = 1:rh.nPixels
+    predParamArray(:,:,i) = npRegressor(XTrain,trainParamArray(:,:,i),XTest,'kernelInvPoseDist');
+end
+
 
 %% evaluate predictions 
 clc;
