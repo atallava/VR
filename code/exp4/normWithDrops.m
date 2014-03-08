@@ -3,12 +3,14 @@ classdef normWithDrops < handle
     
     properties (Constant = true)
         nParams = 3;
+        dx = 1e-3;
     end
     
     properties (SetAccess = private)
         mu
         sigma
         pZero
+        nll
        
     end
     
@@ -22,11 +24,12 @@ classdef normWithDrops < handle
                 else
                     % input is parameters
                     if length(input) ~= 3
-                        warning('NEED 3 VALUES IF CHOSE TO INPUT PARAMETERS TO NORMWITHDROPS');
+                        error('NEED 3 VALUES IF CHOSE TO INPUT PARAMETERS TO NORMWITHDROPS');
                     end
                     obj.mu = input(1);
                     obj.sigma = input(2);
                     obj.pZero = input(3);
+                    obj.nll = NaN;
                 end
             end
         end
@@ -42,30 +45,32 @@ classdef normWithDrops < handle
                     % set this to the mean
                     obj.mu = data(1);
                     obj.sigma = 0;
-                    return;
+                else
+                    try
+                        params = mle(data,'distribution','normal');
+                    catch
+                        warning('BAD DATA');
+                    end
+                    obj.mu = params(1);
+                    obj.sigma = params(2);
                 end
-                try
-                    params = mle(data,'distribution','normal');
-                catch
-                   warning('BAD DATA');
-                end
-                obj.mu = params(1);
-                obj.sigma = params(2);
             end
+            obj.nll = obj.negLogLike(data);
         end
         
         function res = negLogLike(obj,data)
            % negative log likelihood of data
            if obj.pZero < 1
                if obj.sigma ~= 0
-                   vec1 = pdf('normal',data,obj.mu,obj.sigma)*(1-obj.pZero);
+                   vec1 = pdf('normal',data,obj.mu,obj.sigma)*obj.dx*(1-obj.pZero);
                else
                    vec1 = (data == obj.mu)*(1-obj.pZero);
                end
                vec2 = (data == 0)*obj.pZero;
-               res = -log(sum(vec1+vec2));
+               res = -sum(log(vec1+vec2));
            else
-               res = -log(sum(data == 0));
+               res = +(data == 0);
+               res = -sum(log(res));
            end
         end
         

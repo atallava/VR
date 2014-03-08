@@ -20,13 +20,13 @@ end
 
 %% generate observation array
 % obsArray has all observed ranges
-% obsArray is of size poses x pixels x observations
+% obsArray is of size poses x observations x pixels
 nObs = size(data(1).z,2);
 
-obsArray = zeros(nPoses,360,nObs);
+obsArray = zeros(nPoses,nObs,360);
 
 for i = 1:nPoses
-    obsArray(i,:,:) = data(i).z(:,:);
+    obsArray(i,:,:) = data(i).z(:,:)';
 end
 
 %% downsample range data and put into histogram

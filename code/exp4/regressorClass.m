@@ -55,8 +55,19 @@ classdef regressorClass < handle
                     end
                     Y(:,i) = y;
                 end
+            end                
+        end
+        
+        function res = getMSE(obj)
+            % return mean-squared error for each model
+            res = zeros(1,obj.nTargets);
+            for i = 1:obj.nTargets
+                if obj.isModel(obj.models{i})
+                    res(i) = obj.models{i}.MSE;
+                else
+                    res(i) = NaN;
+                end
             end
-                
         end
         
         function res = isModel(obj,model)

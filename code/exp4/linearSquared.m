@@ -1,4 +1,6 @@
 function res = linearSquared(weights,x)
+% ensure res > 0
+
 if nargin == 0
     res = 4;
     return;

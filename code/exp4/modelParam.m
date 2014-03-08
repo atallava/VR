@@ -1,12 +1,13 @@
 %% initialize
-clear all; clc;
+clear all; clear classes; clc;
 load data_Feb7
 load processed_data
 rng('shuffle')
 
 totalPoses = size(poses,2);
 frac = 0.7;
-trainPoseIds = randperm(totalPoses,floor(frac*totalPoses));
+%trainPoseIds = randperm(totalPoses,floor(frac*totalPoses));
+trainPoseIds = 1:totalPoses;
 testPoseIds = setdiff(1:totalPoses,trainPoseIds);
 pixelIds = rad2deg(rh.bearings)+1;
 Xtrain = poses';
@@ -15,11 +16,12 @@ Xtest = poses';
 Xtest = Xtest(testPoseIds,:);
 
 %% fit distributions to data
+clc;
+
 % use the mle class
-fitArray = normWithDrops.empty;
 fitName = 'normWithDrops';
-fitArray = fitModel(fitArray,fitName,trainPoseIds);
-nMLEParams = fitArray(1).nParams;
+fitArray = fitModel(fitName,obsArray,rh,trainPoseIds);
+nMLEParams = fitArray{1}.nParams;
 paramArray = paramObjects2Array(fitArray);
 %{
 % use the mle function
@@ -32,16 +34,24 @@ for i = 1:length(trainPoseIds)
 end
 %}
 
+%% evaluate how good fit pdfs are
+clc;
+
+nllTrain = zeros(length(trainPoseIds),rh.nPixels);
+for i = 1:length(trainPoseIds)
+    for j = 1:rh.nPixels
+        nllTrain(i,j) = fitArray{i,j}.nll;
+    end
+end
+
 %% fit a regression model to parameters
 clc;
 
 % a regressor object for each pixel
 regPixel = regressorClass.empty(rh.nPixels,0);
 
-fnName = 'linearSquared';
-nWeights = feval(fnName);
-fnArray = repmat({str2func(fnName)},1,nMLEParams);
-weights0 = repmat({zeros(1,nWeights)},1,nMLEParams);
+fnArray = {@firstOrderPoly,@linearSquared, @linearSquaredSquashed};
+weights0 = {zeros(1,4), zeros(1,4), zeros(1,5)};
 for i = 1:rh.nPixels
     regPixel(i) = regressorClass(nMLEParams);
     try
@@ -52,34 +62,48 @@ for i = 1:rh.nPixels
     end
 end
 
+%% evaluate how good fit model is
+clc;
+
+% MSE for each pixel for each parameter
+mseTrain = zeros(nMLEParams,rh.nPixels);
+for j = 1:rh.nPixels
+    mseTrain(:,j) = regPixel(j).getMSE();
+end
+
 %% predict at test poses
 clc;
 
-predictedParamArray = zeros(length(testPoseIds),nMLEParams,length(pixelIds));
+predParamArray = zeros(length(testPoseIds),nMLEParams,length(pixelIds));
 for i = 1:rh.nPixels
-    predictedParamArray(:,:,i) = regPixel(i).predict(Xtest);
+    predParamArray(:,:,i) = regPixel(i).predict(Xtest);
 end
 
-%% evaluate predictions
+%% evaluate predictions 
 clc;
 
-score = 0;
+nllTest = zeros(length(testPoseIds),length(pixelIds));
+mseTest = zeros(nMLEParams,length(pixelIds));
 for i = 1:length(testPoseIds)
     for j = 1:length(pixelIds)
-        realRanges = obsArray(testPoseIds(i),pixelIds(j),:);
+        realRanges = obsArray(testPoseIds(i),:,pixelIds(j));
         realRanges = squeeze(realRanges);
-        params = predictedParamArray(i,:,j); params = squeeze(params);
+        params = predParamArray(i,:,j); params = squeeze(params);
         
         % use nll method part of class
         tempObj = feval(fitName,params,1);
-        score = score+tempObj.negLogLike(realRanges);
+        nllTest(i,j) = tempObj.negLogLike(realRanges);
         
         % use nll function
         %score = score+nllNormWithDrops(params,data(testPoseIds(i)).z(pixelIds(j),:));
+        
+        % mse
+        tempObj = feval(fitName,realRanges,0);
+        mseTest(:,j) = mseTest(:,j)+(params-tempObj.getParams())'.^2;
     end
 end
-score = score/length(pixelIds);
-
+avgNllTest = sum(nllTest(:))/(length(testPoseIds)*length(pixelIds));
+mseTest = mseTest/length(testPoseIds);
 
 %% visualize samples from prediction
 clc;
@@ -99,13 +123,13 @@ for i = randperm(length(testPoseIds),1)
     xReal = xRob+data(poseId).z(pixelIds,randomObs)'.*cos(rh.bearings+thRob);
     yReal = yRob+data(poseId).z(pixelIds,randomObs)'.*sin(rh.bearings+thRob);
     plot(xReal,yReal,'b+');
-    title(sprintf('pose: (%f,%f,%f)',xRob,yRob,thRob));
+    title(sprintf('pose %d: (%f,%f,%f)',poseId,xRob,yRob,thRob));
    
     % use class method to sample from pdf
-    rangeSim = sampleFromParamArray(squeeze(predictedParamArray(i,:,:)),fitName);
+    rangeSim = sampleFromParamArray(squeeze(predParamArray(i,:,:)),fitName);
     
     % use function to sample from pdf
-    %rangeSim = drawFromNormWithDrops(squeeze(predictedParamArray(i,:,:)));
+    %rangeSim = drawFromNormWithDrops(squeeze(predParamArray(i,:,:)));
     
     xSim = xRob+rangeSim.*cos(rh.bearings+thRob);
     ySim = yRob+rangeSim.*sin(rh.bearings+thRob);
@@ -121,7 +145,7 @@ for i = randperm(length(testPoseIds),1)
     bar(rh.xCenters,pmfReal);
     title('real pmf');
     subplot(2,1,2);
-    params = predictedParamArray(i,:,pmfPixel);
+    params = predParamArray(i,:,pmfPixel);
     tempObj = feval(fitName,params,1);
     pmfSim = tempObj.snap2PMF(rh.xCenters);
     bar(rh.xCenters,pmfSim);

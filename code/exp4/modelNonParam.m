@@ -52,10 +52,13 @@ for i = randperm(length(testPoseIds),1)
     xReal = xRob+data(poseId).z(pixelIds,randomObs)'.*cos(rh.bearings+thRob);
     yReal = yRob+data(poseId).z(pixelIds,randomObs)'.*sin(rh.bearings+thRob);
     plot(xReal,yReal,'b+');
-    title(sprintf('pose: (%f,%f,%f)',xRob,yRob,thRob));
+    title(sprintf('pose %d: (%f,%f,%f)',poseId,xRob,yRob,thRob));
    
     rangeSim = sampleFromHistArray(squeeze(predHistArray(i,:,:)),rh.xCenters);
-    
+    if any(isnan(rangeSim))
+        error('UNABLE TO PREDICT HISTOGRAM AT POSE');
+    end
+        
     xSim = xRob+rangeSim.*cos(rh.bearings+thRob);
     ySim = yRob+rangeSim.*sin(rh.bearings+thRob);
     plot(xSim,ySim,'ro');
@@ -85,5 +88,16 @@ end
 waitforbuttonpress;
 close(hf1,hf2);
 end
+
+
+
+
+
+
+
+
+
+
+
 
 
