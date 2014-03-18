@@ -5,8 +5,8 @@ clear all; clear classes; clc;
 load data_Feb7
 load processed_data
 load poses_from_range_matching
+load map
 rng('shuffle')
-
 
 poses = posesFromRangeMatching;
 totalPoses = 20; %only first 20 poses have legible range readings
@@ -58,7 +58,7 @@ clc;
 regPixel = regressorClass.empty(rh.nPixels,0);
 
 fnArray = {@firstOrderPoly,@linearSquared, @linearSquaredSquashed};
-weights0 = {zeros(1,4), zeros(1,4), zeros(1,5)};
+weights0 = {zeros(1,4), zeros(1,4), zeros(1,4)};
 for i = 1:rh.nPixels
     regPixel(i) = regressorClass(nMLEParams);
     try
@@ -87,6 +87,7 @@ for i = 1:rh.nPixels
 end
 
 %% alternate: predict parameters via NN-regression
+clc;
 
 predParamArray = zeros(length(testPoseIds),nMLEParams,rh.nPixels);
 
@@ -94,12 +95,22 @@ for i = 1:rh.nPixels
     predParamArray(:,:,i) = npRegressor(XTrain,trainParamArray(:,:,i),XTest,'kernelInvPoseDist');
 end
 
+%% alternate: predict parameters via NN-regression over (range, incidence_angle)
+clc;
+
+predParamArray = zeros(length(testPoseIds),nMLEParams,rh.nPixels);
+rAlphaTrain = poses2RangeAlpha(roomLineMap,XTrain,rad2deg(rh.bearings));
+rAlphaTest = poses2RangeAlpha(roomLineMap,XTest,rad2deg(rh.bearings));
+
+for i = 1:rh.nPixels
+    [predParamArray(:,:,i),flu] = npRegressor(rAlphaTrain(:,:,i),trainParamArray(:,:,i),rAlphaTest(:,:,i),'kernelRAlpha');
+end
 
 %% evaluate predictions 
 clc;
 
 nllTest = zeros(length(testPoseIds),length(pixelIds));
-mseTest = zeros(nMLEParams,length(pixelIds));
+seTest = zeros(size(predParamArray));
 for i = 1:length(testPoseIds)
     for j = 1:length(pixelIds)
         realRanges = obsArray(testPoseIds(i),:,pixelIds(j));
@@ -115,16 +126,16 @@ for i = 1:length(testPoseIds)
         
         % mse
         tempObj = feval(fitName,realRanges,0);
-        mseTest(:,j) = mseTest(:,j)+(params-tempObj.getParams())'.^2;
+        seTest(i,:,j) = (params-tempObj.getParams())'.^2;
     end
 end
 avgNllTest = sum(nllTest(:))/(length(testPoseIds)*length(pixelIds));
-mseTest = mseTest/length(testPoseIds);
 
 %% visualize samples from prediction
 clc;
 clear params;
 
+pmfPixel = randperm(rh.nPixels,1);
 while true
 for i = randperm(length(testPoseIds),1)
     % visualize real vs simulated observations for some test pose
@@ -150,10 +161,10 @@ for i = randperm(length(testPoseIds),1)
     xSim = xRob+rangeSim.*cos(rh.bearings+thRob);
     ySim = yRob+rangeSim.*sin(rh.bearings+thRob);
     plot(xSim,ySim,'ro');
+    legend('robot','real data','predicted data');
     hold off;
     
     % visualize real and simulated pmfs for a particular pixel index
-    pmfPixel = 1;
     hf2 = figure;
     subplot(2,1,1);
     pmfReal = rh.H(poseId,:,pmfPixel);
@@ -177,6 +188,22 @@ end
 waitforbuttonpress;
 close(hf1,hf2);
 end
+
+%% visualize training and test poses
+clc;
+localizer = lineMapLocalizer(lines_p1,lines_p2);
+
+hf = localizer.drawLines();
+figure(hf); hold on;
+for i = trainPoseIds
+    quiver(poses(1,i),poses(2,i),0.1*cos(poses(3,i)),0.1*sin(poses(3,i)),'g','LineWidth',2);
+end
+for i = testPoseIds
+    quiver(poses(1,i),poses(2,i),0.1*cos(poses(3,i)),0.1*sin(poses(3,i)),'r','LineWidth',2);
+end
+annotation('textbox',[.6,0.8,.1,.1], ...
+    'String', {'green: training poses','red: test poses'});
+
 
 
 

@@ -7,6 +7,5 @@ end
 
 res = weights(1)+weights(2)*x(:,1)+weights(3)*x(:,2)+weights(4)*x(:,3);
 res = res.^2;
-res = res.*weights(5);
-res = logsig(res);
+res = 1./(1+exp(-res));
 end

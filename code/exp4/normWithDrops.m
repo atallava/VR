@@ -44,16 +44,20 @@ classdef normWithDrops < handle
                     % only a single data point available
                     % set this to the mean
                     obj.mu = data(1);
-                    obj.sigma = 0;
+                    obj.sigma = NaN;
                 else
                     try
                         params = mle(data,'distribution','normal');
                     catch
-                        warning('BAD DATA');
+                        error('BAD DATA.');
                     end
                     obj.mu = params(1);
                     obj.sigma = params(2);
                 end
+            else
+                % all zero readings
+                obj.mu = NaN;
+                obj.sigma = NaN;
             end
             obj.nll = obj.negLogLike(data);
         end
@@ -61,10 +65,10 @@ classdef normWithDrops < handle
         function res = negLogLike(obj,data)
            % negative log likelihood of data
            if obj.pZero < 1
-               if obj.sigma ~= 0
-                   vec1 = pdf('normal',data,obj.mu,obj.sigma)*obj.dx*(1-obj.pZero);
-               else
+               if isnan(obj.sigma)
                    vec1 = (data == obj.mu)*(1-obj.pZero);
+               else
+                   vec1 = pdf('normal',data,obj.mu,obj.sigma)*obj.dx*(1-obj.pZero);
                end
                vec2 = (data == 0)*obj.pZero;
                res = -sum(log(vec1+vec2));
@@ -79,15 +83,26 @@ classdef normWithDrops < handle
             % zero and ending at the maximum range value of a sensor
             % snap the pdf to a pmf about centers
             
+            res = zeros(size(centers));
             binSize = centers(2)-centers(1);
-            prob = pdf('normal',centers,obj.mu,obj.sigma);
-            % assuming small bin sizes
-            % assuming negligible probability mass outside centers
-            res = prob*binSize;
-            % should sum to one under assumptions, but extra check
-            res = res/norm(res); 
-            res = res*(1-obj.pZero);
-            res(1) = res(1)+obj.pZero;           
+            if obj.pZero == 1
+                res(1) = 1;
+                return;
+            else
+                if isnan(obj.sigma)
+                    index = floor(obj.mu/binSize);
+                    res(index) = 1;
+                else
+                    prob = pdf('normal',centers,obj.mu,obj.sigma);
+                    % assuming small bin sizes
+                    % assuming negligible probability mass outside centers
+                    res = prob*binSize;
+                end
+                % should sum to one under assumptions, but extra check
+                res = res/sum(res);
+                res = res*(1-obj.pZero);
+                res(1) = res(1)+obj.pZero;
+            end
         end
         
         function res = sample(obj,nSamples)
@@ -100,7 +115,11 @@ classdef normWithDrops < handle
                 if rand < obj.pZero
                     res(i) = 0;
                 else
-                    res(i) = random('normal',obj.mu,obj.sigma);
+                    if isnan(obj.sigma)
+                        res(i) = obj.mu;
+                    else
+                        res(i) = random('normal',obj.mu,obj.sigma);
+                    end
                 end
             end
         end
