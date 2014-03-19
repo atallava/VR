@@ -65,7 +65,7 @@ classdef normWithDrops < handle
         function res = negLogLike(obj,data)
            % negative log likelihood of data
            if obj.pZero < 1
-               if isnan(obj.sigma)
+               if isnan(obj.sigma) || (obj.sigma == 0)
                    vec1 = (data == obj.mu)*(1-obj.pZero);
                else
                    vec1 = pdf('normal',data,obj.mu,obj.sigma)*obj.dx*(1-obj.pZero);

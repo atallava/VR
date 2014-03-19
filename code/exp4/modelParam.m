@@ -12,10 +12,7 @@ poses = posesFromRangeMatching;
 totalPoses = 20; %only first 20 poses have legible range readings
 frac = 0.7;
 trainPoseIds = randperm(totalPoses,floor(frac*totalPoses));
-%trainPoseIds = [1 3 5];
-%trainPoseIds = 1:totalPoses;
 testPoseIds = setdiff(1:totalPoses,trainPoseIds);
-%testPoseIds = [2 4];
 pixelIds = rad2deg(rh.bearings)+1;
 XTrain = poses';
 XTrain = XTrain(trainPoseIds,:);
@@ -30,16 +27,6 @@ fitName = 'normWithDrops';
 fitArray = fitModel(fitName,obsArray,rh,trainPoseIds);
 nMLEParams = fitArray{1}.nParams;
 trainParamArray = paramObjects2Array(fitArray);
-%{
-% use the mle function
-nMLEParams = fitNormal();
-paramArray = zeros(length(trainPoseIds),nMLEParams,rh.nPixels);
-for i = 1:length(trainPoseIds)
-    for j = 1:rh.nPixels
-        paramArray(i,:,j) = fitNormal(data(trainPoseIds(i)).z(pixelIds(j),:));
-    end
-end
-%}
 
 %% evaluate how good fit pdfs are
 clc;
@@ -49,6 +36,19 @@ for i = 1:length(trainPoseIds)
     for j = 1:rh.nPixels
         nllTrain(i,j) = fitArray{i,j}.nll;
     end
+end
+
+%% visualize outliers
+clear params;
+pdfOutliers = outlierDiagnostic(nllTrain,{trainPoseIds, 1:rh.nPixels});
+for i = 1:length(pdfOutliers)
+    poseId = pdfOutliers(i,1);
+    pmfPixel = pdfOutliers(i,2);
+    params = trainParamArray(find(trainPoseIds == poseId),:,pmfPixel);
+    hf = vizPMFs(rh,poseId,pmfPixel,params,fitName);
+    fprintf('nll(%d,%d): %f\n',poseId,pmfPixel,nllTrain(find(trainPoseIds == poseId),pmfPixel));
+    waitforbuttonpress;
+    close(hf);
 end
 
 %% fit a regression model to parameters
@@ -68,6 +68,8 @@ for i = 1:rh.nPixels
         error('REGRESS FAILED');
     end
 end
+
+%% alternate: fit a locally weighted regression model to parameters
 
 %% evaluate how good fit model is
 clc;
@@ -121,10 +123,7 @@ for i = 1:length(testPoseIds)
         tempObj = feval(fitName,params,1);
         nllTest(i,j) = tempObj.negLogLike(realRanges);
         
-        % use nll function
-        %score = score+nllNormWithDrops(params,data(testPoseIds(i)).z(pixelIds(j),:));
-        
-        % mse
+        % squared error
         tempObj = feval(fitName,realRanges,0);
         seTest(i,:,j) = (params-tempObj.getParams())'.^2;
     end
@@ -154,10 +153,7 @@ for i = randperm(length(testPoseIds),1)
    
     % use class method to sample from pdf
     rangeSim = sampleFromParamArray(squeeze(predParamArray(i,:,:)),fitName);
-    
-    % use function to sample from pdf
-    %rangeSim = drawFromNormWithDrops(squeeze(predParamArray(i,:,:)));
-    
+        
     xSim = xRob+rangeSim.*cos(rh.bearings+thRob);
     ySim = yRob+rangeSim.*sin(rh.bearings+thRob);
     plot(xSim,ySim,'ro');
@@ -165,20 +161,9 @@ for i = randperm(length(testPoseIds),1)
     hold off;
     
     % visualize real and simulated pmfs for a particular pixel index
-    hf2 = figure;
-    subplot(2,1,1);
-    pmfReal = rh.H(poseId,:,pmfPixel);
-    pmfReal = pmfReal/sum(pmfReal);
-    bar(rh.xCenters,pmfReal);
-    title('real pmf');
-    subplot(2,1,2);
     params = predParamArray(i,:,pmfPixel);
-    tempObj = feval(fitName,params,1);
-    pmfSim = tempObj.snap2PMF(rh.xCenters);
-    bar(rh.xCenters,pmfSim);
-    title('simulation pmf');
-    suptitle(sprintf('pixel %d',pixelIds(pmfPixel)));
-    
+    hf2 = vizPMFs(rh,poseId,pmfPixel,params,fitName);
+      
     % some fancy positioning for visibility
     figpos1 = get(hf1,'Position'); figpos2 = get(hf2,'Position');
     figwidth = figpos1(3); figshift = floor(figwidth*0.5+10);

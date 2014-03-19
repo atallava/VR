@@ -2,7 +2,7 @@ function rAlphaArray = poses2RangeAlpha(envLineMap,poses,bearings)
 %poses2RangeAlpha: get range and angle of information for poses
 % envLineMap is a lineMap object
 % poses is number of poses x 3
-% bearings are in degrees
+% bearings in degrees
 % rAlphaArray is number of poses x 2 x number of bearings
 
 maxRange = 4;
