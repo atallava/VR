@@ -1,4 +1,5 @@
-%end to end parametric modeler 
+%end to end parametric modeler
+%WARNING: most of this is outdated and will not work
 
 %% initialize
 clear all; clear classes; clc;
@@ -11,7 +12,8 @@ rng('shuffle')
 poses = posesFromRangeMatching;
 totalPoses = 20; %only first 20 poses have legible range readings
 frac = 0.7;
-trainPoseIds = randperm(totalPoses,floor(frac*totalPoses));
+%trainPoseIds = randperm(totalPoses,floor(frac*totalPoses));
+trainPoseIds = 1:2:20;
 testPoseIds = setdiff(1:totalPoses,trainPoseIds);
 pixelIds = rad2deg(rh.bearings)+1;
 XTrain = poses';
@@ -52,6 +54,7 @@ for i = 1:length(pdfOutliers)
 end
 
 %% fit a regression model to parameters
+% also example of using object arrays
 clc;
 
 % a regressor object for each pixel
@@ -101,8 +104,8 @@ end
 clc;
 
 predParamArray = zeros(length(testPoseIds),nMLEParams,rh.nPixels);
-rAlphaTrain = poses2RangeAlpha(roomLineMap,XTrain,rad2deg(rh.bearings));
-rAlphaTest = poses2RangeAlpha(roomLineMap,XTest,rad2deg(rh.bearings));
+rAlphaTrain = poses2RAlpha(roomLineMap,XTrain,rh.bearings);
+rAlphaTest = poses2RAlpha(roomLineMap,XTest,rh.bearings);
 
 for i = 1:rh.nPixels
     [predParamArray(:,:,i),flu] = npRegressor(rAlphaTrain(:,:,i),trainParamArray(:,:,i),rAlphaTest(:,:,i),'kernelRAlpha');
@@ -177,17 +180,7 @@ end
 %% visualize training and test poses
 clc;
 localizer = lineMapLocalizer(lines_p1,lines_p2);
-
-hf = localizer.drawLines();
-figure(hf); hold on;
-for i = trainPoseIds
-    quiver(poses(1,i),poses(2,i),0.1*cos(poses(3,i)),0.1*sin(poses(3,i)),'g','LineWidth',2);
-end
-for i = testPoseIds
-    quiver(poses(1,i),poses(2,i),0.1*cos(poses(3,i)),0.1*sin(poses(3,i)),'r','LineWidth',2);
-end
-annotation('textbox',[.6,0.8,.1,.1], ...
-    'String', {'green: training poses','red: test poses'});
+hf = vizPoses(localizer,poses,trainPoseIds,testPoseIds);
 
 
 

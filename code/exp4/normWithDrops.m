@@ -1,5 +1,5 @@
 classdef normWithDrops < handle
-    % fit a normal distribution + dropout probability to data
+    %normWithDrops fit a normal distribution + dropout probability to data
     
     properties (Constant = true)
         nParams = 3;

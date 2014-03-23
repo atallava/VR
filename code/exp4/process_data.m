@@ -32,12 +32,11 @@ end
 %% downsample range data and put into histogram
 % save processed data
 skip = 36;
-ranges = {};
 pixelIds = 1:36:360;
 nPixels = length(pixelIds);
-bearings = deg2rad(pixelIds-1);
+input = struct('nObs',nObs,'nPixels',nPixels,'nPoses',nPoses,'bearings',deg2rad(pixelIds-1));
 
-rh = rangeHistograms(nObs,nPixels,nPoses,bearings);
+rh = rangeHistograms(input);
 for i = 1:nPoses
     for j = 1:nPixels
         px = pixelIds(j);

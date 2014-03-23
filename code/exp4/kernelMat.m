@@ -9,7 +9,7 @@ K = zeros(m,n);
 
 for i = 1:m
     for j = 1:n
-        K(i,j) = feval(kernelName,X(i,:),Y(j,:));
+        K(i,j) = feval(kernelName,X(i,:),Y(j,:),struct());
     end
 end
 

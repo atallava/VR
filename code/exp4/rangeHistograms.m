@@ -7,22 +7,26 @@ classdef rangeHistograms < handle
         nPixels
         nPoses
         bearings
-        maxRange = 4;
+        pixelIds
+        maxRange = 4.5;
         deltaRange = 1e-3; % 1mm
         nCenters;
         xCenters;
     end
     
     methods
-        function obj = rangeHistograms(nObs,nPixels,nPoses,bearings,maxRange,deltaRange)
+        function obj = rangeHistograms(input)
             % constructor
-           obj.nObs = nObs; 
-           obj.nPixels = nPixels;
-           obj.nPoses = nPoses;
-           obj.bearings = bearings;
-           if nargin > 4
-               obj.maxRange = maxRange;
-               obj.deltaRange = deltaRange;
+           obj.nObs = input.nObs; 
+           obj.nPixels = input.nPixels;
+           obj.nPoses = input.nPoses;
+           obj.bearings = input.bearings;
+           obj.pixelIds = rad2deg(obj.bearings)+1;
+           if isfield(input,'maxRange')
+               obj.maxRange = input.maxRange;
+           end
+           if isfield(input,'maxRange')
+               obj.deltaRange = input.deltaRange;
            end
            obj.nCenters = (obj.maxRange/obj.deltaRange)+1;
            if floor(obj.nCenters) ~= obj.nCenters
