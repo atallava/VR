@@ -1,5 +1,5 @@
 classdef encHistory < handle
-    % store encoder values in an array
+    %encHistory store encoder values in an array
     % timestamped based on robot returns
     
     properties
@@ -26,6 +26,10 @@ classdef encHistory < handle
             obj.tArray = [];
             obj.update_count = 0;
             obj.listenerHandle = addlistener(obj.rob.encoders,'OnMessageReceived',@(src,evt) encHistory.encoderEventResponse(src,evt,obj));
+        end
+        
+        function obj = stopListening(obj)
+            obj.listenerHandle.delete;
         end
     end
             

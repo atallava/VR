@@ -1,4 +1,4 @@
-%cleaned up end-to-end pixel modeler
+%end-to-end pixel modeler
 
 %% initialize
 clear all; clear classes; clc;
@@ -11,8 +11,7 @@ inputData.rHist = rh;
 inputData.obsArray = obsArray(:,:,rh.pixelIds);
 totalPoses = length(inputData.poses);
 frac = 0.7;
-%inputData.trainPoseIds = randperm(totalPoses,floor(frac*totalPoses));
-inputData.trainPoseIds = 1:2:20;
+inputData.trainPoseIds = randperm(totalPoses,floor(frac*totalPoses));
 inputData.testPoseIds = setdiff(1:totalPoses,inputData.trainPoseIds);
 dp = dataProcessor(inputData);
 
@@ -21,22 +20,13 @@ inputData = struct('fitClass',@normWithDrops,'data',dp.obsArray(dp.trainPoseIds,
 trainPdfs = pdfModeler(inputData);
 
 %% initialize regressor
-
 % nonparametric 
 load map;
 inputData = struct('envLineMap',roomLineMap,'maxRange',dp.rHist.maxRange,'bearings',dp.rHist.bearings);
 p2ra = poses2RAlpha(inputData);
-%%
 inputData = struct('XTrain',dp.XTrain,'YTrain',trainPdfs.paramArray,...
     'pixelIds', dp.pixelIds, 'poseTransf', p2ra, ...
     'regClass',@nonParametricRegressor, 'kernelFn', @kernelRAlpha, 'kernelParams',struct());
-
-%{
-% parametric
-inputData = struct('XTrain',dp.XTrain,'YTrain',trainPdfs.paramArray,...
-    'pixelIds', dp.pixelIds, ...
-    'regClass',@parametricRegressor,'fn',{{@firstOrderPoly,@linearSquared, @linearSquaredSquashed}},'weights0',{{zeros(1,4), zeros(1,4), zeros(1,4)}});
-%}
 pxRegBundle = pixelRegressorBundle(inputData);
 
 %% predict at test poses

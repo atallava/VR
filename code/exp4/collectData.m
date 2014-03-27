@@ -1,19 +1,21 @@
-function data = collectData(rob)
-% assumes laser is on
-% using keyboard inputs, drive around robot and collect ranges
-% data returned is a struct array of encoder and range readings
+%collectData using keyboard inputs, drive around robot and collect ranges
+% laser must be on
+
+if ~isfield(rob.laser.data,'header')
+    error('LASER MUST BE ON');
+end
 
 v = struct('left',0,'right',0);
 W = 0.235;
 T = [1 -0.5*W; ...
     1 0.5*W];
-data = struct('u',{},'z',{});
 data_count = 1;
+num_obs = 3;
+t_range_collection = struct('start',{},'end',{});
 
-num_obs = 500;
-ranges = zeros(360,num_obs);
-
+t_sys_start = tic;
 enc = encHistory(rob);
+lzr = laserHistory(rob);
 pause(0.1);
 
 while true
@@ -71,17 +73,15 @@ while true
         case 'rec'
             % take down data
             pause(0.1);
-            data(data_count).u = enc.encArray;
+            t_range_collection(data_count).start = lzr.tArray(end);
             fprintf('Collecting data set %d \n', data_count);
             for i = 1:num_obs
-                ranges(:,i) = rob.laser.data.ranges;
                 pause(0.3);
             end
-            data(data_count).z = ranges;
-            data_count = data_count + 1;            
+            t_range_collection(data_count).end = lzr.tArray(end);
             beep; beep; % alert grad student
             fprintf('Observations taken. Continue moving around. \n');
-            enc.Reset();
+            data_count = data_count+1;
             pause(0.1);
         case 'x'
             % exit
@@ -90,19 +90,10 @@ while true
             fprintf('invalid input\n');
     end
 end
-    
-end
 
-function moveRob(rob, v, T)
-% send rob velocities v for time T
+enc.stopListening();
+lzr.stopListening();
 
-t1 = tic;
-while toc(t1) < T
-    rob.sendVelocity(v.left, v.right);
-    pause(0.001);
-end
-rob.sendVelocity(0, 0);
-end
 
 
 

@@ -1,5 +1,5 @@
 classdef pdfModeler < handle
-    %pixelModeler fit parametric distribution to range data
+    %pdfModeler fit parametric distribution to range data
         
     properties
         % fitClass is a handle to the fitting class
