@@ -10,7 +10,7 @@ W = 0.235;
 T = [1 -0.5*W; ...
     1 0.5*W];
 data_count = 1;
-num_obs = 3;
+num_obs = 300;
 t_range_collection = struct('start',{},'end',{});
 
 t_sys_start = tic;
@@ -84,6 +84,7 @@ while true
             data_count = data_count+1;
             pause(0.1);
         case 'x'
+            pause(0.1);
             % exit
             break
         otherwise
