@@ -9,7 +9,7 @@ v = struct('left',0,'right',0);
 W = 0.235;
 T = [1 -0.5*W; ...
     1 0.5*W];
-data_count = 1;
+data_count = 0;
 num_obs = 300;
 t_range_collection = struct('start',{},'end',{});
 
@@ -73,6 +73,7 @@ while true
         case 'rec'
             % take down data
             pause(0.1);
+            data_count = data_count+1;
             t_range_collection(data_count).start = lzr.tArray(end);
             fprintf('Collecting data set %d \n', data_count);
             for i = 1:num_obs
@@ -81,7 +82,6 @@ while true
             t_range_collection(data_count).end = lzr.tArray(end);
             beep; beep; % alert grad student
             fprintf('Observations taken. Continue moving around. \n');
-            data_count = data_count+1;
             pause(0.1);
         case 'x'
             pause(0.1);
