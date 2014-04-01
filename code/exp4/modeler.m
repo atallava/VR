@@ -25,7 +25,7 @@ inputData = struct('envLineMap',roomLineMap,'maxRange',dp.rHist.maxRange,'bearin
 p2ra = poses2RAlpha(inputData);
 inputData = struct('XTrain',dp.XTrain,'YTrain',trainPdfs.paramArray,...
     'pixelIds', dp.pixelIds, 'poseTransf', p2ra, ...
-    'regClass',@nonParametricRegressor, 'kernelFn', @kernelRAlpha, 'kernelParams',struct());
+    'regClass',@nonParametricRegressor, 'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0697));
 pxRegBundle = pixelRegressorBundle(inputData);
 
 %% predict at test poses
