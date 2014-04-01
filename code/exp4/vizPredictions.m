@@ -9,12 +9,12 @@ for i = randperm(length(dp.testPoseIds),1)
     hf1 = figure; axis equal;
     xlabel('x'); ylabel('y');
     hold on;
-    randomObs = randi(dp.rHist.nObs);
+    %randomObs = randi(dp.rHist.nObs);
     poseId = dp.testPoseIds(i);
     xRob = dp.poses(1,poseId); yRob = dp.poses(2,poseId); thRob = dp.poses(3,poseId);
     plot(xRob,yRob,'go');
     
-    rangesReal = squeeze(dp.obsArray(poseId,randomObs,:))';
+    rangesReal = rangesFromObsArray(dp.obsArray,poseId,1);
     xReal = xRob+ rangesReal.*cos(dp.rHist.bearings+thRob);
     yReal = yRob+ rangesReal.*sin(dp.rHist.bearings+thRob);
     plot(xReal,yReal,'b+');

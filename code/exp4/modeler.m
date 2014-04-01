@@ -3,12 +3,11 @@
 %% initialize
 clear all; clear classes; clc;
 addpath ~/Documents/MATLAB/neato_utils/
-load processed_data
-load poses_from_range_matching
+load processed_data_mar27
 
-inputData.poses = posesFromRangeMatching(:,1:20); % only first 20 poses have legible range readings
+inputData.poses = poses;
 inputData.rHist = rh;
-inputData.obsArray = obsArray(:,:,rh.pixelIds);
+inputData.obsArray = obsArray(:,rh.pixelIds);
 totalPoses = length(inputData.poses);
 frac = 0.7;
 inputData.trainPoseIds = randperm(totalPoses,floor(frac*totalPoses));
@@ -16,7 +15,7 @@ inputData.testPoseIds = setdiff(1:totalPoses,inputData.trainPoseIds);
 dp = dataProcessor(inputData);
 
 %% fit pdf models to training data
-inputData = struct('fitClass',@normWithDrops,'data',dp.obsArray(dp.trainPoseIds,:,:));
+inputData = struct('fitClass',@normWithDrops,'data',{dp.obsArray(dp.trainPoseIds,:)});
 trainPdfs = pdfModeler(inputData);
 
 %% initialize regressor
@@ -34,7 +33,7 @@ predParamArray = pxRegBundle.predict(dp.XTest);
 
 %% diagnose error
 % fit pdf models to test data
-inputData = struct('fitClass',@normWithDrops,'data',dp.obsArray(dp.testPoseIds,:,:));
+inputData = struct('fitClass',@normWithDrops,'data',{dp.obsArray(dp.testPoseIds,:)});
 testPdfs = pdfModeler(inputData);
 seTest = (testPdfs.paramArray-predParamArray).^2;
 err = errorStats(seTest);

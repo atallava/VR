@@ -1,6 +1,6 @@
 %process march 27 collected data
 clear all; clc;
-load data_mar27.mat
+load data_mar27
 addpath ~/Documents/MATLAB/neato_utils/
 
 nPoses = length(t_range_collection);

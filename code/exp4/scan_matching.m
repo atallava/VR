@@ -1,8 +1,9 @@
 %% initialize
 clear all; clc;
-load processed_data
+load processed_data_mar27
 addpath ~/Documents/MATLAB/neato_utils/
 
+nPoses = length(poses);
 angles = deg2rad(0:359);
 obsId = 100;
 xw = [0 3.66 3.66 0 0];
@@ -15,31 +16,34 @@ lines_p2 = [xw(2:end) xobs(2); yw(2:end) yobs(2)];
 localizer = lineMapLocalizer(lines_p1,lines_p2);
 
 %% visualize range images at processed poses
-for i = 1:length(poses)
-    ranges = obsArray(i,obsId,:); ranges = squeeze(ranges);
+for i = 1:nPoses
+    ranges = rangesFromObsArray(obsArray,i,obsId);
+    %ranges = obsArray(i,obsId,:); ranges = squeeze(ranges);
     poseObj = pose2D(poses(:,i));
     riObj = rangeImage(ranges,1,1);
     ptsLocal = [riObj.xArray; riObj.yArray; ones(1,riObj.npix)];
     hf = localizer.drawLines();
+    outIds = localizer.throwOutliers(poseObj,ptsLocal);
+    ptsLocal(:,outIds) = [];
     hf = plotScan(poseObj,ptsLocal,hf);
     title(sprintf('pose %d',i));
-    %legend('wall','laser');
     k = waitforbuttonpress;
     close(hf);
 end
 
 %% range matching
 clear ranges; clc;
-posesFromRangeMatch = zeros(3,45);
-for poseId = 1:45
+posesFromRangeMatch = zeros(3,nPoses);
+for poseId = 1:nPoses
     fprintf('pose %d\n',poseId);
     poseEst = pose2D(poses(:,poseId));
-    ranges = obsArray(poseId,obsId,:); ranges = squeeze(ranges);
+    %ranges = obsArray(poseId,obsId,:); ranges = squeeze(ranges);
+    ranges = rangesFromObsArray(obsArray,poseId,obsId);
     ri = rangeImage(ranges,1,1);
     % laser range points in robot local frame
     ptsLocal = [ri.xArray; ri.yArray];
     ptsLocal = [ptsLocal; ones(1,size(ptsLocal,2))];
-    [success, poseOut] = localizer.refinePose(poseEst,ptsLocal,300);
+    [success, poseOut] = localizer.refinePose(poseEst,ptsLocal,200);
     posesFromRangeMatch(:,poseId) = poseOut.getPose();
 
     % pretty printing
@@ -52,19 +56,20 @@ for poseId = 1:45
     legend(hl(1:2),{'poseOut','poseEst'});
     xlim([-0.5 4]); ylim([-0.5 2]);
     title(sprintf('pose %d, observation %d',poseId,obsId));
-    print('-dpng','-r72',sprintf('images/range_match/p%d_o%d.png',poseId,obsId));
+    print('-dpng','-r72',sprintf('images/scan_match/p%d_o%d.png',poseId,obsId));
     close(hf);
 end
 
 %% test range matching for particular pose
 clc;
 
-poseId = 4;
+poseId = 31;
 poseEst = pose2D(poses(:,poseId));
-numIter = 300;
+numIter = 100;
 err = zeros(1,numIter);
 poseArray = zeros(3,numIter);
-ranges = obsArray(poseId,obsId,:); ranges = squeeze(ranges);
+%ranges = obsArray(poseId,obsId,:); ranges = squeeze(ranges);
+ranges = rangesFromObsArray(obsArray,poseId,obsId);
 ri = rangeImage(ranges,1,1);
 % laser range points in robot local frame
 ptsLocal = [ri.xArray; ri.yArray];
