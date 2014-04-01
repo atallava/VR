@@ -4,7 +4,7 @@ classdef pdfModeler < handle
     properties
         % fitClass is a handle to the fitting class
         % fitArray is a num pixels length array of fitClass instances
-        % data is num poses x num observations x num pixels
+        % data is a cell array of size num poses x num pixels
         % nParams is number of params used by fitName
         % paramArray is num poses x num parameters x num pixels
         % nLLArray is num poses x num pixels, array of negative log
@@ -23,7 +23,7 @@ classdef pdfModeler < handle
             % inputData fields ('fitClass','data')
             obj.fitClass = inputData.fitClass;
             obj.data = inputData.data;
-            obj.nPixels = size(obj.data,3);
+            obj.nPixels = size(obj.data,2);
             tempObj = obj.fitClass(0,0);
             obj.nParams = tempObj.nParams;
             obj.fillParamArray();
@@ -36,8 +36,7 @@ classdef pdfModeler < handle
             obj.nllArray = zeros(nPoses,obj.nPixels);
             for i = 1:nPoses
                 for j = 1:obj.nPixels
-                    tempData = squeeze(obj.data(i,:,j));
-                    obj.fitArray{i} = obj.fitClass(tempData,0);
+                    obj.fitArray{i} = obj.fitClass(obj.data{i,j},0);
                     obj.paramArray(i,:,j) = obj.fitArray{i}.getParams();
                     obj.nllArray(i,j) = obj.fitArray{i}.nll;
                 end

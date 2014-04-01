@@ -3,7 +3,6 @@ classdef rangeHistograms < handle
     
     properties (SetAccess = private)
         H
-        nObs
         nPixels
         nPoses
         bearings
@@ -17,8 +16,7 @@ classdef rangeHistograms < handle
     methods
         function obj = rangeHistograms(input)
             % constructor
-           obj.nObs = input.nObs; 
-           obj.nPixels = input.nPixels;
+            obj.nPixels = input.nPixels;
            obj.nPoses = input.nPoses;
            obj.bearings = input.bearings;
            obj.pixelIds = rad2deg(obj.bearings)+1;
@@ -37,8 +35,6 @@ classdef rangeHistograms < handle
         end
         
         function obj = fillHistogram(obj,poseId,pixelId,ranges)
-            % ranges is a vector of values collected over nObs observations
-            % convert to a histogram and store
             obj.H(poseId,:,pixelId) = hist(ranges,obj.xCenters);
         end
        

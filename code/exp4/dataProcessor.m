@@ -3,7 +3,7 @@ classdef dataProcessor < handle
         
     properties
         % poses is 3 x total poses
-        % obsArray is total poses x 360 x number of pixels
+        % obsArray is a cell array of size total poses x num pixels
         % rHist is an object of class rangeHistograms
         % trainPoseIds are the poses to train over
         % testPoseIds are the poses to test at
