@@ -1,15 +1,13 @@
-%optimize error wrt kernel window size
+%optimize error wrt baseline sigma predictor
 
 clear all; clear classes; clc;
 addpath ~/Documents/MATLAB/neato_utils/
-%load processed_data_mar27
-load synthetic_data_mar27
+load processed_data_mar27
 
 dpInput.poses = poses;
 dpInput.rHist = rh;
 dpInput.obsArray = obsArray(:,rh.pixelIds);
 
-h0 = 0.01;
+K0 = 1e-3;
 options = optimoptions('fmincon','Display','iter');
-h = fmincon(@(x) errorOnKernelWidth(dpInput,x),h0,[],[],[],[],0,Inf,[],options);
-
+K = fmincon(@(x) errorOnBaselineSigma(dpInput,x),K0,[],[],[],[],0,Inf,[],options);

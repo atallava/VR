@@ -18,26 +18,33 @@ classdef errorStats < handle
             obj.validMat(nanMask) = 0;
         end
         
-        function res = getPixelParamRMSE(obj)
+        function res = getPixelParamME(obj)
             % collapse errors to parameters and pixels
-            res = squeeze(sum(obj.errorMat,1))/size(obj.errorMat,1);
-            res = sqrt(res);
+            res = squeeze(sum(obj.validMat,1))/size(obj.validMask,1);
         end
         
-        function res = getParamRMSE(obj)
+        function [res,nOut] = getParamME(obj)
            % collapse errors to parameters
-           res = squeeze(sum(obj.validMat,1));
-           res = squeeze(sum(res,2));
-           res = res./sum(squeeze(sum(obj.validMask,1)),2);
-           res = sqrt(res); 
+           nParams = size(obj.errorMat,2);
+           res = zeros(1,nParams);
+           nOut = 0;
+           for i = 1:nParams
+               mat = squeeze(obj.validMat(:,i,:));
+               validIds = squeeze(obj.validMask(:,i,:));
+               uq = quantile(mat(validIds),0.75);
+               qrange = iqr(mat(validIds));
+               outlierIds = mat > uq+2*qrange;
+               mat(outlierIds) = 0;
+               res(i) = sum(mat(:))/(sum(validIds(:))-sum(outlierIds(:)));
+               nOut = nOut+sum(outlierIds(:));
+           end
         end
         
-        function res = getPixelRMSE(obj)
+        function res = getPixelME(obj)
            % collapse errors to pixels
            res = squeeze(sum(obj.validMat,1));
            res = squeeze(sum(res,1));
            res = res./sum(squeeze(sum(obj.validMask,1)),1);
-           res = sqrt(res);
         end
     end
     
@@ -48,10 +55,22 @@ classdef errorStats < handle
             % dimension of dataMat
             % outliers is an array of dimension nOutliers x dim of data containing
             % outlier coordinates
-
+            
+            if nargin < 2
+                for i = 1:ndims(dataMat)
+                    labels{i} = 1:size(dataMat,i);
+                end
+            end
+            
+            %{
             mu = mean(dataMat(:));
             sigma = std(dataMat(:));
             ids = find((dataMat >= mu+sigma) | (dataMat <= mu-sigma));
+            %}
+            
+            uq = quantile(dataMat(:),0.75);
+            qrange = iqr(dataMat(:));
+            ids = find(dataMat > uq+1.5*qrange);
             nDims = length(labels);
             subs = cell(1,nDims);
             [subs{:}] = ind2sub(size(dataMat),ids);
@@ -67,6 +86,15 @@ classdef errorStats < handle
             end
 
         end
+        
+         function ids = outlier1D(vec)
+            %outlier1D return ids which could be outliers in 1D array vec
+            % vec is an error vector, so only large errors are outliers
+            f = 2;
+            uq = quantile(vec,0.75);
+            qrange = iqr(vec);
+            ids = find(vec > uq+f*qrange);
+         end
     end
     
 end

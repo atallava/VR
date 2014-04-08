@@ -1,5 +1,6 @@
-function avgError = errorOnKernelWidth(dataProcInput,h)
-%errorOnBinWidth compute average error for some kernel window size
+function avgError = errorOnBaselineSigma(dataProcInput,K)
+%errorOnBaselineSigma compute average error for parameter K that is used to
+% calculate std in the baseline predictor
 
 load map;
 inputData = struct('envLineMap',roomLineMap,'maxRange',dataProcInput.rHist.maxRange,'bearings',dataProcInput.rHist.bearings);
@@ -22,7 +23,7 @@ for i = 1:numTrials
     % initialize regressor
     inputData = struct('XTrain',dp.XTrain,'YTrain',trainPdfs.paramArray,...
         'pixelIds', dp.pixelIds, 'poseTransf', p2ra, ...
-        'regClass',@nonParametricRegressor, 'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',h));
+        'regClass',@baselineRegressor, 'K', K);
     pxRegBundle = pixelRegressorBundle(inputData);
 
     % predict at test poses
@@ -38,7 +39,7 @@ for i = 1:numTrials
     avgError = avgError+paramME;
 end
 avgError = avgError/numTrials;
-avgError = avgError(1)+avgError(2);
+avgError = avgError(2);
 
 end
 

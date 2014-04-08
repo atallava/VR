@@ -49,6 +49,17 @@ classdef pdfModeler < handle
                 res(i) = obj.fitArray{i}.sample();
             end
         end
+        
+        function markOutliers(obj)
+           %markOutliers if nll for data is high, set params to nan
+           for i = 1:obj.nPixels
+               ids = errorStats.outlier1D(obj.nllArray(i,:));
+               if isempty(ids)
+                   continue;
+               end
+               obj.paramArray(i,:,ids) = nan;
+           end
+        end
     end
     
 end

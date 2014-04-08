@@ -24,7 +24,6 @@ for i = 1:nPoses
 end
 
 %% downsample range data and put into histograms
-% save processed data
 skip = 36;
 pixelIds = 1:36:360;
 nPixels = length(pixelIds);

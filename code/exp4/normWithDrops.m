@@ -89,7 +89,7 @@ classdef normWithDrops < handle
                 res(1) = 1;
                 return;
             else
-                if isnan(obj.sigma)
+                if isnan(obj.sigma) || obj.sigma == 0
                     index = floor(obj.mu/binSize);
                     res(index) = 1;
                 else
