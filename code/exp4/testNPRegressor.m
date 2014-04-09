@@ -1,9 +1,12 @@
 clear all; clc;
-fn = [1 0];
-xtrain = rand(5,1)*10;
+fn = [1 0 0];
+xtrain = rand(10,1)*10;
+xtrain = sort(xtrain);
 ytrain = polyval(fn,xtrain);
-reg = nonParametricRegressor(struct('XTrain',xtrain,'YTrain',ytrain,'kernelFn',@kernelBox,'kernelParams',struct('h',2)));
-xtest = rand(3,1)*10;
+input = struct('XTrain',xtrain,'YTrain',ytrain,'kernelFn',@kernelRAlpha,'kernelParams',struct('h',0.5));
+reg = locallyWeightedLinearRegressor(input);
+xtest = rand(10,1)*10;
+xtest = sort(xtest);
 ytest = reg.predict(xtest);
 
 hf = figure;

@@ -4,6 +4,11 @@ if nargin == 0
     return;
 end
 
-res = weights(1)+weights(2)*x(:,1)+weights(3)*x(:,2)+weights(4)*x(:,3);
+if ~isrow(weights)
+    weights = weights';
+end
+res = bsxfun(@times,x,weights(2:end));
+res = sum(res,2);
+res = res+weights(1);
 end
 

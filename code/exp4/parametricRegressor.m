@@ -5,7 +5,7 @@ classdef parametricRegressor < handle
         % XTrain is num observations x dimX, training input
         % YTrain is num observations x dimY, training output
         % nTargets is the number of output values
-        % models is a cell array of function handles, one model for each
+        % models is a cell array of NonLinearModels, one model for each
         % target
         % XLast is num queries x dimX, cache of last query
         % YLast is num queries x dimY, cache of last query
@@ -19,13 +19,13 @@ classdef parametricRegressor < handle
     
     methods
         function obj = parametricRegressor(inputData)
-            % inputData fields ('XTrain','YTrain','fn','weights0')
+            % inputData fields ('XTrain','YTrain','fnForms','weights0')
             % empty constructor to allow object arrays
             if nargin > 0
                 obj.XTrain = inputData.XTrain;
                 obj.YTrain = inputData.YTrain;
                 obj.nTargets = size(obj.YTrain,2);
-                obj.fitModels2TrainingData(inputData.fn,inputData.weights0);
+                obj.fitModels2TrainingData(inputData.fnForms,inputData.weights0);
             end
         end
         

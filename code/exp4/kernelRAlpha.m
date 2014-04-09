@@ -23,7 +23,7 @@ end
 n = size(x2,1);
 res = zeros(1,n);
 for i = 1:n
-    d = (x1(1)-x2(i,1))^2;%+lambda*angleDist(x1(2),x2(i,2))^2;
+    d = (x1(1)-x2(i,1))^2+lambda*angleDist(x1(2),x2(i,2))^2;
     d = sqrt(d);
     res(i) = 1/(1+d/h)^2;
 end
