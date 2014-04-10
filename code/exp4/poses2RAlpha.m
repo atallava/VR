@@ -7,10 +7,10 @@ classdef poses2RAlpha < handle
         % maxRange of laser in meter
         % bearings in rad
         % posesLast is number of poses x 3, cache of last query
-        % rAlphaArray is number of poses x 2 x number of bearings, cache of
+        % rAlphaArrayLast is number of poses x 2 x number of bearings, cache of
         % last query
         envLineMap
-        maxRange = 4
+        maxRange = 4.5
         bearings
         posesLast
         rAlphaArrayLast
@@ -38,7 +38,7 @@ classdef poses2RAlpha < handle
                 rAlphaArray(i,1,:) = r;
                 rAlphaArray(i,2,:) = alpha;
             end
-
+            obj.rAlphaArrayLast = rAlphaArray;
         end
     end
     

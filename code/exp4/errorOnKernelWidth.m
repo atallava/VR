@@ -1,5 +1,6 @@
-function avgError = errorOnKernelWidth(dataProcInput,h)
+function avgError = errorOnKernelWidth(dataProcInput,h,lambda)
 %errorOnBinWidth compute average error for some kernel window size
+% and weighting factor
 
 load map;
 inputData = struct('envLineMap',roomLineMap,'maxRange',dataProcInput.rHist.maxRange,'bearings',dataProcInput.rHist.bearings);
@@ -22,7 +23,7 @@ for i = 1:numTrials
     % initialize regressor
     inputData = struct('XTrain',dp.XTrain,'YTrain',trainPdfs.paramArray,...
         'pixelIds', dp.pixelIds, 'poseTransf', p2ra, ...
-        'regClass',@nonParametricRegressor, 'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',h));
+        'regClass',@locallyWeightedLinearRegressor, 'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',h,'lambda',lambda));
     pxRegBundle = pixelRegressorBundle(inputData);
 
     % predict at test poses

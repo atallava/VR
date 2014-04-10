@@ -52,12 +52,19 @@ classdef pdfModeler < handle
         
         function markOutliers(obj)
            %markOutliers if nll for data is high, set params to nan
-           for i = 1:obj.nPixels
+           for i = 1:size(obj.paramArray,1)
                ids = errorStats.outlier1D(obj.nllArray(i,:));
                if isempty(ids)
                    continue;
                end
                obj.paramArray(i,:,ids) = nan;
+           end
+           for i = 1:size(obj.paramArray,1)
+               for j = 1:obj.nPixels
+                   if obj.paramArray(i,1,j) > 4.5
+                       obj.paramArray(i,:,j) = nan;
+                   end
+               end
            end
         end
     end

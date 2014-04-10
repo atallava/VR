@@ -45,12 +45,28 @@ classdef pixelRegressorBundle < handle
             else
                 XTransf = obj.poseTransf.transform(obj.XTrain);
             end
+            %naive, indpendent pixels
+           
             for i = 1:obj.nPixels
                 tempInput = inputData;
                 tempInput.XTrain = XTransf(:,:,i);
                 tempInput.YTrain = obj.YTrain(:,:,i);
                 obj.regressorArray{i} = obj.regClass(tempInput);
             end
+           
+            %other end, throw everything together
+            %{
+            bigX = []; bigY = [];
+            for i = 1:obj.nPixels
+                bigX = [bigX; XTransf(:,:,i)];
+                bigY = [bigY; obj.YTrain(:,:,i)];
+            end
+            tempInput = inputData;
+            tempInput.XTrain = bigX;
+            tempInput.YTrain = bigY;
+            tempObj = obj.regClass(tempInput);
+            obj.regressorArray(:) = {tempObj};
+            %}
         end
         
         function Y = predict(obj,X)

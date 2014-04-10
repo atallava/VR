@@ -7,10 +7,10 @@ while true
 for i = randperm(length(dp.testPoseIds),1)
     % visualize real vs simulated observations for some test pose
     hf1 = localizer.drawLines();
-    %hf1 = figure; axis equal;
+    xl0 = xlim;
+    yl0 = ylim;
     xlabel('x'); ylabel('y');
     hold on;
-    %randomObs = randi(dp.rHist.nObs);
     poseId = dp.testPoseIds(i);
     xRob = dp.poses(1,poseId); yRob = dp.poses(2,poseId); thRob = dp.poses(3,poseId);
     plot(xRob,yRob,'g+');
@@ -22,14 +22,15 @@ for i = randperm(length(dp.testPoseIds),1)
     title(sprintf('pose %d: (%f,%f,%f)',poseId,xRob,yRob,thRob));
    
     % use class method to sample from pdf
-    rangeSim = sampleFromParamArray(squeeze(predParamArray(i,:,:)),'normWithDrops');
+    rangesSim = sampleFromParamArray(squeeze(predParamArray(i,:,:)),'normWithDrops');
         
-    xSim = xRob+rangeSim.*cos(dp.rHist.bearings+thRob);
-    ySim = yRob+rangeSim.*sin(dp.rHist.bearings+thRob);
+    xSim = xRob+rangesSim.*cos(dp.rHist.bearings+thRob);
+    ySim = yRob+rangesSim.*sin(dp.rHist.bearings+thRob);
     plot(xSim,ySim,'ro');
     annotation('textbox',[.6,0.8,.1,.1], ...
     'String', {'green: real ranges','red: simulated ranges'});
     %legend('robot','real data','predicted data');
+    xlim(xl0); ylim(yl0);
     hold off;
     
     % visualize real and simulated pmfs for a particular pixel index

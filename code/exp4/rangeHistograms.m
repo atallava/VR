@@ -15,11 +15,12 @@ classdef rangeHistograms < handle
     
     methods
         function obj = rangeHistograms(input)
-            % constructor
-            obj.nPixels = input.nPixels;
+           % constructor
+           obj.nPixels = input.nPixels;
            obj.nPoses = input.nPoses;
            obj.bearings = input.bearings;
            obj.pixelIds = rad2deg(obj.bearings)+1;
+           obj.pixelIds = floor(obj.pixelIds);
            if isfield(input,'maxRange')
                obj.maxRange = input.maxRange;
            end

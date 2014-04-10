@@ -24,8 +24,8 @@ for i = 1:nPoses
 end
 
 %% downsample range data and put into histograms
-skip = 36;
-pixelIds = 1:36:360;
+skip = 1;
+pixelIds = floor(1:skip:360);
 nPixels = length(pixelIds);
 input = struct('nPixels',nPixels,'nPoses',nPoses,'bearings',deg2rad(pixelIds-1));
 
