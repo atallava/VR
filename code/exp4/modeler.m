@@ -29,18 +29,19 @@ load map;
 inputData = struct('envLineMap',roomLineMap,'maxRange',dp.rHist.maxRange,'bearings',dp.rHist.bearings);
 p2ra = poses2RAlpha(inputData);
 localizer = lineMapLocalizer(lines_p1,lines_p2);
-
+%{
 % nonparametric
 inputData = struct('XTrain',dp.XTrain,'YTrain',trainPdfs.paramArray,...
     'pixelIds', dp.pixelIds, 'poseTransf', p2ra, ...
     'regClass',@locallyWeightedLinearRegressor, 'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0025,'lambda',0));
 %h 0.0058, 0.0384 locallyWeightedLinear nonParametric
-%{
+%}
+
 % baseline
 inputData = struct('XTrain',dp.XTrain,'YTrain',trainPdfs.paramArray,...
     'pixelIds', dp.pixelIds, 'poseTransf', p2ra, ...
     'regClass',@baselineRegressor); 
-%}
+
 pxRegBundle = pixelRegressorBundle(inputData);
 
 %% predict at test poses
