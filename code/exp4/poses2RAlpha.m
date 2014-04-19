@@ -31,7 +31,7 @@ classdef poses2RAlpha < handle
         function rAlphaArray = transform(obj,poses)
             % transform a given array of poses
             nPoses = size(poses,1);
-            rAlphaArray = zeros(nPoses,2,length(obj.bearings));
+            rAlphaArray = zeros(nPoses,1,length(obj.bearings));
             
             for i = 1:nPoses
                 [r,alpha] = obj.envLineMap.raycast(poses(i,:),obj.maxRange,obj.bearings);

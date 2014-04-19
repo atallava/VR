@@ -28,25 +28,50 @@ fprintf('initializing regressor\n');
 load map;
 inputData = struct('envLineMap',roomLineMap,'maxRange',dp.rHist.maxRange,'bearings',dp.rHist.bearings);
 p2ra = poses2RAlpha(inputData);
+p2r = poses2R(inputData);
 localizer = lineMapLocalizer(lines_p1,lines_p2);
-%{
-% nonparametric
-inputData = struct('XTrain',dp.XTrain,'YTrain',trainPdfs.paramArray,...
-    'pixelIds', dp.pixelIds, 'poseTransf', p2ra, ...
-    'regClass',@locallyWeightedLinearRegressor, 'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0025,'lambda',0));
-%h 0.0058, 0.0384 locallyWeightedLinear nonParametric
-%}
 
+%muArray = squeeze(trainPdfs.paramArray(:,1,:));
+trainMuArray = trainPdfs.paramArray(:,1,:);
+trainSigmaArray = trainPdfs.paramArray(:,2,:);
+trainPzArray = trainPdfs.paramArray(:,3,:);
+% nonparametric
+inputData = struct('XTrain',dp.XTrain,'YTrain',trainMuArray,...
+    'pixelIds', dp.pixelIds, 'poseTransf', p2r, ...
+    'regClass',@locallyWeightedLinearRegressor, 'kernelFn', @kernelR, 'kernelParams',struct('h',0.0025));
+%h 0.0058, 0.0384 locallyWeightedLinear nonParametric
+muPxRegBundle = pixelRegressorBundle(inputData);
+
+inputData = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,...
+    'pixelIds', dp.pixelIds, 'poseTransf', p2ra, ...
+    'regClass',@nonParametricRegressor, 'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0559,'lambda',0.1));
+sigmaPxRegBundle = pixelRegressorBundle(inputData);
+
+inputData = struct('XTrain',dp.XTrain,'YTrain',trainPzArray,...
+    'pixelIds', dp.pixelIds, ...
+    'regClass',@nonParametricRegressor, 'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0559,'lambda',0.1));
+pzPxRegBundle = pixelRegressorBundle(inputData);
+%{
 % baseline
 inputData = struct('XTrain',dp.XTrain,'YTrain',trainPdfs.paramArray,...
     'pixelIds', dp.pixelIds, 'poseTransf', p2ra, ...
     'regClass',@baselineRegressor); 
-
 pxRegBundle = pixelRegressorBundle(inputData);
+%}
 
 %% predict at test poses
 fprintf('predicting\n');
-predParamArray = pxRegBundle.predict(dp.XTest);
+
+predMuArray = muPxRegBundle.predict(dp.XTest);
+predSigmaArray = sigmaPxRegBundle.predict(dp.XTest);
+predPzArray = pzPxRegBundle.predict(dp.XTest);
+
+predParamArray(:,1,:) = predMuArray;
+predParamArray(:,2,:) = 0;%predSigmaArray;
+predParamArray(:,3,:) = 0;%predPzArray;
+
+% baseline
+%predParamArray = pxRegBundle.predict(dp.XTest);
 
 %% diagnose error
 % fit pdf models to test data

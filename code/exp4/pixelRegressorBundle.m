@@ -13,6 +13,7 @@ classdef pixelRegressorBundle < handle
         % YLast is num queries x dimY x numPixels, cache of last query
         XTrain
         YTrain
+        dimY
         pixelIds
         nPixels
         poseTransf
@@ -29,6 +30,12 @@ classdef pixelRegressorBundle < handle
             
             obj.XTrain = inputData.XTrain;
             obj.YTrain = inputData.YTrain;
+            if ndims(obj.YTrain) == 2 %#ok<ISMAT>
+                obj.dimY = 1;
+                obj.YTrain = reshape(obj.YTrain,[size(obj.YTrain,1) 1 size(obj.YTrain,2)]);
+            else
+                obj.dimY = size(obj.YTrain,2);
+            end
             if isfield(inputData,'poseTransf')
                 obj.poseTransf = inputData.poseTransf;
             end
@@ -46,14 +53,14 @@ classdef pixelRegressorBundle < handle
                 XTransf = obj.poseTransf.transform(obj.XTrain);
             end
             %naive, indpendent pixels
-           
+            
             for i = 1:obj.nPixels
                 tempInput = inputData;
                 tempInput.XTrain = XTransf(:,:,i);
                 tempInput.YTrain = obj.YTrain(:,:,i);
                 obj.regressorArray{i} = obj.regClass(tempInput);
             end
-           
+            
             %other end, throw everything together
             %{
             bigX = []; bigY = [];

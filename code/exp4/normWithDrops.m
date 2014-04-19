@@ -127,6 +127,7 @@ classdef normWithDrops < handle
         function res = getParams(obj)
             res = [obj.mu obj.sigma obj.pZero];
         end        
+        
     end
     
 end

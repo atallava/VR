@@ -22,7 +22,6 @@ classdef locallyWeightedLinearRegressor < handle
             % inputData fields ('XTrain','YTrain','kernelFn','kernelParams')
             if nargin > 0
                 obj.XTrain = inputData.XTrain;
-                obj.XTrain = obj.XTrain(:,1);
                 obj.YTrain = inputData.YTrain;
                 obj.kernelFn = inputData.kernelFn;
                 obj.kernelParams = inputData.kernelParams;
@@ -31,17 +30,10 @@ classdef locallyWeightedLinearRegressor < handle
         end
         
         function Y = predict(obj,X)
-            X = X(:,1);
             K = pdist2(obj.XTrain,X,@(x,y) obj.kernelFn(x,y,obj.kernelParams));
             nQueries = size(X,1);
             Y = zeros(nQueries,obj.dimY);
 
-            % flu is a flag that waves when a point is far from the sphere
-            % of influence of training data
-            weightThresh = 0.1;
-            maxWeights = max(K,[],1);
-            flu = maxWeights <= weightThresh;
-            
             tempX = [obj.XTrain ones(size(obj.XTrain,1),1)];
             for i = 1:nQueries
                 weights = K(:,i);

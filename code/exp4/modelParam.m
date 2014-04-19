@@ -180,7 +180,7 @@ end
 %% visualize training and test poses
 clc;
 localizer = lineMapLocalizer(lines_p1,lines_p2);
-hf = vizPoses(localizer,poses,trainPoseIds,testPoseIds);
+hf = vizPoses(localizer,dp.poses,dp.trainPoseIds,dp.testPoseIds);
 
 
 
