@@ -7,14 +7,14 @@ while true
 for i = randperm(length(dp.testPoseIds),1)
     % visualize real vs simulated observations for some test pose
     hf1 = localizer.drawLines();
-    xl0 = xlim;
-    yl0 = ylim;
+    xl0 = xlim+[-0.5 0.5];
+    yl0 = ylim+[-0.5 0.5];
     xlabel('x'); ylabel('y');
     hold on;
     poseId = dp.testPoseIds(i);
     xRob = dp.poses(1,poseId); yRob = dp.poses(2,poseId); thRob = dp.poses(3,poseId);
-    plot(xRob,yRob,'g+');
-    
+    quiver(xRob,yRob,0.2*cos(thRob),0.2*sin(thRob),'k','LineWidth',2);
+        
     rangesReal = rangesFromObsArray(dp.obsArray,poseId,1);
     xReal = xRob+ rangesReal.*cos(dp.rHist.bearings+thRob);
     yReal = yRob+ rangesReal.*sin(dp.rHist.bearings+thRob);
@@ -28,7 +28,7 @@ for i = randperm(length(dp.testPoseIds),1)
     ySim = yRob+rangesSim.*sin(dp.rHist.bearings+thRob);
     plot(xSim,ySim,'ro');
     annotation('textbox',[.6,0.8,.1,.1], ...
-    'String', {'green: real ranges','red: simulated ranges'});
+    'String', {'green: real ranges','red: simulated ranges','black: robot'});
     %legend('robot','real data','predicted data');
     xlim(xl0); ylim(yl0);
     hold off;

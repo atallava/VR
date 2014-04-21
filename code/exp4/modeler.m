@@ -24,7 +24,7 @@ trainPdfs = pdfModeler(inputData);
 trainPdfs.markOutliers();
 
 %% initialize regressor
-fprintf('initializing regressor\n');
+fprintf('initializing regressor(s)\n');
 load map;
 inputData = struct('envLineMap',roomLineMap,'maxRange',dp.rHist.maxRange,'bearings',dp.rHist.bearings);
 p2ra = poses2RAlpha(inputData);
@@ -35,6 +35,14 @@ localizer = lineMapLocalizer(lines_p1,lines_p2);
 trainMuArray = trainPdfs.paramArray(:,1,:);
 trainSigmaArray = trainPdfs.paramArray(:,2,:);
 trainPzArray = trainPdfs.paramArray(:,3,:);
+
+% hack hack hack
+thresh = 0.05;
+nominalRange = p2r.transform(dp.XTrain);
+flag = (trainMuArray > nominalRange+thresh) | (trainMuArray < nominalRange-thresh);
+trainMuArray(flag) = nan;
+trainSigmaArray(flag) = nan;
+
 % nonparametric
 inputData = struct('XTrain',dp.XTrain,'YTrain',trainMuArray,...
     'pixelIds', dp.pixelIds, 'poseTransf', p2r, ...
@@ -48,7 +56,7 @@ inputData = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,...
 sigmaPxRegBundle = pixelRegressorBundle(inputData);
 
 inputData = struct('XTrain',dp.XTrain,'YTrain',trainPzArray,...
-    'pixelIds', dp.pixelIds, ...
+    'pixelIds', dp.pixelIds, 'poseTransf', p2ra, ...
     'regClass',@nonParametricRegressor, 'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0559,'lambda',0.1));
 pzPxRegBundle = pixelRegressorBundle(inputData);
 %{
@@ -67,8 +75,8 @@ predSigmaArray = sigmaPxRegBundle.predict(dp.XTest);
 predPzArray = pzPxRegBundle.predict(dp.XTest);
 
 predParamArray(:,1,:) = predMuArray;
-predParamArray(:,2,:) = 0;%predSigmaArray;
-predParamArray(:,3,:) = 0;%predPzArray;
+predParamArray(:,2,:) = predSigmaArray;
+predParamArray(:,3,:) = predPzArray;
 
 % baseline
 %predParamArray = pxRegBundle.predict(dp.XTest);

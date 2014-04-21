@@ -59,6 +59,7 @@ classdef pdfModeler < handle
                end
                obj.paramArray(i,:,ids) = nan;
            end
+           %{
            for i = 1:size(obj.paramArray,1)
                for j = 1:obj.nPixels
                    if obj.paramArray(i,1,j) > 4.5
@@ -66,6 +67,7 @@ classdef pdfModeler < handle
                    end
                end
            end
+           %}
         end
         
     end
