@@ -92,6 +92,10 @@ classdef pixelRegressorBundle < handle
             obj.YLast = Y;
         end
         
+        function setPoseTransf(obj,poseTransf)
+            obj.poseTransf = poseTransf;
+        end
+        
         % TODO: fill in
         function res = getMSE(obj)
             % return MSE on training data

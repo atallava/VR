@@ -37,7 +37,7 @@ for i = 1:nPoses
     end
 end
 
-%% pose from encoders
+%% pose from encoders + laser
 clc;
 load map;
 poses = zeros(3,nPoses);
@@ -68,7 +68,7 @@ for i = 1:enc.update_count
         t1 = tic;
         % update using laser
         ranges = lzr.rangeArray{lzrCount+1};
-        ri = rangeImage(ranges,1,1);
+        ri = rangeImage(ranges); ri.cleanup;
         ptsLocal = [ri.xArray; ri.yArray];
         ptsLocal = [ptsLocal; ones(1,size(ptsLocal,2))];
         ptsLocal = ptsLocal(:,1:4:end);

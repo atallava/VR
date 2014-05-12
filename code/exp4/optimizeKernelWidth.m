@@ -3,7 +3,6 @@ warning('off')
 clear all; clear classes; clc;
 addpath ~/Documents/MATLAB/neato_utils/
 load processed_data_mar27
-%load synthetic_data_mar27
 
 dpInput.poses = poses;
 dpInput.rHist = rh;

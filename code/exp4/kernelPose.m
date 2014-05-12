@@ -7,7 +7,7 @@ function res = kernelPose(x1,x2,kernelParams)
 if isfield(kernelParams,'h')
     h = kernelParams.h;
 else
-    h = 1.0;
+    h = 0.05;
 end
 
 if iscolumn(x1)

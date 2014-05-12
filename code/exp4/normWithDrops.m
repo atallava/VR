@@ -117,6 +117,8 @@ classdef normWithDrops < handle
                 else
                     if isnan(obj.sigma)
                         res(i) = obj.mu;
+                    elseif isnan(obj.mu)
+                        res(i) = 0;
                     else
                         res(i) = random('normal',obj.mu,obj.sigma);
                     end
