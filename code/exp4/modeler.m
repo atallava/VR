@@ -4,13 +4,11 @@
 clear all; clear classes; clc;
 addpath ~/Documents/MATLAB/neato_utils/
 load processed_data_mar27
-%load full_rangeHistogram_mar27
-%load synthetic_data_mar27
 
 fprintf('Initializing...\n');
-inputData.poses = poses;
-inputData.rHist = rh;
-inputData.obsArray = obsArray(:,rh.pixelIds);
+skip = 36;
+pixelIds = 1:skip:360; bearings = deg2rad(pixelIds-1);
+inputData = struct('poses',poses,'obsArray',{obsArray(:,pixelIds)},'pixelIds',pixelIds,'bearings',bearings,'maxRange',4.5);
 totalPoses = length(inputData.poses);
 frac = 0.7;
 %inputData.trainPoseIds = randperm(totalPoses,floor(frac*totalPoses));
@@ -21,13 +19,13 @@ dp = dataProcessor(inputData);
 %% fit pdf models to training data
 fprintf('Fitting pixel models...\n');
 inputData = struct('fitClass',@normWithDrops,'data',{dp.obsArray(dp.trainPoseIds,:)});
-trainPdfs = pdfModeler(inputData);
+trainPdfs = pdfBundle(inputData);
 %trainPdfs.markOutliers();
 
 %% initialize regressor
 fprintf('Initializing regressor(s)...\n');
 load map;
-inputData = struct('envLineMap',roomLineMap,'maxRange',dp.rHist.maxRange,'bearings',dp.rHist.bearings);
+inputData = struct('envLineMap',roomLineMap,'maxRange',dp.maxRange,'bearings',dp.bearings);
 p2ra = poses2RAlpha(inputData);
 p2r = poses2R(inputData);
 localizer = lineMapLocalizer(lines_p1,lines_p2);
@@ -87,7 +85,7 @@ predParamArray(:,3,:) = predPzArray;
 % fit pdf models to test data
 fprintf('Calculating error...\n');
 inputData = struct('fitClass',@normWithDrops,'data',{dp.obsArray(dp.testPoseIds,:)});
-testPdfs = pdfModeler(inputData);
+testPdfs = pdfBundle(inputData);
 errTest = abs(testPdfs.paramArray-predParamArray);
 err = errorStats(errTest);
 [paramME,nOutliers] = err.getParamME();

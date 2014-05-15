@@ -45,13 +45,20 @@ classdef pixelRegressorBundle < handle
             obj.fillPixelRegressorArray(inputData);
         end
         
-        function Y = predict(obj,X)
+        function Y = predict(obj,X,queryMap)
+            % if not supplied, assumed to be working in the same map as
+            % contained in obj.poseTransf
+            queryPoseTransf = obj.poseTransf;
+            if nargin > 2
+                queryPoseTransf.setMap(queryMap);
+            end
+            
             nQueries = size(X,1);
             Y = zeros(nQueries,size(obj.YTrain,2),obj.nPixels);
             if isempty(obj.poseTransf)
                 XTransf = repmat(X,[1,1,obj.nPixels]);
             else
-                XTransf = obj.poseTransf.transform(X);
+                XTransf = queryPoseTransf.transform(X);
             end
             
             for i = 1:obj.nPixels
@@ -59,10 +66,6 @@ classdef pixelRegressorBundle < handle
             end
             obj.XLast = X;
             obj.YLast = Y;
-        end
-        
-        function setPoseTransf(obj,poseTransf)
-            obj.poseTransf = poseTransf;
         end
     end
     

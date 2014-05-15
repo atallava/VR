@@ -1,13 +1,9 @@
-classdef nonParametricRegressor < handle
+classdef nonParametricRegressor < handle & abstractRegressor
     %nonParametricRegressor simple class for nonparametric regression
     
     properties (SetAccess = private)
-        % XTrain is num observations x dimX, training input
-        % YTrain is num observations x dimY, training output
         % kernelFn is a function handle to some kernel
         % kernelParams is a struct that is input to kernelFn
-        % XLast is num queries x dimX, cache of last query
-        % YLast is num queries x dimY, cache of last query
         XTrain
         YTrain
         dimY

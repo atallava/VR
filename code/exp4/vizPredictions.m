@@ -2,7 +2,7 @@ function vizPredictions(dp,predParamArray,localizer)
 %vizPredictions visualize real vs predicted data
 % dp is an instance of dataProcessor
 
-pmfPixel = randperm(dp.rHist.nPixels,1);
+pmfPixel = randperm(dp.nPixels,1);
 while true
 for i = randperm(length(dp.testPoseIds),1)
     % visualize real vs simulated observations for some test pose
@@ -16,16 +16,16 @@ for i = randperm(length(dp.testPoseIds),1)
     quiver(xRob,yRob,0.2*cos(thRob),0.2*sin(thRob),'k','LineWidth',2);
         
     rangesReal = rangesFromObsArray(dp.obsArray,poseId,1);
-    xReal = xRob+ rangesReal.*cos(dp.rHist.bearings+thRob);
-    yReal = yRob+ rangesReal.*sin(dp.rHist.bearings+thRob);
+    xReal = xRob+ rangesReal.*cos(dp.bearings+thRob);
+    yReal = yRob+ rangesReal.*sin(dp.bearings+thRob);
     plot(xReal,yReal,'go');
     title(sprintf('pose %d: (%f,%f,%f)',poseId,xRob,yRob,thRob));
    
     % use class method to sample from pdf
     rangesSim = sampleFromParamArray(squeeze(predParamArray(i,:,:)),'normWithDrops');
         
-    xSim = xRob+rangesSim.*cos(dp.rHist.bearings+thRob);
-    ySim = yRob+rangesSim.*sin(dp.rHist.bearings+thRob);
+    xSim = xRob+rangesSim.*cos(dp.bearings+thRob);
+    ySim = yRob+rangesSim.*sin(dp.bearings+thRob);
     plot(xSim,ySim,'ro');
     annotation('textbox',[.6,0.8,.1,.1], ...
     'String', {'green: real ranges','red: simulated ranges','black: robot'});
@@ -35,7 +35,8 @@ for i = randperm(length(dp.testPoseIds),1)
     
     % visualize real and simulated pmfs for a particular pixel index
     params = predParamArray(i,:,pmfPixel);
-    hf2 = vizPMFs(dp.rHist,poseId,pmfPixel,params,'normWithDrops');
+    hf2 = vizPMFs(dp.obsArray{dp.testPoseIds(i),pmfPixel},params,@normWithDrops);
+    suptitle(sprintf('pixel %d',dp.pixelIds(pmfPixel)));
       
     % some fancy positioning for visibility
     figpos1 = get(hf1,'Position'); figpos2 = get(hf2,'Position');

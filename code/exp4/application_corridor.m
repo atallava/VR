@@ -10,17 +10,9 @@ nPoses = size(poses,2);
 
 %% predict at poses
 
-% update maps in regressors
-inputData = struct('envLineMap',corridor,'maxRange',4.5,'bearings',deg2rad(0:359));
-p2ra = poses2RAlpha(inputData);
-p2r = poses2R(inputData);
-muPxRegBundle.setPoseTransf(p2r);
-sigmaPxRegBundle.setPoseTransf(p2ra);
-pzPxRegBundle.setPoseTransf(p2ra);
-
-predMuArray = muPxRegBundle.predict(poses');
-predSigmaArray = sigmaPxRegBundle.predict(poses');
-predPzArray = pzPxRegBundle.predict(poses');
+predMuArray = muPxRegBundle.predict(poses',corridor);
+predSigmaArray = sigmaPxRegBundle.predict(poses',corridor);
+predPzArray = pzPxRegBundle.predict(poses',corridor);
 
 paramArray(:,1,:) = predMuArray;
 paramArray(:,2,:) = predSigmaArray;
@@ -39,8 +31,8 @@ for i = 1:nPoses
     
     rangesSim = sampleFromParamArray(squeeze(paramArray(i,:,:)),'normWithDrops');
         
-    xSim = xRob+rangesSim.*cos(dp.rHist.bearings+thRob);
-    ySim = yRob+rangesSim.*sin(dp.rHist.bearings+thRob);
+    xSim = xRob+rangesSim.*cos(dp.bearings+thRob);
+    ySim = yRob+rangesSim.*sin(dp.bearings+thRob);
     plot(xSim,ySim,'ro');
     %{
     annotation('textbox',[.6,0.8,.1,.1], ...

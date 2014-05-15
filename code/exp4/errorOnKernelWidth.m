@@ -3,7 +3,7 @@ function avgError = errorOnKernelWidth(dataProcInput,h,lambda)
 % and weighting factor
 
 load map;
-inputData = struct('envLineMap',roomLineMap,'maxRange',dataProcInput.rHist.maxRange,'bearings',dataProcInput.rHist.bearings);
+inputData = struct('envLineMap',roomLineMap,'maxRange',dataProcInput.maxRange,'bearings',dataProcInput.bearings);
 p2ra = poses2RAlpha(inputData);
 frac = 0.7;
 totalPoses = length(dataProcInput.poses);

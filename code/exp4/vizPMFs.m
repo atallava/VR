@@ -1,20 +1,16 @@
-function hfig = vizPMFs(rh,poseId,pmfPixel,params,fitName)
+function hfig = vizPMFs(ranges,params,fitClass)
 %vizPMFs visualize real and simulated pmfs
-% rh: range histogram object
+% fitClass is a class handle
 
 hfig = figure;
-pixelIds = rad2deg(rh.bearings)+1;
 subplot(2,1,1);
-pmfReal = rh.H(poseId,:,pmfPixel);
+[pmfReal,xcenters] = ranges2Histogram(ranges);
 pmfReal = pmfReal/sum(pmfReal);
-bar(rh.xCenters,pmfReal);
+bar(xcenters,pmfReal);
 title('real pmf');
 subplot(2,1,2);
-tempObj = feval(fitName,params,1);
-pmfSim = tempObj.snap2PMF(rh.xCenters);
-bar(rh.xCenters,pmfSim);
+tempObj = fitClass(params,1);
+pmfSim = tempObj.snap2PMF(xcenters);
+bar(xcenters,pmfSim);
 title('predicted pmf');
-suptitle(sprintf('pixel %d',pixelIds(pmfPixel)));
-
 end
-

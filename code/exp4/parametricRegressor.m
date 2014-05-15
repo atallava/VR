@@ -1,14 +1,10 @@
-classdef parametricRegressor < handle
+classdef parametricRegressor < handle & abstractRegressor
     %parametricRegressor simple class for parametric regression over multiple parameters
            
     properties (SetAccess = private)
-        % XTrain is num observations x dimX, training input
-        % YTrain is num observations x dimY, training output
         % nTargets is the number of output values
         % models is a cell array of NonLinearModels, one model for each
         % target
-        % XLast is num queries x dimX, cache of last query
-        % YLast is num queries x dimY, cache of last query
         XTrain
         YTrain
         nTargets

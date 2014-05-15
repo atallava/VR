@@ -5,8 +5,7 @@ addpath ~/Documents/MATLAB/neato_utils/
 load processed_data_mar27
 
 dpInput.poses = poses;
-dpInput.rHist = rh;
-dpInput.obsArray = obsArray(:,rh.pixelIds);
+dpInput.obsArray = obsArray(:,pixelIds);
 
 h0 = 0.07; lambda0 = 0.1;
 options = optimoptions('fmincon','Display','iter');

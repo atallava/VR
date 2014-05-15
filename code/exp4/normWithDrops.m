@@ -1,7 +1,8 @@
-classdef normWithDrops < handle
+classdef normWithDrops < handle & abstractPdf
     %normWithDrops fit a normal distribution + dropout probability to data
     
     properties (Constant = true)
+        nParams = 3
         dx = 1e-3;
     end
     
@@ -132,7 +133,7 @@ classdef normWithDrops < handle
     end
     
     methods (Static = true)
-        function res = nParams()
+        function res = numParams()
             res = 3;
         end
     end

@@ -3,7 +3,7 @@ function avgError = errorOnBaselineSigma(dataProcInput,K)
 % calculate std in the baseline predictor
 
 load map;
-inputData = struct('envLineMap',roomLineMap,'maxRange',dataProcInput.rHist.maxRange,'bearings',dataProcInput.rHist.bearings);
+inputData = struct('envLineMap',roomLineMap,'maxRange',dataProcInput.maxRange,'bearings',dataProcInput.bearings);
 p2ra = poses2RAlpha(inputData);
 frac = 0.7;
 totalPoses = length(dataProcInput.poses);

@@ -1,11 +1,11 @@
-classdef baselineRegressor < handle
+classdef baselineRegressor < handle & abstractRegressor
     %baselineRegressor predict parameters using a formula
     
     properties (SetAccess = private)
         % nParams is number of output parameters
         % K is a constant used to calculate sigma
-        % XLast is num queries x dimX, cache of last query
-        % YLast is num queries x dimY, cache of last query
+        XTrain
+        YTrain
         nParams = 3
         K = 1e-3
         XLast

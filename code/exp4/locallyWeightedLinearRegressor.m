@@ -1,13 +1,9 @@
-classdef locallyWeightedLinearRegressor < handle
+classdef locallyWeightedLinearRegressor < handle & abstractRegressor
     %locallyWeightedRegressor simple class for locally weighted linear regression
     
     properties (SetAccess = private)
-        % XTrain is num observations x dimX, training input
-        % YTrain is num observations x dimY, training output
         % kernelFn is a function handle to some kernel
         % kernelParams is a struct that is input to kernelFn
-        % XLast is num queries x dimX, cache of last query
-        % YLast is num queries x dimY, cache of last query
         XTrain
         YTrain
         dimY
