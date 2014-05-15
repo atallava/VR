@@ -29,7 +29,7 @@ classdef rangeHistograms < handle
            end
            obj.nCenters = (obj.maxRange/obj.deltaRange)+1;
            if floor(obj.nCenters) ~= obj.nCenters
-               warning('NUMBER OF CENTERS IN HISTOGRAM HAS TO BE AN INTEGER');
+               error('NUMBER OF CENTERS IN HISTOGRAM HAS TO BE AN INTEGER!');
            end
            obj.H = zeros(obj.nPoses,obj.nCenters,obj.nPixels);
            obj.xCenters = linspace(0,obj.maxRange,obj.nCenters);

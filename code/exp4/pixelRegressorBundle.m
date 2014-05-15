@@ -45,7 +45,29 @@ classdef pixelRegressorBundle < handle
             obj.fillPixelRegressorArray(inputData);
         end
         
-        function obj = fillPixelRegressorArray(obj,inputData)
+        function Y = predict(obj,X)
+            nQueries = size(X,1);
+            Y = zeros(nQueries,size(obj.YTrain,2),obj.nPixels);
+            if isempty(obj.poseTransf)
+                XTransf = repmat(X,[1,1,obj.nPixels]);
+            else
+                XTransf = obj.poseTransf.transform(X);
+            end
+            
+            for i = 1:obj.nPixels
+                Y(:,:,i) = obj.regressorArray{i}.predict(XTransf(:,:,i));
+            end
+            obj.XLast = X;
+            obj.YLast = Y;
+        end
+        
+        function setPoseTransf(obj,poseTransf)
+            obj.poseTransf = poseTransf;
+        end
+    end
+    
+    methods (Access = private)
+       function obj = fillPixelRegressorArray(obj,inputData)
             obj.regressorArray = cell(1,obj.nPixels);
             if isempty(obj.poseTransf)
                 XTransf = repmat(obj.XTrain,[1,1,obj.nPixels]);
@@ -74,33 +96,7 @@ classdef pixelRegressorBundle < handle
             tempObj = obj.regClass(tempInput);
             obj.regressorArray(:) = {tempObj};
             %}
-        end
-        
-        function Y = predict(obj,X)
-            nQueries = size(X,1);
-            Y = zeros(nQueries,size(obj.YTrain,2),obj.nPixels);
-            if isempty(obj.poseTransf)
-                XTransf = repmat(X,[1,1,obj.nPixels]);
-            else
-                XTransf = obj.poseTransf.transform(X);
-            end
-            
-            for i = 1:obj.nPixels
-                Y(:,:,i) = obj.regressorArray{i}.predict(XTransf(:,:,i));
-            end
-            obj.XLast = X;
-            obj.YLast = Y;
-        end
-        
-        function setPoseTransf(obj,poseTransf)
-            obj.poseTransf = poseTransf;
-        end
-        
-        % TODO: fill in
-        function res = getMSE(obj)
-            % return MSE on training data
-            res = 0;
-        end
+       end
     end
     
 end

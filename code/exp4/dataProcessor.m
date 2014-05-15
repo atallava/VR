@@ -1,7 +1,7 @@
 classdef dataProcessor < handle
     %dataProcessor class to initialize data before prediction
         
-    properties
+    properties (SetAccess = private)
         % poses is 3 x total poses
         % obsArray is a cell array of size total poses x num pixels
         % rHist is an object of class rangeHistograms

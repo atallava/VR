@@ -2,7 +2,7 @@ classdef poses2R < handle
     %poses2R transforms inputs from pose to r space for
     %different pixels
         
-    properties
+    properties (SetAccess = private)
         % envLineMap is a lineMap object
         % maxRange of laser in meter
         % bearings in rad

@@ -2,7 +2,6 @@ classdef normWithDrops < handle
     %normWithDrops fit a normal distribution + dropout probability to data
     
     properties (Constant = true)
-        nParams = 3;
         dx = 1e-3;
     end
     
@@ -10,8 +9,7 @@ classdef normWithDrops < handle
         mu
         sigma
         pZero
-        nll
-       
+        nll       
     end
     
     methods
@@ -24,7 +22,7 @@ classdef normWithDrops < handle
                 else
                     % input is parameters
                     if length(input) ~= 3
-                        error('NEED 3 VALUES IF CHOSE TO INPUT PARAMETERS TO NORMWITHDROPS');
+                        error('NEED 3 VALUES IF CHOSE TO INPUT PARAMETERS TO NORMWITHDROPS.');
                     end
                     obj.mu = input(1);
                     obj.sigma = input(2);
@@ -32,34 +30,6 @@ classdef normWithDrops < handle
                     obj.nll = NaN;
                 end
             end
-        end
-        
-        function obj = fitData(obj,data)
-            nData = length(data);
-            zeroIds = find(data == 0);
-            obj.pZero = length(zeroIds)/nData;
-            if obj.pZero < 1
-                data(zeroIds) = [];
-                if length(data) == 1
-                    % only a single data point available
-                    % set this to the mean
-                    obj.mu = data(1);
-                    obj.sigma = NaN;
-                else
-                    try
-                        params = mle(data,'distribution','normal');
-                    catch
-                        error('BAD DATA.');
-                    end
-                    obj.mu = params(1);
-                    obj.sigma = params(2);
-                end
-            else
-                % all zero readings
-                obj.mu = NaN;
-                obj.sigma = NaN;
-            end
-            obj.nll = obj.negLogLike(data);
         end
         
         function res = negLogLike(obj,data)
@@ -129,7 +99,42 @@ classdef normWithDrops < handle
         function res = getParams(obj)
             res = [obj.mu obj.sigma obj.pZero];
         end        
-        
+    end
+    
+    methods (Access = private)        
+        function obj = fitData(obj,data)
+            nData = length(data);
+            zeroIds = find(data == 0);
+            obj.pZero = length(zeroIds)/nData;
+            if obj.pZero < 1
+                data(zeroIds) = [];
+                if length(data) == 1
+                    % only a single data point available
+                    % set this to the mean
+                    obj.mu = data(1);
+                    obj.sigma = NaN;
+                else
+                    try
+                        params = mle(data,'distribution','normal');
+                    catch
+                        error('FAILED TO FIT MODEL TO DATA.');
+                    end
+                    obj.mu = params(1);
+                    obj.sigma = params(2);
+                end
+            else
+                % all zero readings
+                obj.mu = NaN;
+                obj.sigma = NaN;
+            end
+            obj.nll = obj.negLogLike(data);
+        end
+    end
+    
+    methods (Static = true)
+        function res = nParams()
+            res = 3;
+        end
     end
     
 end

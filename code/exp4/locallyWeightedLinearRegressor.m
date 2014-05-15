@@ -57,14 +57,6 @@ classdef locallyWeightedLinearRegressor < handle
             obj.XLast = X;
             obj.YLast = Y;
         end
-        
-        function res = getMSE(obj)
-            % return MSE on training data
-            YTemp = predict(obj.XTrain);
-            res = (YTemp-obj.YTrain).^2;
-            res = sum(res,1)/size(obj.XTrain,1);
-            res = sqrt(res);
-        end
     end
     
 end

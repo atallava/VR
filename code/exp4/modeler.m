@@ -4,10 +4,10 @@
 clear all; clear classes; clc;
 addpath ~/Documents/MATLAB/neato_utils/
 load processed_data_mar27
-load full_rangeHistogram_mar27
+%load full_rangeHistogram_mar27
 %load synthetic_data_mar27
 
-fprintf('initializing...\n');
+fprintf('Initializing...\n');
 inputData.poses = poses;
 inputData.rHist = rh;
 inputData.obsArray = obsArray(:,rh.pixelIds);
@@ -19,13 +19,13 @@ inputData.testPoseIds = setdiff(1:totalPoses,inputData.trainPoseIds);
 dp = dataProcessor(inputData);
 
 %% fit pdf models to training data
-fprintf('fitting pixel models...\n');
+fprintf('Fitting pixel models...\n');
 inputData = struct('fitClass',@normWithDrops,'data',{dp.obsArray(dp.trainPoseIds,:)});
 trainPdfs = pdfModeler(inputData);
-trainPdfs.markOutliers();
+%trainPdfs.markOutliers();
 
 %% initialize regressor
-fprintf('initializing regressor(s)...\n');
+fprintf('Initializing regressor(s)...\n');
 load map;
 inputData = struct('envLineMap',roomLineMap,'maxRange',dp.rHist.maxRange,'bearings',dp.rHist.bearings);
 p2ra = poses2RAlpha(inputData);
@@ -70,7 +70,7 @@ pxRegBundle = pixelRegressorBundle(inputData);
 %}
 
 %% predict at test poses
-fprintf('predicting...\n');
+fprintf('Predicting...\n');
 
 predMuArray = muPxRegBundle.predict(dp.XTest);
 predSigmaArray = sigmaPxRegBundle.predict(dp.XTest);
@@ -85,7 +85,7 @@ predParamArray(:,3,:) = predPzArray;
 
 %% diagnose error
 % fit pdf models to test data
-fprintf('calculating error...\n');
+fprintf('Calculating error...\n');
 inputData = struct('fitClass',@normWithDrops,'data',{dp.obsArray(dp.testPoseIds,:)});
 testPdfs = pdfModeler(inputData);
 errTest = abs(testPdfs.paramArray-predParamArray);

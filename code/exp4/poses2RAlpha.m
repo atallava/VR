@@ -2,7 +2,7 @@ classdef poses2RAlpha < handle
     %poses2RAlpha transforms inputs from pose to r-alpha space for
     %different pixels
         
-    properties
+    properties (SetAccess = private)
         % envLineMap is a lineMap object
         % maxRange of laser in meter
         % bearings in rad

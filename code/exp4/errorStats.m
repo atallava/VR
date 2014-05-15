@@ -1,7 +1,7 @@
 classdef errorStats < handle
     %errorStats analyse error
         
-    properties
+    properties (SetAccess = private)
         % errorMat is num test poses x num params x num pixels
         % validMat is errorMat with nans replaced by 0
         errorMat
@@ -11,11 +11,13 @@ classdef errorStats < handle
     
     methods
         function obj = errorStats(errorMat)
-            obj.errorMat = errorMat;
-            nanMask = isnan(obj.errorMat);
-            obj.validMask = ~nanMask;
-            obj.validMat = obj.errorMat;
-            obj.validMat(nanMask) = 0;
+            if nargin > 0
+                obj.errorMat = errorMat;
+                nanMask = isnan(obj.errorMat);
+                obj.validMask = ~nanMask;
+                obj.validMat = obj.errorMat;
+                obj.validMat(nanMask) = 0;
+            end
         end
         
         function res = getPixelParamME(obj)
