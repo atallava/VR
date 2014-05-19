@@ -16,6 +16,7 @@ t_range_collection = struct('start',{},'end',{});
 t_sys_start = tic;
 enc = encHistory(rob);
 lzr = laserHistory(rob);
+lzr.togglePlot();
 pause(0.1);
 
 while true
