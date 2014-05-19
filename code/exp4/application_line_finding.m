@@ -20,8 +20,8 @@ for i = 1:length(dp.testPoseIds)
 
     % real data
     rangesReal = rangesFromObsArray(dp.obsArray,poseId,1);
-    xReal = xRob+ rangesReal.*cos(dp.rHist.bearings+thRob);
-    yReal = yRob+ rangesReal.*sin(dp.rHist.bearings+thRob);
+    xReal = xRob+ rangesReal.*cos(dp.bearings+thRob);
+    yReal = yRob+ rangesReal.*sin(dp.bearings+thRob);
     figure; hold on;
     plot(xReal,yReal,'go','MarkerSize',2);
     riReal = rangeImage(rangesReal); riReal.cleanup();
@@ -41,8 +41,8 @@ for i = 1:length(dp.testPoseIds)
    
     % np sim
     rangesSim = sampleFromParamArray(squeeze(np.predParamArray(i,:,:)),'normWithDrops');
-    xSim = xRob+rangesSim.*cos(dp.rHist.bearings+thRob);
-    ySim = yRob+rangesSim.*sin(dp.rHist.bearings+thRob);
+    xSim = xRob+rangesSim.*cos(dp.bearings+thRob);
+    ySim = yRob+rangesSim.*sin(dp.bearings+thRob);
     figure; hold on;
     plot(xSim,ySim,'ro','MarkerSize',2);
     riSim = rangeImage(rangesSim); riSim.cleanup();
@@ -59,9 +59,9 @@ for i = 1:length(dp.testPoseIds)
 
     % baseline sim
     %rangesBaseline = sampleFromParamArray(squeeze(baseline.predParamArray(i,:,:)),'normWithDrops');
-    rangesBaseline = roomLineMap.raycast(p2d.getPose, 4.5, dp.rHist.bearings);
-    xBaseline = xRob+rangesBaseline.*cos(dp.rHist.bearings+thRob);
-    yBaseline = yRob+rangesBaseline.*sin(dp.rHist.bearings+thRob);
+    rangesBaseline = roomLineMap.raycast(p2d.getPose, 4.5, dp.bearings);
+    xBaseline = xRob+rangesBaseline.*cos(dp.bearings+thRob);
+    yBaseline = yRob+rangesBaseline.*sin(dp.bearings+thRob);
     figure; hold on;
     plot(xBaseline,yBaseline,'bo','MarkerSize',2);
     riBaseline = rangeImage(rangesBaseline); riBaseline.cleanup();

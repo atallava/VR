@@ -2,7 +2,7 @@
 % laser must be on
 
 if ~isfield(rob.laser.data,'header')
-    error('LASER MUST BE ON');
+    error('LASER MUST BE ON!');
 end
 
 v = struct('left',0,'right',0);

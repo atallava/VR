@@ -1,12 +1,8 @@
-classdef poses2R < handle
+classdef poses2R < handle & abstractInputTransformer
     %poses2R transforms inputs from pose to r space for
     %different pixels
         
-    properties
-        % envLineMap is a lineMap object
-        % maxRange of laser in meter
-        % bearings in rad
-        % posesLast is number of poses x 3, cache of last query
+    properties (SetAccess = private)
         % rArrayLast is number of poses x 2 x number of bearings, cache of
         % last query
         envLineMap
@@ -38,6 +34,10 @@ classdef poses2R < handle
                 rArray(i,1,:) = r;                
             end
             obj.rArrayLast = rArray;
+        end
+        
+        function setMap(obj,map)
+            obj.envLineMap = map;
         end
     end
     

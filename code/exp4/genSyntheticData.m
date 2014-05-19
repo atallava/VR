@@ -15,18 +15,4 @@ for i = 1:nPoses
     end
 end  
 
-% range histograms
-skip = 36;
-pixelIds = 1:36:360;
-nPixels = length(pixelIds);
-input = struct('nPixels',nPixels,'nPoses',nPoses,'bearings',deg2rad(pixelIds-1));
-
-rh = rangeHistograms(input);
-for i = 1:nPoses
-    for j = 1:nPixels
-        px = pixelIds(j);
-        rh.fillHistogram(i,j,obsArray{i,px});
-    end
-end
-     
-save('synthetic_data_mar27.mat','poses','obsArray','rh');
+save('synthetic_data_mar27.mat','poses','obsArray');

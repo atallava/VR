@@ -1,13 +1,9 @@
-classdef locallyWeightedLinearRegressor < handle
+classdef locallyWeightedLinearRegressor < handle & abstractRegressor
     %locallyWeightedRegressor simple class for locally weighted linear regression
     
     properties (SetAccess = private)
-        % XTrain is num observations x dimX, training input
-        % YTrain is num observations x dimY, training output
         % kernelFn is a function handle to some kernel
         % kernelParams is a struct that is input to kernelFn
-        % XLast is num queries x dimX, cache of last query
-        % YLast is num queries x dimY, cache of last query
         XTrain
         YTrain
         dimY
@@ -56,14 +52,6 @@ classdef locallyWeightedLinearRegressor < handle
             end
             obj.XLast = X;
             obj.YLast = Y;
-        end
-        
-        function res = getMSE(obj)
-            % return MSE on training data
-            YTemp = predict(obj.XTrain);
-            res = (YTemp-obj.YTrain).^2;
-            res = sum(res,1)/size(obj.XTrain,1);
-            res = sqrt(res);
         end
     end
     
