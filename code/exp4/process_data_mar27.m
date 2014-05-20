@@ -23,20 +23,6 @@ for i = 1:nPoses
     end    
 end
 
-%% downsample range data and put into histograms
-skip = 1;
-pixelIds = floor(1:skip:360);
-nPixels = length(pixelIds);
-input = struct('nPixels',nPixels,'nPoses',nPoses,'bearings',deg2rad(pixelIds-1));
-
-rh = rangeHistograms(input);
-for i = 1:nPoses
-    for j = 1:nPixels
-        px = pixelIds(j);
-        rh.fillHistogram(i,j,obsArray{i,px});
-    end
-end
-
 %% pose from encoders + laser
 clc;
 load map;
@@ -44,7 +30,7 @@ poses = zeros(3,nPoses);
 rState = robState([],'manual',[0.103;0.166;0]);
 poseCount = 1;
 lzrCount = 1;
-localizer = lineMapLocalizer(lines_p1,lines_p2);
+localizer = lineMapLocalizer(roomLineMap.objects);
 
 for i = 1:enc.update_count
     if enc.encArray(i+1).left == 0 && enc.encArray(i+1).right == 0
@@ -68,7 +54,7 @@ for i = 1:enc.update_count
         t1 = tic;
         % update using laser
         ranges = lzr.rangeArray{lzrCount+1};
-        ri = rangeImage(ranges); ri.cleanup;
+        ri = rangeImage(struct('ranges',ranges,'cleanup',1));
         ptsLocal = [ri.xArray; ri.yArray];
         ptsLocal = [ptsLocal; ones(1,size(ptsLocal,2))];
         ptsLocal = ptsLocal(:,1:4:end);

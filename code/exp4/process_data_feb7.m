@@ -29,22 +29,7 @@ for i = 1:nPoses
     obsArray(i,:,:) = data(i).z(:,:)';
 end
 
-%% downsample range data and put into histogram
-% save processed data
-skip = 36;
-pixelIds = 1:36:360;
-nPixels = length(pixelIds);
-input = struct('nPixels',nPixels,'nPoses',nPoses,'bearings',deg2rad(pixelIds-1));
-
-rh = rangeHistograms(input);
-for i = 1:nPoses
-    for j = 1:nPixels
-        px = pixelIds(j);
-        rh.fillHistogram(i,j,data(i).z(px,:));
-    end
-end
-
-save('processed_data.mat','poses','rh','obsArray');
+save('processed_data.mat','poses','obsArray');
 %% plot poses sequentially
 
 close all;

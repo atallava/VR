@@ -6,7 +6,7 @@ load('full_predictor_mar27_2','dp');
 np = load('full_predictor_mar27_2','predParamArray');
 baseline = load('full_predictor_mar27_baseline','predParamArray');
 load map
-localizer = lineMapLocalizer(lines_p1,lines_p2);
+localizer = lineMapLocalizer(roomLineMap.objects);
 
 %%
 
@@ -20,11 +20,11 @@ for i = 1:length(dp.testPoseIds)
 
     % real data
     rangesReal = rangesFromObsArray(dp.obsArray,poseId,1);
-    xReal = xRob+ rangesReal.*cos(dp.bearings+thRob);
-    yReal = yRob+ rangesReal.*sin(dp.bearings+thRob);
+    xReal = xRob+ rangesReal.*cos(dp.laser.bearings+thRob);
+    yReal = yRob+ rangesReal.*sin(dp.laser.bearings+thRob);
     figure; hold on;
     plot(xReal,yReal,'go','MarkerSize',2);
-    riReal = rangeImage(rangesReal); riReal.cleanup();
+    riReal = rangeImage(struct('ranges',rangesReal,'cleanup',1));
     linesReal = findLinesHT(riReal,numLines); 
     [linesReal_p1, linesReal_p2] = deal([]);
     for j = 1:length(linesReal)
@@ -41,11 +41,11 @@ for i = 1:length(dp.testPoseIds)
    
     % np sim
     rangesSim = sampleFromParamArray(squeeze(np.predParamArray(i,:,:)),'normWithDrops');
-    xSim = xRob+rangesSim.*cos(dp.bearings+thRob);
-    ySim = yRob+rangesSim.*sin(dp.bearings+thRob);
+    xSim = xRob+rangesSim.*cos(dp.laser.bearings+thRob);
+    ySim = yRob+rangesSim.*sin(dp.laser.bearings+thRob);
     figure; hold on;
     plot(xSim,ySim,'ro','MarkerSize',2);
-    riSim = rangeImage(rangesSim); riSim.cleanup();
+    riSim = rangeImage(struct('ranges',rangesSim,'cleanup',1));
     linesSim = findLinesHT(riSim,numLines);
     [linesSim_p1, linesSim_p2] = deal([]);
     for j = 1:length(linesSim)
@@ -59,12 +59,12 @@ for i = 1:length(dp.testPoseIds)
 
     % baseline sim
     %rangesBaseline = sampleFromParamArray(squeeze(baseline.predParamArray(i,:,:)),'normWithDrops');
-    rangesBaseline = roomLineMap.raycast(p2d.getPose, 4.5, dp.bearings);
-    xBaseline = xRob+rangesBaseline.*cos(dp.bearings+thRob);
-    yBaseline = yRob+rangesBaseline.*sin(dp.bearings+thRob);
+    rangesBaseline = roomLineMap.raycast(p2d.getPose, 4.5, dp.laser.bearings);
+    xBaseline = xRob+rangesBaseline.*cos(dp.laser.bearings+thRob);
+    yBaseline = yRob+rangesBaseline.*sin(dp.laser.bearings+thRob);
     figure; hold on;
     plot(xBaseline,yBaseline,'bo','MarkerSize',2);
-    riBaseline = rangeImage(rangesBaseline); riBaseline.cleanup();
+    riBaseline = rangeImage(struct('ranges',rangesBaseline,'cleanup',1));
     linesBaseline = findLinesHT(riBaseline,numLines);
     [linesBaseline_p1, linesBaseline_p2] = deal([]);
     for j = 1:length(linesBaseline)

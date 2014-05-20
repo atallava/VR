@@ -14,7 +14,6 @@ classdef pixelRegressorBundle < handle
         XTrain
         YTrain
         dimY
-        pixelIds
         nPixels
         poseTransf
         regClass
@@ -25,7 +24,7 @@ classdef pixelRegressorBundle < handle
     
     methods
         function obj = pixelRegressorBundle(inputData)
-            % inputData fields ('XTrain', 'YTrain', 'poseTransf', 'pixelIds',
+            % inputData fields ('XTrain', 'YTrain', 'poseTransf',
             % 'regClass', <regressor specific fields>)
             
             obj.XTrain = inputData.XTrain;
@@ -40,8 +39,7 @@ classdef pixelRegressorBundle < handle
                 obj.poseTransf = inputData.poseTransf;
             end
             obj.regClass = inputData.regClass;
-            obj.pixelIds = inputData.pixelIds;
-            obj.nPixels = length(obj.pixelIds);
+            obj.nPixels = size(obj.YTrain,3);
             obj.fillPixelRegressorArray(inputData);
         end
         

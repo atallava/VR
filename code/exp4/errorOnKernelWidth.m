@@ -3,7 +3,7 @@ function avgError = errorOnKernelWidth(dataProcInput,h,lambda)
 % and weighting factor
 
 load map;
-inputData = struct('envLineMap',roomLineMap,'maxRange',dataProcInput.maxRange,'bearings',dataProcInput.bearings);
+inputData = struct('envLineMap',roomLineMap,'laser',dataProcInput.laser);
 p2ra = poses2RAlpha(inputData);
 frac = 0.7;
 totalPoses = length(dataProcInput.poses);
@@ -21,8 +21,7 @@ for i = 1:numTrials
     trainPdfs.markOutliers();
 
     % initialize regressor
-    inputData = struct('XTrain',dp.XTrain,'YTrain',trainPdfs.paramArray,...
-        'pixelIds', dp.pixelIds, 'poseTransf', p2ra, ...
+    inputData = struct('XTrain',dp.XTrain,'YTrain',trainPdfs.paramArray,'poseTransf', p2ra, ...
         'regClass',@nonParametricRegressor, 'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',h,'lambda',lambda));
     pxRegBundle = pixelRegressorBundle(inputData);
 

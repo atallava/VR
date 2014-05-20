@@ -1,11 +1,12 @@
 function vizPredictions(dp,predParamArray,localizer)
 %vizPredictions visualize real vs predicted data
-% dp is an instance of dataProcessor
+% dp is a dataProcessor object
 
-pmfPixel = randperm(dp.nPixels,1);
+% pick some pixel for viewing histograms
+pmfPixel = randperm(dp.laser.nPixels,1);
 while true
+% pick some test pose    
 for i = randperm(length(dp.testPoseIds),1)
-    % visualize real vs simulated observations for some test pose
     hf1 = localizer.drawLines();
     xl0 = xlim+[-0.5 0.5];
     yl0 = ylim+[-0.5 0.5];
@@ -13,30 +14,30 @@ for i = randperm(length(dp.testPoseIds),1)
     hold on;
     poseId = dp.testPoseIds(i);
     xRob = dp.poses(1,poseId); yRob = dp.poses(2,poseId); thRob = dp.poses(3,poseId);
+    % draw robot
     quiver(xRob,yRob,0.2*cos(thRob),0.2*sin(thRob),'k','LineWidth',2);
         
+    % plot real ranges
     rangesReal = rangesFromObsArray(dp.obsArray,poseId,1);
-    xReal = xRob+ rangesReal.*cos(dp.bearings+thRob);
-    yReal = yRob+ rangesReal.*sin(dp.bearings+thRob);
+    xReal = xRob+rangesReal.*cos(dp.laser.bearings+thRob);
+    yReal = yRob+rangesReal.*sin(dp.laser.bearings+thRob);
     plot(xReal,yReal,'go');
     title(sprintf('pose %d: (%f,%f,%f)',poseId,xRob,yRob,thRob));
    
-    % use class method to sample from pdf
+    % plot sim ranges
     rangesSim = sampleFromParamArray(squeeze(predParamArray(i,:,:)),'normWithDrops');
-        
-    xSim = xRob+rangesSim.*cos(dp.bearings+thRob);
-    ySim = yRob+rangesSim.*sin(dp.bearings+thRob);
+    xSim = xRob+rangesSim.*cos(dp.laser.bearings+thRob);
+    ySim = yRob+rangesSim.*sin(dp.laser.bearings+thRob);
     plot(xSim,ySim,'ro');
     annotation('textbox',[.6,0.8,.1,.1], ...
     'String', {'green: real ranges','red: simulated ranges','black: robot'});
-    %legend('robot','real data','predicted data');
     xlim(xl0); ylim(yl0);
     hold off;
     
-    % visualize real and simulated pmfs for a particular pixel index
+    % plot histograms
     params = predParamArray(i,:,pmfPixel);
-    hf2 = vizPMFs(dp.obsArray{dp.testPoseIds(i),pmfPixel},params,@normWithDrops);
-    suptitle(sprintf('pixel %d',dp.pixelIds(pmfPixel)));
+    hf2 = vizPMFs(dp.obsArray{dp.testPoseIds(i),pmfPixel},params,@normWithDrops,dp.laser);
+    suptitle(sprintf('pixel %d',pmfPixel));
       
     % some fancy positioning for visibility
     figpos1 = get(hf1,'Position'); figpos2 = get(hf2,'Position');

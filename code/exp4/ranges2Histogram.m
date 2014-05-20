@@ -1,7 +1,6 @@
-function [res,xcenters] = ranges2Histogram(ranges)
-deltaRange = 1e-3; % 1mm
-maxRange = 4.5; 
-nCenters = (maxRange/deltaRange)+1;
-xcenters = linspace(0,maxRange,nCenters);
+function [res,xcenters] = ranges2Histogram(ranges,laser)
+% laser is a laserClass object
+nCenters = (laser.maxRange/laser.resolution)+1;
+xcenters = linspace(0,laser.maxRange,nCenters);
 res = hist(ranges,xcenters);
 end

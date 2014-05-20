@@ -4,19 +4,14 @@ classdef dataProcessor < handle
     properties (SetAccess = private)
         % poses is 3 x total poses
         % obsArray is a cell array of size total poses x num pixels
-        % pixelIds are pixelIds in the original stuff
-        % bearings are in rad
-        % maxRange of sensor in m
+        % laser is a laserClass object
         % trainPoseIds are the poses to train over
         % testPoseIds are the poses to test at
         % XTrain is num train poses x 3
         % XTest is num test poses x 3
         poses
         obsArray
-        pixelIds
-        nPixels
-        bearings
-        maxRange
+        laser
         trainPoseIds
         testPoseIds        
         XTrain
@@ -26,13 +21,10 @@ classdef dataProcessor < handle
     methods
         function obj = dataProcessor(inputData)
             % inputData fields
-            % ('poses','obsArray','pixelIds','bearings','maxRange','trainPoseIds','testPoseIds')
+            % ('poses','obsArray','laser','trainPoseIds','testPoseIds')
             obj.poses = inputData.poses;
             obj.obsArray = inputData.obsArray;
-            obj.pixelIds = inputData.pixelIds;
-            obj.nPixels = length(obj.pixelIds);
-            obj.bearings = inputData.bearings; 
-            obj.maxRange = inputData.maxRange;
+            obj.laser = inputData.laser;
             obj.trainPoseIds = inputData.trainPoseIds;
             obj.testPoseIds = inputData.testPoseIds;
             

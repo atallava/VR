@@ -3,12 +3,10 @@ classdef (Abstract) abstractInputTransformer < handle
     
     properties (Abstract, SetAccess = private)
         % envLineMap is a lineMap object
-        % maxRange of laser in meter
-        % bearings in rad
+        % laser is a laserClass object
         % posesLast is number of poses x 3, cache of last query
         envLineMap
-        maxRange
-        bearings
+        laser
         posesLast       
     end
     

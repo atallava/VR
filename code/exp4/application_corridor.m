@@ -31,8 +31,8 @@ for i = 1:nPoses
     
     rangesSim = sampleFromParamArray(squeeze(paramArray(i,:,:)),'normWithDrops');
         
-    xSim = xRob+rangesSim.*cos(dp.bearings+thRob);
-    ySim = yRob+rangesSim.*sin(dp.bearings+thRob);
+    xSim = xRob+rangesSim.*cos(dp.laser.bearings+thRob);
+    ySim = yRob+rangesSim.*sin(dp.laser.bearings+thRob);
     plot(xSim,ySim,'ro');
     %{
     annotation('textbox',[.6,0.8,.1,.1], ...

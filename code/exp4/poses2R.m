@@ -6,31 +6,27 @@ classdef poses2R < handle & abstractInputTransformer
         % rArrayLast is number of poses x 2 x number of bearings, cache of
         % last query
         envLineMap
-        maxRange = 4.5
-        bearings
+        laser
         posesLast
         rArrayLast
     end
     
     methods
         function obj = poses2R(inputData)
-            % inputData fields ('envLineMap','maxRange','bearings')
+            % inputData fields ('envLineMap','laser')
             if nargin > 0
                 obj.envLineMap = inputData.envLineMap;
-                if isfield(inputData,'maxRange')
-                    obj.maxRange = inputData.maxRange;
-                end
-                obj.bearings = inputData.bearings;
+                obj.laser = inputData.laser;
             end
         end
         
         function rArray = transform(obj,poses)
             % transform a given array of poses
             nPoses = size(poses,1);
-            rArray = zeros(nPoses,1,length(obj.bearings));
+            rArray = zeros(nPoses,1,length(obj.laser.bearings));
             
             for i = 1:nPoses
-                [r,~] = obj.envLineMap.raycast(poses(i,:),obj.maxRange,obj.bearings);
+                [r,~] = obj.envLineMap.raycast(poses(i,:),obj.laser.maxRange,obj.laser.bearings);
                 rArray(i,1,:) = r;                
             end
             obj.rArrayLast = rArray;

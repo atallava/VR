@@ -8,7 +8,8 @@ load processed_data_mar27
 fprintf('Initializing...\n');
 skip = 36;
 pixelIds = 1:skip:360; bearings = deg2rad(pixelIds-1);
-inputData = struct('poses',poses,'obsArray',{obsArray(:,pixelIds)},'pixelIds',pixelIds,'bearings',bearings,'maxRange',4.5);
+laser = laserClass(struct('maxRange',4.5,'bearings',bearings,'nullReading',0));
+inputData = struct('poses',poses,'obsArray',{obsArray(:,pixelIds)},'laser',laser);
 totalPoses = length(inputData.poses);
 frac = 0.7;
 %inputData.trainPoseIds = randperm(totalPoses,floor(frac*totalPoses));
@@ -25,10 +26,10 @@ trainPdfs = pdfBundle(inputData);
 %% initialize regressor
 fprintf('Initializing regressor(s)...\n');
 load map;
-inputData = struct('envLineMap',roomLineMap,'maxRange',dp.maxRange,'bearings',dp.bearings);
+inputData = struct('envLineMap',roomLineMap,'laser',dp.laser);
 p2ra = poses2RAlpha(inputData);
 p2r = poses2R(inputData);
-localizer = lineMapLocalizer(lines_p1,lines_p2);
+localizer = lineMapLocalizer(roomLineMap.objects);
 
 trainMuArray = trainPdfs.paramArray(:,1,:);
 trainSigmaArray = trainPdfs.paramArray(:,2,:);
@@ -42,27 +43,23 @@ trainMuArray(flag) = nan;
 trainSigmaArray(flag) = nan;
 
 % nonparametric
-inputData = struct('XTrain',dp.XTrain,'YTrain',trainMuArray,...
-    'pixelIds', dp.pixelIds, 'poseTransf', p2r, ...
+inputData = struct('XTrain',dp.XTrain,'YTrain',trainMuArray,'poseTransf', p2r, ...
     'regClass',@locallyWeightedLinearRegressor, 'kernelFn', @kernelR, 'kernelParams',struct('h',0.0025));
 %h = 0.055, lambda = 0.1, np
 %h = 0.0025 lwl
 %h 0.0058, 0.0384 locallyWeightedLinear nonParametric
 muPxRegBundle = pixelRegressorBundle(inputData);
 
-inputData = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,...
-    'pixelIds', dp.pixelIds, 'poseTransf', p2ra, ...
+inputData = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,'poseTransf', p2ra, ...
     'regClass',@nonParametricRegressor, 'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0559,'lambda',0.1));
 sigmaPxRegBundle = pixelRegressorBundle(inputData);
 
-inputData = struct('XTrain',dp.XTrain,'YTrain',trainPzArray,...
-    'pixelIds', dp.pixelIds, 'poseTransf', p2ra, ...
+inputData = struct('XTrain',dp.XTrain,'YTrain',trainPzArray,'poseTransf', p2ra, ...
     'regClass',@nonParametricRegressor, 'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0559,'lambda',0.1));
 pzPxRegBundle = pixelRegressorBundle(inputData);
 %{
 % baseline
-inputData = struct('XTrain',dp.XTrain,'YTrain',trainPdfs.paramArray,...
-    'pixelIds', dp.pixelIds, 'poseTransf', p2ra, ...
+inputData = struct('XTrain',dp.XTrain,'YTrain',trainPdfs.paramArray,'poseTransf', p2ra, ...
     'regClass',@baselineRegressor); 
 pxRegBundle = pixelRegressorBundle(inputData);
 %}

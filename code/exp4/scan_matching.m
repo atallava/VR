@@ -13,14 +13,14 @@ yobs = [.915 .915];
 
 lines_p1 = [xw(1:end-1) xobs(1); yw(1:end-1) yobs(1)];
 lines_p2 = [xw(2:end) xobs(2); yw(2:end) yobs(2)];
-localizer = lineMapLocalizer(lines_p1,lines_p2);
+localizer = lineMapLocalizer(roomLineMap.objects);
 
 %% visualize range images at processed poses
 for i = 1:nPoses
     ranges = rangesFromObsArray(obsArray,i,obsId);
     %ranges = obsArray(i,obsId,:); ranges = squeeze(ranges);
     poseObj = pose2D(poses(:,i));
-    riObj = rangeImage(ranges); riObj.cleanup;
+    riObj = rangeImage(struct('ranges',ranges,'cleanup',1));
     ptsLocal = [riObj.xArray; riObj.yArray; ones(1,riObj.npix)];
     hf = localizer.drawLines();
     outIds = localizer.throwOutliers(poseObj,ptsLocal);
@@ -39,7 +39,7 @@ for poseId = 1:nPoses
     poseEst = pose2D(poses(:,poseId));
     %ranges = obsArray(poseId,obsId,:); ranges = squeeze(ranges);
     ranges = rangesFromObsArray(obsArray,poseId,obsId);
-    ri = rangeImage(ranges); ri.cleanup;
+    ri = rangeImage(struct('ranges',ranges,'cleanup',1));
     % laser range points in robot local frame
     ptsLocal = [ri.xArray; ri.yArray];
     ptsLocal = [ptsLocal; ones(1,size(ptsLocal,2))];
@@ -70,7 +70,7 @@ err = zeros(1,numIter);
 poseArray = zeros(3,numIter);
 %ranges = obsArray(poseId,obsId,:); ranges = squeeze(ranges);
 ranges = rangesFromObsArray(obsArray,poseId,obsId);
-ri = rangeImage(ranges); ri.cleanup;
+ri = rangeImage(struct('ranges',ranges,'cleanup',1));
 % laser range points in robot local frame
 ptsLocal = [ri.xArray; ri.yArray];
 ptsLocal = [ptsLocal; ones(1,size(ptsLocal,2))];
