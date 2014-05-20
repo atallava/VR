@@ -10,7 +10,7 @@ pmfReal = pmfReal/sum(pmfReal);
 bar(xcenters,pmfReal);
 title('real pmf');
 subplot(2,1,2);
-tempObj = fitClass(params,1);
+tempObj = fitClass(struct('vec',params,'choice','params'));
 pmfSim = tempObj.snap2PMF(xcenters);
 bar(xcenters,pmfSim);
 title('predicted pmf');

@@ -43,23 +43,23 @@ trainMuArray(flag) = nan;
 trainSigmaArray(flag) = nan;
 
 % nonparametric
-inputData = struct('XTrain',dp.XTrain,'YTrain',trainMuArray,'poseTransf', p2r, ...
+inputData = struct('XTrain',dp.XTrain,'YTrain',trainMuArray,'inputPoseTransf', p2r, ...
     'regClass',@locallyWeightedLinearRegressor, 'kernelFn', @kernelR, 'kernelParams',struct('h',0.0025));
 %h = 0.055, lambda = 0.1, np
 %h = 0.0025 lwl
 %h 0.0058, 0.0384 locallyWeightedLinear nonParametric
 muPxRegBundle = pixelRegressorBundle(inputData);
 
-inputData = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,'poseTransf', p2ra, ...
+inputData = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,'inputPoseTransf', p2ra, ...
     'regClass',@nonParametricRegressor, 'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0559,'lambda',0.1));
 sigmaPxRegBundle = pixelRegressorBundle(inputData);
 
-inputData = struct('XTrain',dp.XTrain,'YTrain',trainPzArray,'poseTransf', p2ra, ...
+inputData = struct('XTrain',dp.XTrain,'YTrain',trainPzArray,'inputPoseTransf', p2ra, ...
     'regClass',@nonParametricRegressor, 'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0559,'lambda',0.1));
 pzPxRegBundle = pixelRegressorBundle(inputData);
 %{
 % baseline
-inputData = struct('XTrain',dp.XTrain,'YTrain',trainPdfs.paramArray,'poseTransf', p2ra, ...
+inputData = struct('XTrain',dp.XTrain,'YTrain',trainPdfs.paramArray,'inputPoseTransf', p2ra, ...
     'regClass',@baselineRegressor); 
 pxRegBundle = pixelRegressorBundle(inputData);
 %}
@@ -86,3 +86,8 @@ testPdfs = pdfBundle(inputData);
 errTest = abs(testPdfs.paramArray-predParamArray);
 err = errorStats(errTest);
 [paramME,nOutliers] = err.getParamME();
+
+%% create a simulator instance
+inputData = struct('fitClass',trainPdfs.fitClass,'pxRegBundleArray',[muPxRegBundle sigmaPxRegBundle pzPxRegBundle], ...
+    'laser',dp.laser,'map',roomLineMap);
+rsim = rangeSimulator(inputData);

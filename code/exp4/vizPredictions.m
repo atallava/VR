@@ -1,4 +1,4 @@
-function vizPredictions(dp,predParamArray,localizer)
+function vizPredictions(dp,predParamArray,localizer.rsim)
 %vizPredictions visualize real vs predicted data
 % dp is a dataProcessor object
 
@@ -25,7 +25,7 @@ for i = randperm(length(dp.testPoseIds),1)
     title(sprintf('pose %d: (%f,%f,%f)',poseId,xRob,yRob,thRob));
    
     % plot sim ranges
-    rangesSim = sampleFromParamArray(squeeze(predParamArray(i,:,:)),'normWithDrops');
+    rangesSim = rangeSimulator.sampleFromParamArray(squeeze(predParamArray(i,:,:)),@normWithDrops);
     xSim = xRob+rangesSim.*cos(dp.laser.bearings+thRob);
     ySim = yRob+rangesSim.*sin(dp.laser.bearings+thRob);
     plot(xSim,ySim,'ro');

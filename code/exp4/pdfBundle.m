@@ -24,7 +24,7 @@ classdef pdfBundle < handle
             obj.fitClass = inputData.fitClass;
             obj.data = inputData.data;
             obj.nPixels = size(obj.data,2);
-            tempObj = obj.fitClass(0,0);
+            tempObj = obj.fitClass(struct('vec',[]));
             obj.nParams = tempObj.nParams;
             obj.fillParamArray();
         end
@@ -56,7 +56,7 @@ classdef pdfBundle < handle
             obj.nllArray = zeros(nPoses,obj.nPixels);
             for i = 1:nPoses
                 for j = 1:obj.nPixels
-                    obj.fitArray{i} = obj.fitClass(obj.data{i,j},0);
+                    obj.fitArray{i} = obj.fitClass(struct('vec',obj.data{i,j}));
                     obj.paramArray(i,:,j) = obj.fitArray{i}.getParams();
                     obj.nllArray(i,j) = obj.fitArray{i}.nll;
                 end

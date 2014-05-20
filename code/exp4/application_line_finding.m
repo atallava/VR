@@ -40,7 +40,7 @@ for i = 1:length(dp.testPoseIds)
     title('real ranges'); xlim(xl); ylim(yl);
    
     % np sim
-    rangesSim = sampleFromParamArray(squeeze(np.predParamArray(i,:,:)),'normWithDrops');
+    rangesSim = sampleFromParamArray(squeeze(np.predParamArray(i,:,:)),@normWithDrops);
     xSim = xRob+rangesSim.*cos(dp.laser.bearings+thRob);
     ySim = yRob+rangesSim.*sin(dp.laser.bearings+thRob);
     figure; hold on;

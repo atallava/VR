@@ -29,7 +29,7 @@ for i = 1:nPoses
     xRob = poses(1,i); yRob = poses(2,i); thRob = poses(3,i);
     quiver(xRob,yRob,0.2*cos(thRob),0.2*sin(thRob),'k','LineWidth',2);
     
-    rangesSim = sampleFromParamArray(squeeze(paramArray(i,:,:)),'normWithDrops');
+    rangesSim = sampleFromParamArray(squeeze(paramArray(i,:,:)),@normWithDrops);
         
     xSim = xRob+rangesSim.*cos(dp.laser.bearings+thRob);
     ySim = yRob+rangesSim.*sin(dp.laser.bearings+thRob);

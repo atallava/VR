@@ -14,20 +14,24 @@ classdef normWithDrops < handle & abstractPdf
     end
     
     methods
-        function obj = normWithDrops(input,choice)
-            % need an empty constructor for object arrays
+        function obj = normWithDrops(inputData)
+            % inputData fields ('vec','choice')
+            % 'choice' is 'raw' (default) or 'params'
             if nargin > 0
-                if choice == 0
-                    % fit to input
-                    obj.fitData(input);
+                if ~isfield(inputData,'choice')
+                    inputData.choice = 'raw';
+                end
+                if strcmp(inputData.choice,'raw')
+                    % fit to vec
+                    obj.fitData(inputData.vec);
                 else
                     % input is parameters
-                    if length(input) ~= 3
-                        error('NEED 3 VALUES IF CHOSE TO INPUT PARAMETERS TO NORMWITHDROPS.');
+                    if length(inputData.vec) ~= 3
+                        error('NEED 3 VALUES IF WANT TO INPUT PARAMETERS TO NORMWITHDROPS.');
                     end
-                    obj.mu = input(1);
-                    obj.sigma = input(2);
-                    obj.pZero = input(3);
+                    obj.mu = inputData.vec(1);
+                    obj.sigma = inputData.vec(2);
+                    obj.pZero = inputData.vec(3);
                     obj.nll = NaN;
                 end
             end

@@ -17,7 +17,7 @@ for i = 1:numTrials
 
     % fit pdf models to training data
     inputData = struct('fitClass',@normWithDrops,'data',{dp.obsArray(dp.trainPoseIds,:)});
-    trainPdfs = pdfModeler(inputData);
+    trainPdfs = pdfBundle(inputData);
     trainPdfs.markOutliers();
 
     % initialize regressor
@@ -31,7 +31,7 @@ for i = 1:numTrials
     % diagnose error
     % fit pdf models to test data
     inputData = struct('fitClass',@normWithDrops,'data',{dp.obsArray(dp.testPoseIds,:)});
-    testPdfs = pdfModeler(inputData);
+    testPdfs = pdfBundle(inputData);
     errTest = abs(testPdfs.paramArray-predParamArray);
     err = errorStats(errTest);
     paramME = err.getParamME();

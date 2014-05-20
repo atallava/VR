@@ -11,7 +11,9 @@ nllArray = zeros(nPoses,nPixels);
 
 for i = 1:nPoses
    for j = 1:nPixels
-       tempObj = fitClass(squeeze(params(i,:,j)),1);
+       fitClassInput.vec = squeeze(params(i,:,j));
+       fitClassInput.choice = 'params';
+       tempObj = fitClass(fitClassInput);
        nllArray(i,j) = tempObj.negLogLike(data{i,j});
    end
 end
