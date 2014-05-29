@@ -1,7 +1,7 @@
 %process march 27 collected data
 clear all; clc;
+init;
 load data_mar27
-addpath ~/Documents/MATLAB/neato_utils/
 
 nPoses = length(t_range_collection);
 tStart = [t_range_collection.('start')]-lzr.tArray(1);

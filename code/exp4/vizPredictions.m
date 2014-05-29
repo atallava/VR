@@ -1,4 +1,4 @@
-function vizPredictions(dp,predParamArray,localizer.rsim)
+function vizPredictions(dp,predParamArray,localizer)
 %vizPredictions visualize real vs predicted data
 % dp is a dataProcessor object
 

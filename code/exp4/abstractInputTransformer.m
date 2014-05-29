@@ -1,7 +1,7 @@
 classdef (Abstract) abstractInputTransformer < handle
     %abstractRegressor base class for transforming inputs from pose space
     
-    properties (Abstract, SetAccess = private)
+    properties (SetAccess = protected)
         % envLineMap is a lineMap object
         % laser is a laserClass object
         % posesLast is number of poses x 3, cache of last query

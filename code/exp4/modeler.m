@@ -42,20 +42,25 @@ flag = (trainMuArray > nominalRange+thresh) | (trainMuArray < nominalRange-thres
 trainMuArray(flag) = nan;
 trainSigmaArray(flag) = nan;
 
+% switches to account for laser.maxRange
+bsMu = boxSwitch(struct('XRanges',[0; dp.laser.maxRange],'switchY',nan));
+bsSigma = boxSwitch(struct('XRanges',[0 0; dp.laser.maxRange 2*pi],'switchY',nan));
+bsPz = boxSwitch(struct('XRanges',[0 0; dp.laser.maxRange 2*pi],'switchY',1));
+
 % nonparametric
 inputData = struct('XTrain',dp.XTrain,'YTrain',trainMuArray,'inputPoseTransf', p2r, ...
-    'regClass',@locallyWeightedLinearRegressor, 'kernelFn', @kernelR, 'kernelParams',struct('h',0.0025));
+    'regClass',@locallyWeightedLinearRegressor,'XSpaceSwitch',bsMu,'kernelFn',@kernelR, 'kernelParams',struct('h',0.0025));
 %h = 0.055, lambda = 0.1, np
 %h = 0.0025 lwl
 %h 0.0058, 0.0384 locallyWeightedLinear nonParametric
 muPxRegBundle = pixelRegressorBundle(inputData);
 
 inputData = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,'inputPoseTransf', p2ra, ...
-    'regClass',@nonParametricRegressor, 'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0559,'lambda',0.1));
+    'regClass',@nonParametricRegressor, 'XSpaceSwitch',bsSigma,'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0559,'lambda',0.1));
 sigmaPxRegBundle = pixelRegressorBundle(inputData);
 
 inputData = struct('XTrain',dp.XTrain,'YTrain',trainPzArray,'inputPoseTransf', p2ra, ...
-    'regClass',@nonParametricRegressor, 'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0559,'lambda',0.1));
+    'regClass',@nonParametricRegressor,'XSpaceSwitch',bsPz,'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0559,'lambda',0.1));
 pzPxRegBundle = pixelRegressorBundle(inputData);
 %{
 % baseline

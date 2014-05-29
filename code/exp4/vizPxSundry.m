@@ -1,25 +1,28 @@
-function vizPxSundry(dp,trainPose,pxId)
+function vizPxSundry(dp,poseId,pxId)
 %vzPxSundry view real range histogram vs fit pdf for training data
 % dp is a dataProcessor object
 % trainPose is index to dp.trainPoseIds
 % pxId is index to pixel in dp.obsArray
 
-poseId = dp.trainPoseIds(trainPose);
 ranges = dp.obsArray{poseId,pxId};
 figure;
+subplot(3,1,1);
 plot(ranges,'+');
 [hgram,xcenters] = ranges2Histogram(ranges,dp.laser);
 hgram = hgram/sum(hgram);
 title('real data');
-figure;
+%figure; 
+subplot(3,1,2);
 bar(xcenters,hgram);
 title('histogram');
-tempObj = normWithDrops(ranges,0);
+tempObj = normWithDrops(struct('vec',ranges));
 pmfSim = tempObj.snap2PMF(xcenters);
-figure;
+%figure;
+subplot(3,1,3);
 bar(xcenters,pmfSim);
 title('predicted pmf');
-fprintf('calculated nll: %f \n', tempObj.nll);
+fprintf('nll: %f \n', tempObj.nll);
+fprintf('pzero: %f\n',tempObj.pZero);
 
 end
 

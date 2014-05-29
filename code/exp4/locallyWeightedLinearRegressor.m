@@ -4,21 +4,23 @@ classdef locallyWeightedLinearRegressor < handle & abstractRegressor
     properties (SetAccess = private)
         % kernelFn is a function handle to some kernel
         % kernelParams is a struct that is input to kernelFn
-        XTrain
-        YTrain
         dimY
         kernelFn
         kernelParams
-        XLast
-        YLast
     end
     
     methods
         function obj = locallyWeightedLinearRegressor(inputData)
-            % inputData fields ('XTrain','YTrain','kernelFn','kernelParams')
+            % inputData fields ('XTrain','YTrain','XSpaceSwitch','kernelFn','kernelParams')
             if nargin > 0
                 obj.XTrain = inputData.XTrain;
                 obj.YTrain = inputData.YTrain;
+                if isfield(inputData,'XSpaceSwitch')
+                   obj.XSpaceSwitch = inputData.XSpaceSwitch;
+                   obj.removeSwitchedTrainingData();
+                else
+                    obj.XSpaceSwitch = [];
+                end
                 obj.kernelFn = inputData.kernelFn;
                 obj.kernelParams = inputData.kernelParams;
                 obj.dimY = size(obj.YTrain,2);
@@ -50,6 +52,12 @@ classdef locallyWeightedLinearRegressor < handle & abstractRegressor
                     end
                 end
             end
+            
+            if ~isempty(obj.XSpaceSwitch)
+                flag = obj.XSpaceSwitch.switchX(X);
+                Y(flag,:) = repmat(obj.XSpaceSwitch.switchY,sum(flag),1);
+            end
+            
             obj.XLast = X;
             obj.YLast = Y;
         end

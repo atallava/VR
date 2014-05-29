@@ -4,12 +4,8 @@ classdef baselineRegressor < handle & abstractRegressor
     properties (SetAccess = private)
         % nParams is number of output parameters
         % K is a constant used to calculate sigma
-        XTrain
-        YTrain
         nParams = 3
         K = 1e-3
-        XLast
-        YLast
     end
     
     methods

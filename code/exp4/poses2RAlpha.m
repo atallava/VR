@@ -5,9 +5,6 @@ classdef poses2RAlpha < handle & abstractInputTransformer
     properties (SetAccess = private)
         % rAlphaArrayLast is number of poses x 2 x number of bearings, cache of
         % last query
-        envLineMap
-        laser
-        posesLast
         rAlphaArrayLast
     end
     

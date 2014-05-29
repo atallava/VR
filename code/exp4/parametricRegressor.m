@@ -5,21 +5,23 @@ classdef parametricRegressor < handle & abstractRegressor
         % nTargets is the number of output values
         % models is a cell array of NonLinearModels, one model for each
         % target
-        XTrain
-        YTrain
         nTargets
         models
-        XLast
-        YLast        
     end
     
     methods
         function obj = parametricRegressor(inputData)
-            % inputData fields ('XTrain','YTrain','fnForms','weights0')
+            % inputData fields ('XTrain','YTrain','XSpaceSwitch','fnForms','weights0')
             % empty constructor to allow object arrays
             if nargin > 0
                 obj.XTrain = inputData.XTrain;
                 obj.YTrain = inputData.YTrain;
+                if isfield(inputData,'XSpaceSwitch')
+                   obj.XSpaceSwitch = inputData.XSpaceSwitch;
+                   obj.removeSwitchedTrainingData();
+                else
+                    obj.XSpaceSwitch = [];
+                end
                 obj.nTargets = size(obj.YTrain,2);
                 obj.fitModels2TrainingData(inputData.fnForms,inputData.weights0);
             end
@@ -44,7 +46,13 @@ classdef parametricRegressor < handle & abstractRegressor
                     end
                     Y(:,i) = y;
                 end
-            end      
+            end    
+            
+            if ~isempty(obj.XSpaceSwitch)
+                flag = obj.XSpaceSwitch.switchX(X);
+                Y(flag,:) = repmat(obj.XSpaceSwitch.switchY,sum(flag),1);
+            end
+            
             obj.XLast = X;
             obj.YLast = Y;
         end

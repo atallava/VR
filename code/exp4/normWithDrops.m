@@ -3,7 +3,7 @@ classdef normWithDrops < handle & abstractPdf
     
     properties (Constant = true)
         nParams = 3
-        dx = 1e-3;
+        dx = 2e-3;
     end
     
     properties (SetAccess = private)
@@ -43,7 +43,10 @@ classdef normWithDrops < handle & abstractPdf
                if isnan(obj.sigma) || (obj.sigma == 0)
                    vec1 = (data == obj.mu)*(1-obj.pZero);
                else
-                   vec1 = pdf('normal',data,obj.mu,obj.sigma)*obj.dx*(1-obj.pZero);
+                   temp = (data-obj.mu)/obj.sigma;
+                   x2 = temp+obj.dx*0.5; x1 = temp-obj.dx*0.5;
+                   vec1 = 0.5*(erf(x2/sqrt(2))-erf(x1/sqrt(2)))*(1-obj.pZero);
+                   %vec1 = pdf('normal',data,obj.mu,obj.sigma)*obj.dx*(1-obj.pZero);
                end
                vec2 = (data == 0)*obj.pZero;
                res = -sum(log(vec1+vec2));

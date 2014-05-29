@@ -1,6 +1,6 @@
 classdef (Abstract) abstractPdf < handle
     %abstractPdf abstract class for modeling pdfs
-    
+
     properties (Abstract, Constant = true)
         % nParams is the number of parameters in this model
         % dx is a step size
