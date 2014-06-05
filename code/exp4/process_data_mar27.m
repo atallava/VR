@@ -50,7 +50,7 @@ for i = 1:enc.update_count
         end
     end
     
-        if tCommonEnc(i) > tCommonLzr(lzrCount)
+    if tCommonEnc(i) > tCommonLzr(lzrCount)
         t1 = tic;
         % update using laser
         ranges = lzr.rangeArray{lzrCount+1};
@@ -87,16 +87,6 @@ for i = 1:enc.update_count
     end
 end
 
-%% plot poses
-
-figure;
-axis equal; hold on;
-xlim([min(poses(1,:)) max(poses(1,:))]);
-ylim([min(poses(2,:)) max(poses(2,:))]);
-for i = 1:nPoses
-    text(poses(1,i),poses(2,i),sprintf('%d',i));
-    %plot(poses(1,i),poses(2,i),'+');
-end
 
 
 

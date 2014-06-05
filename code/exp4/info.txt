@@ -1,0 +1,12 @@
+data_Feb7
+Range readings in artificial environment for building simulator. Robot: mega.
+
+data_mar27
+Range readings in artificial environment for building simulator. Robot: peta.
+
+data_may5_peta
+Collected data to test maximum range of laser and unexplained large-range readings. Robot: peta.
+
+data_june6
+To test simulator on line-finding. Robot: peta.
+

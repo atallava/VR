@@ -6,7 +6,7 @@ addpath ~/Documents/MATLAB/neato_utils/
 load processed_data_mar27
 
 fprintf('Initializing...\n');
-skip = 36;
+skip = 1;
 pixelIds = 1:skip:360; bearings = deg2rad(pixelIds-1);
 laser = laserClass(struct('maxRange',4.5,'bearings',bearings,'nullReading',0));
 inputData = struct('poses',poses,'obsArray',{obsArray(:,pixelIds)},'laser',laser);
