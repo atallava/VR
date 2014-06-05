@@ -1,6 +1,6 @@
 load lineSet
 lineL = 0.61; 
-for i = 1%:length(lineSet)
+for i = 1:length(lineSet)
     lines = lineSet{i};
     clear newLines;
     for j = 1:length(lines)
