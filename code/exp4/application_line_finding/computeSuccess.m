@@ -1,23 +1,28 @@
 clear all; clc
 load processed_data_june6
 load lineSetFixedLength
-%load('../full_predictor_mar27_1','rsim');
+load('../full_predictor_mar27_1','rsim');
+addpath ~/courses/mrpl/code/lab8/
+addpath ../
 load map1.mat
 
 nPoses = length(obsArrayByPose);
 nTrials = 10; 
 numLines = 2;
+targetLen = 0.61;
+
 %% score on real range data
-plot_option = 1;
+plot_option = 0;
 poseScore = zeros(1,nPoses);
-for i = 9%1:nPoses
+for i = 1:nPoses
     fprintf('pose %d\n',i);
     obsIds = randperm(size(obsArrayByPose{i},1),nTrials);
     score = 0;
     for j = obsIds
         ranges = obsArrayByPose{i}(j,:);
         ri = rangeImage(struct('ranges',ranges,'cleanup',1));
-        lines = findLinesHT(ri,numLines);
+        %lines = findLinesHT(ri,numLines);
+        [lines,~] = getLines(ri,targetLen);
         if isempty(lines)
             continue;
         end
@@ -44,19 +49,19 @@ plot_option = 1;
 poseScore = zeros(1,nPoses);
 robotPose = [0;0;0];
 warning('off');
-for i = 9%:nPoses
+for i = 1:nPoses
     fprintf('pose %d\n',i);
     lObjArray = lines2LineObjects(lineSet{i});
     tempMap = lineMap([room.objects lObjArray]);
-    tempMap.togglePlot();
-    %rsim.setMap(tempMap);
+    rsim.setMap(tempMap);
     score = 0;
     for j = 1:nTrials
-        %ranges = rsim.simulate(robotPose);
-        ranges = tempMap.raycastNoisy(robotPose,5,deg2rad(0:359));
+        ranges = rsim.simulate(robotPose);
+        %ranges = tempMap.raycastNoisy(robotPose,5,deg2rad(0:359));
         ri = rangeImage(struct('ranges',ranges,'cleanup',1));
-        lines = findLinesHT(ri,numLines);
-        
+        %lines = findLinesHT(ri,numLines);
+        [lines,~] = getLines(ri,targetLen);
+
         if plot_option
         hf = ri.plotXvsY(5); title(sprintf('pose %d, obs %d',i,j));
         hold on;

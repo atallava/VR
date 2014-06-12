@@ -13,7 +13,7 @@ inputData = struct('poses',poses,'obsArray',{obsArray(:,pixelIds)},'laser',laser
 totalPoses = length(inputData.poses);
 frac = 0.7;
 %inputData.trainPoseIds = randperm(totalPoses,floor(frac*totalPoses));
-inputData.trainPoseIds = [1    21    17    38     6    32    27    29    24    35    28    40    10     4    34    13     8     9    31    11 23    22    37    15     7    33    41     5    42];
+inputData.trainPoseIds = 1:42;%[1    21    17    38     6    32    27    29    24    35    28    40    10     4    34    13     8     9    31    11 23    22    37    15     7    33    41     5    42];
 inputData.testPoseIds = setdiff(1:totalPoses,inputData.trainPoseIds);
 dp = dataProcessor(inputData);
 
@@ -77,7 +77,7 @@ predSigmaArray = sigmaPxRegBundle.predict(dp.XTest);
 predPzArray = pzPxRegBundle.predict(dp.XTest);
 
 predParamArray(:,1,:) = predMuArray;
-predParamArray(:,2,:) = predSigmaArray;
+%predParamArray(:,2,:) = predSigmaArray;
 predParamArray(:,3,:) = predPzArray;
 
 % baseline
