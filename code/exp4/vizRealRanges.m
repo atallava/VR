@@ -1,5 +1,5 @@
 function hf = vizRealRanges(localizer,ranges,pose)
-%vizRealRanges draw real ranges on a map
+% vizRealRanges draw real ranges on a map
 
 hf = localizer.drawLines();
 xl0 = xlim;
