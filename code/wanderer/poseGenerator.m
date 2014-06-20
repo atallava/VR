@@ -6,8 +6,7 @@ classdef poseGenerator < handle
         nDraws = 40;
         dRange = [0 0.5]; phiRange = pi/2*[-1 1];
         candidateBufferMaxSize = 10;
-        scoringPolygon = [1 -1; 1 1; -1 1; -1 -1; 1 -1]*0.1;
-        startPose; currentPose
+        scoringPolygon = [1 -1; 1 1; -1 1; -1 -1; 1 -1]*0.15;
         sampleHistory; poseHistory;
     end
 
@@ -44,20 +43,16 @@ classdef poseGenerator < handle
             end
         end
         
-        function obj = setStartPose(obj,pose)
-            obj.startPose = pose;
-            obj.poseHistory(:,end+1) = pose;
-        end
-        
-        function pose = sample(obj)
-            candidateBuffer = [];
+        function sampledPose = sample(obj,pose)
+            candidateBuffer = []; 
+            sampledPose = [];
             for i = 1:obj.nDraws
                 r = rand()*(obj.dRange(2)-obj.dRange(1))+obj.dRange(1); 
                 phi = rand()*(obj.phiRange(2)-obj.phiRange(1))+obj.phiRange(1);
-                th = obj.currentPose(3)+phi;
-                poseSample = obj.currentPose+[r*cos(th); r*sin(th); phi];
+                th = mod(pose(3)+phi,2*pi);
+                poseSample = pose+[r*cos(th); r*sin(th); phi];
                 currentBBox = robotKinematicModel.getTransformedBBox(poseSample);
-                
+                                
                 % check if sample is within walls
                 if ~inpolygon(poseSample(1),poseSample(2),obj.walls.lines(:,1),obj.walls.lines(:,2))
                     continue;
@@ -83,7 +78,8 @@ classdef poseGenerator < handle
             % pick pose from candidates
             nCandidates = size(candidateBuffer,2);
             if nCandidates == 0
-                error('NO CANDIDATE POSES FOUND.');
+                warning('NO CANDIDATE POSES FOUND.');
+                return;
             end
             candidateScores = zeros(1,nCandidates);
             for i = 1:nCandidates
@@ -93,12 +89,11 @@ classdef poseGenerator < handle
             end
             candidateScoresN = candidateScores/sum(candidateScores);
             id = discretesample(candidateScoresN,1);
-            pose = candidateBuffer(:,id); 
-            obj.sampleHistory(:,end+1) = pose;
+            sampledPose = candidateBuffer(:,id); 
+            obj.sampleHistory(:,end+1) = sampledPose;
         end
         
-        function obj = setCurrentPose(obj,pose)
-            obj.currentPose = pose;
+        function obj = addToPoseHist(obj,pose)
             obj.poseHistory(:,end+1) = pose;
         end
     end
