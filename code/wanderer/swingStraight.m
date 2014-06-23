@@ -1,6 +1,10 @@
 classdef swingStraight < handle & abstractTrajectory
     %swingStraight from start, turn and move straight to goal
         
+    properties (Constant = true)
+        backupDist = 0.05;
+    end
+    
     properties
         start; goal
         tSwing; tStraight
@@ -63,6 +67,14 @@ classdef swingStraight < handle & abstractTrajectory
             pose = obj.goal; pose(3) = obj.thFinal;
             bBox2 = robotModel.getTransformedBBox(pose);
             obj.bBox = [bBox1(3:4,:); bBox2(1:2,:); bBox1(3,:)];
+        end
+        
+    end
+    
+    methods (Static = true)
+        function bPose = getBackedUpPose(pose)
+            th = pose(3);
+            bPose = pose-swingStraight.backupDist*[cos(th); sin(th); 0];
         end
     end
     
