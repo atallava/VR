@@ -4,7 +4,7 @@ classdef poseGenerator < handle
     properties (SetAccess = private)
         map; walls; lObjArray;
         nDraws = 40;
-        dRange = [0 0.5]; phiRange = pi/2*[-1 1];
+        dRange = [0.05 0.5]; phiRange = pi/2*[-1 1];
         candidateBufferMaxSize = 10;
         scoringPolygon = [1 -1; 1 1; -1 1; -1 -1; 1 -1]*0.15;
         sampleHistory; poseHistory;

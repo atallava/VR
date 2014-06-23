@@ -1,11 +1,20 @@
-start = rand(2,1)*5; start(3) = rand;
-goal = rand(2,1)*5; goal(3) = rand;
-
-ss = swingStraight(start,goal);
-figure; hold on;
-for t = linspace(0,ss.getTrajectoryDuration)
-    p = ss.getPoseAtTime(t);
-    quiver(p(1),p(2),0.1*cos(p(3)),0.1*sin(p(3)),'r','LineWidth',2);
+if exist('rob','var')
+    if rob.timerUp
+        rob.shutdown;
+    end
 end
-plot(ss.bBox(:,1),ss.bBox(:,2),'g');
-axis equal;
+clear all; close all; clc;
+%start = [0; 0; 0]; goal = 0.5*[cos(pi/3); sin(pi/3); 0];
+start = [0; 0; 0]; goal = [-1; 0; 0];
+rob = neato('sim');
+rob.sim_robot.pose = start;
+rstate = robState(rob,'robot',start);
+
+%traj = swingStraight(start,goal);
+traj = backupTrajectory(start,goal);
+ctrl = controllerClass(struct('gainV',0.09,'gainW',0.05));
+trajFl = trajectoryFollower(struct('trajectory',traj,'controller',ctrl));
+trajFl.execute(rob,rstate);
+
+%% plot stuff
+trajFl.plotLogs;

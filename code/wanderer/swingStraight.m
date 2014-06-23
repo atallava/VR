@@ -1,15 +1,13 @@
 classdef swingStraight < handle & abstractTrajectory
     %swingStraight from start, turn and move straight to goal
         
-    properties (Constant = true)
-        backupDist = 0.05;
-    end
-    
     properties
         start; goal
         tSwing; tStraight
         phi; dist; thFinal
         bBox
+        wMax = 1; %robotModel.wMax;
+        VMax = 0.2; %robotModel.vMax;
     end
     
     methods
@@ -22,8 +20,8 @@ classdef swingStraight < handle & abstractTrajectory
             obj.thFinal = atan2(vec(2),vec(1));
             obj.phi = atan2(sin(obj.thFinal-th),cos(obj.thFinal-th));
             obj.dist = norm(vec);
-            obj.tSwing = abs(obj.phi)/robotModel.wMax;
-            obj.tStraight = obj.dist/robotModel.VMax;
+            obj.tSwing = abs(obj.phi)/obj.wMax;
+            obj.tStraight = obj.dist/obj.VMax;
             obj.computeTrajBBox();
         end
         
@@ -53,9 +51,9 @@ classdef swingStraight < handle & abstractTrajectory
         
         function [V,w] = getControl(obj,t)
             if (t > obj.tIdle) && (t <= obj.tIdle+obj.tSwing)
-                V = 0; w = robotModel.wMax;
+                V = 0; w = sign(obj.phi)*obj.wMax;
             elseif (t > obj.tIdle+obj.tSwing+obj.tIdle) && (t <= obj.tIdle+obj.tSwing+obj.tIdle+obj.tStraight)
-                V = robotModel.VMax; w = 0;
+                V = obj.VMax; w = 0;
             else
                 V = 0; w = 0;
             end
@@ -70,14 +68,6 @@ classdef swingStraight < handle & abstractTrajectory
         end
         
     end
-    
-    methods (Static = true)
-        function bPose = getBackedUpPose(pose)
-            th = pose(3);
-            bPose = pose-swingStraight.backupDist*[cos(th); sin(th); 0];
-        end
-    end
-    
 end
 
 
