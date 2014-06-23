@@ -1,7 +1,8 @@
 clear all; clc
 load processed_data_june6
 load lineSetFixedLength
-load('../full_predictor_mar27_1','rsim');
+%load('../full_predictor_mar27_1','rsim');
+load('../smoothness_tester','rsim');
 addpath ~/courses/mrpl/code/lab8/
 addpath ../
 load map1.mat
@@ -10,7 +11,7 @@ nPoses = length(obsArrayByPose);
 nTrials = 10; 
 numLines = 2;
 targetLen = 0.61;
-
+%{
 %% score on real range data
 plot_option = 0;
 poseScore = zeros(1,nPoses);
@@ -43,9 +44,9 @@ for i = 1:nPoses
     end
     poseScore(i) = score/nTrials;
 end
-
+%}
 %% score on simulated data
-plot_option = 1;
+plot_option = 0;
 poseScore = zeros(1,nPoses);
 robotPose = [0;0;0];
 warning('off');

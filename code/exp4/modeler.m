@@ -77,7 +77,7 @@ predSigmaArray = sigmaPxRegBundle.predict(dp.XTest);
 predPzArray = pzPxRegBundle.predict(dp.XTest);
 
 predParamArray(:,1,:) = predMuArray;
-%predParamArray(:,2,:) = predSigmaArray;
+predParamArray(:,2,:) = predSigmaArray;
 predParamArray(:,3,:) = predPzArray;
 
 % baseline

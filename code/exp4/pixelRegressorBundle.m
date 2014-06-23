@@ -1,7 +1,7 @@
 classdef pixelRegressorBundle < handle
     %pixelBundleRegressor deals with regression over a collection of pixels
         
-    properties (SetAccess = private)
+    properties %(SetAccess = private)
         % XTrain is num observations x dimX, training input
         % YTrain is num observations x dimY x num pixels, training output
         % regClass is a handle to the regressor class to be used on each
