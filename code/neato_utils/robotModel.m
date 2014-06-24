@@ -39,7 +39,7 @@ classdef robotModel < handle
             % Orient bBox to align with pose
             % pose is array of length 3
             p2d = pose2D(pose);
-            tBBox = p2d.Tb2w*[robotKinematicModel.bBox'; ones(1,size(robotKinematicModel.bBox,1))];
+            tBBox = p2d.Tb2w*[robotModel.bBox'; ones(1,size(robotModel.bBox,1))];
             tBBox(3,:) = []; tBBox = tBBox';                
         end
     end

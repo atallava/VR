@@ -1,5 +1,5 @@
 classdef laserClass < handle
-    %laser all relevant information about sensor being simulated
+    %laserClass sensor information
     
     properties (SetAccess = private)
         % distance unit: m
@@ -9,12 +9,13 @@ classdef laserClass < handle
         bearings
         nPixels
         nullReading
+        Tsensor % describes sensor frame wrt some other frame, typically robot origin
     end
     
     methods
         function obj = laserClass(inputData)
-            % inputData fields ('maxRange','rangeRes','bearings','nullReading')
-            % default (4.5, 0.001, deg2rad(0:359), 0)
+            % inputData fields ('maxRange','rangeRes','bearings','nullReading','Tsensor')
+            % default (4.5, 0.001, deg2rad(0:359), 0, eye(3))
             if isfield(inputData,'maxRange')
                 obj.maxRange = inputData.maxRange;
             else
@@ -30,6 +31,11 @@ classdef laserClass < handle
             else
                 obj.bearings = deg2rad(0:359);
             end
+            if isfield(inputData,'Tsensor')
+                obj.Tsensor = inputData.Tsensor;
+            else
+                obj.Tsensor = eye(3);
+            end
             obj.nPixels = length(obj.bearings);
             if isfield(inputData,'nullReading')
                 obj.nullReading = inputData.nullReading;
@@ -37,7 +43,16 @@ classdef laserClass < handle
                 obj.nullReading = 0;
             end
         end
+        
+        function laserPose = refPoseToLaserPose(obj,refPose)
+           % given reference pose, return laser pose
+           laserPose = pose2D.pose1ToPose2(refPose,obj.Tsensor);
+        end
+        
+        function refPose = laserPoseToRefPose(obj,laserPose)
+            % given laser pose, return reference pose
+            refPose = pose2D.pose1ToPose2(laserPose,inv(obj.Tsensor));
+        end
     end
-    
 end
 

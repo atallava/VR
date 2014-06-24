@@ -1,11 +1,8 @@
 classdef pose2D < handle
     
     properties (SetAccess = private)
-        x
-        y
-        th
-        R
-        T
+        x; y; th
+        R; T
     end
     
     methods(Static = true)
@@ -28,8 +25,7 @@ classdef pose2D < handle
             obj.y = pose(2);
             obj.th = mod(pose(3),2*pi);
             obj.R = obj.rotmat2D(obj.th);
-            obj.T = [obj.R [obj.x; obj.y]; ...
-                0 0 1];
+            obj.T = pose2D.poseToTransform(pose);
         end
         
         function Rot = rotmat2D(obj,th)
@@ -61,5 +57,30 @@ classdef pose2D < handle
         end
     end
     
+    methods (Static = true)
+        function T = poseToTransform(p)
+            T = [cos(p(3)) -sin(p(3)) p(1); ...
+                sin(p(3)) cos(p(3)) p(2); ...
+                0 0 1];
+        end
+        
+        function p = transformToPose(T)
+            theta = atan2(T(2,1),T(1,1));
+            p = [T(1,3); T(2,3); theta];
+        end
+        
+        function p2 = pose1ToPose2(p1,Tp2_p1)
+            % Tp2_p1 takes p2 to p1
+            objInput = isa(p1,'pose2D');
+            if ~objInput
+                p1 = pose2D(p1);
+            end
+            Tp1 = p1.T; Tp2 = Tp1*Tp2_p1;
+            p2 = pose2D.transformToPose(Tp2);
+            if objInput
+                p2 = pose2D(p2);
+            end
+        end
+    end
 end
 

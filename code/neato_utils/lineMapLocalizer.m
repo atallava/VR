@@ -53,13 +53,18 @@ classdef lineMapLocalizer < handle
             end
         end
         
-        function ids = throwOutliers(obj,pts)
-           % pts are range readings expressed in the world frame
-           % pts are 2 x n or 3 x n (homogeneous 2D coordinates)
-          
-           if size(pts,1) == 2
-               pts = [pts; ones(1,size(pts,2))];
+        function ids = throwOutliers(obj,ptsLocal,pose)
+           % ptsLocal are range readings expressed in the local frame
+           % ptsLocal are 2 x n or 3 x n (homogeneous 2D coordinates)
+           % pose is a pose2D object
+           
+           if size(ptsLocal,1) == 2
+               ptsLocal = [ptsLocal; ones(1,size(ptsLocal,2))];
            end
+           if ~isa(pose,'pose2D')
+               pose = pose2D(pose);
+           end
+           pts = pose.transformPoints(ptsLocal);
            ids = [];
            for i = 1:size(pts,2)
                r2 = obj.closestSquaredDistanceToLines(pts(:,i));

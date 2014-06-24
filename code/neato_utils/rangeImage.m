@@ -12,7 +12,7 @@ classdef rangeImage < handle
         thArray = deg2rad(0:359);
         xArray = [];
         yArray = [];
-        npix;
+        nPix;
         im_resolution = 0.01;
         im_range = 4.5;
         im;
@@ -31,7 +31,7 @@ classdef rangeImage < handle
             if iscolumn(obj.rArray)
                 obj.rArray = obj.rArray';
             end
-            obj.npix = length(obj.rArray);
+            obj.nPix = length(obj.rArray);
             obj.xArray = obj.rArray.*cos(obj.thArray);
             obj.yArray = obj.rArray.*sin(obj.thArray);
             if isfield(inputData,'cleanup')
@@ -52,7 +52,7 @@ classdef rangeImage < handle
             obj.thArray(ids) = [];
             obj.xArray(ids) = [];
             obj.yArray(ids) =[];
-            obj.npix = length(obj.rArray);
+            obj.nPix = length(obj.rArray);
         end
         
         function hf = plotRvsTh(obj,maxRange)
@@ -87,11 +87,11 @@ classdef rangeImage < handle
         end
         
         function n = numPixels(obj)
-            n = obj.npix;
+            n = obj.nPix;
         end
         
         function res = indexAdd(obj,a,b)
-           res = mod((a-1)+b,obj.npix)+1; 
+           res = mod((a-1)+b,obj.nPix)+1; 
         end
             
         function res = inc(obj,in)
@@ -132,6 +132,14 @@ classdef rangeImage < handle
         
         function pcd = getPCD(obj)
             pcd = [obj.xArray; obj.yArray; zeros(1,length(obj.xArray))];
+        end
+        
+        function pts = getPts(obj)
+            pts = [obj.xArray; obj.yArray];
+        end
+        
+        function pts = getPtsHomogeneous(obj)
+            pts = [obj.xArray; obj.yArray; ones(1,obj.nPix)];
         end
     end
 end

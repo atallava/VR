@@ -8,8 +8,7 @@ load map;
 rng('shuffle');
 
 pgen = poseGenerator(struct('map',roomLineMap));
-% in experiments, get start from localization
-start = [3.5;0.25;0];
+start = [0.25;0.25;0]; %PLACEHOLDER: set start. get from scan-match
 pgen.addToPoseHist(start);
 
 nPoses = 100;
@@ -21,9 +20,14 @@ rob = neato('sim');
 rob.sim_robot.pose = start;
 rob.genMap(roomLineMap.objects);
 rstate = robState(rob,'robot',start);
-pose = start; % initially
+pose = start; 
 
-%hf = roomLineMap.plot(); hold on; axis equal;
+rob.startLaser;
+Tsensor = eye(3); Tsensor(1,3) = -0.1;
+laser = laserClass(struct('Tsensor',Tsensor));
+localizer = lineMapLocalizer(roomLineMap.objects);
+refiner = laserPoseRefiner(struct('localizer',localizer,'laser',laser));
+
 for i = 1:nPoses
     % get goal state
     success = false;
@@ -42,7 +46,7 @@ for i = 1:nPoses
             
             % execute traj, get pose and reset rstate
             trajFlrBackup.execute(rob,rstate);
-            pose = rob.sim_robot.pose;
+            pose = rob.sim_robot.pose; % PLACEHOLDER: read off exact state
             rstate.reset(pose);
             pause(robotModel.tPause);
             backupCount = backupCount+1;
@@ -69,8 +73,20 @@ for i = 1:nPoses
     trajFlr.execute(rob,rstate);
     
     % estimate pose using scan match
+    poseIn = rstate.pose;
+    ranges = rob.laser.data.ranges;
+    t1 = tic();
+    [success,poseOut] = refiner.refine(ranges,poseIn); 
+    fprintf('scan match took %fs\n',toc(t1));
+    % PLACEHOLDER: read off exact state
     pose = rob.sim_robot.pose;
-    %pose = goal; rob.sim_robot.pose = goal;
+    lPose = laser.refPoseToLaserPose(pose);
+    lPoseOut = laser.refPoseToLaserPose(poseOut);
+    lPoseIn = laser.refPoseToLaserPose(poseIn);
+    hf1 = vizRealRanges(localizer,ranges,lPoseOut); title('lPoseOut');
+    hf2 = vizRealRanges(localizer,ranges,lPose); title('lPose');
+    waitforbuttonpress; close(hf1,hf2);
+    
     pgen.addToPoseHist(pose);
     rstate.reset(pose);
     pause(robotModel.tPause);
