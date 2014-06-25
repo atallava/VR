@@ -10,7 +10,7 @@ W = 0.235;
 T = [1 -0.5*W; ...
     1 0.5*W];
 data_count = 0;
-num_obs = 200;
+num_obs = 100;
 t_range_collection = struct('start',{},'end',{});
 
 t_sys_start = tic;

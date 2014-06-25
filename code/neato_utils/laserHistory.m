@@ -3,6 +3,7 @@ classdef laserHistory < handle
         
     properties
         rangeArray
+        intensityArray
         tArray
         update_count
         listenerHandle
@@ -20,6 +21,7 @@ classdef laserHistory < handle
             end
             obj.rob = rob;
             obj.rangeArray = cell(0);
+            obj.intensityArray = cell(0);
             obj.tArray = [];
             obj.update_count = 0;
             obj.bearings = deg2rad(0:359);
@@ -33,6 +35,7 @@ classdef laserHistory < handle
             obj.listenerHandle.delete;
             pause(0.01);
             obj.rangeArray = cell(0);
+            obj.intensityArray = cell(0);
             obj.tArray = [];
             obj.update_count = 0;
             obj.listenerHandle = addlistener(obj.rob.laser,'OnMessageReceived',@(src,evt) encHistory.laserEventResponse(src,evt,obj));
@@ -63,6 +66,7 @@ classdef laserHistory < handle
             obj.update_count = obj.update_count+1;
             obj.tArray(obj.update_count) = evt.data.header.stamp.secs + (evt.data.header.stamp.nsecs*1e-9);
             obj.rangeArray{obj.update_count+1} = evt.data.ranges;
+            obj.intensityArray{obj.update_count+1} = evt.data.intensities;
             if obj.plot_flag
                 obj.updatePlot;
             end
