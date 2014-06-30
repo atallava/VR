@@ -4,7 +4,7 @@ classdef playbackTool < handle
     
     properties (Constant = true)
         freq = 100;
-        tEps = 0.005;
+        tEps = 0.5/playbackTool.freq;
     end
     
     properties (SetAccess = public)
@@ -14,7 +14,8 @@ classdef playbackTool < handle
         playFlag; startedFlag; endedFlag; shutdownFlag
         tEncArray; encArray
         tLaserArray; laserArray
-        encPub; laserPub
+        encCount; laserCount;
+        encoders; laser
         timerObj
     end
     
@@ -22,16 +23,18 @@ classdef playbackTool < handle
         function obj = playbackTool(tEncArray,encArray,tLaserArray,laserArray)
             % encArray is a struct array with fields 'left', 'right
             % laserArray is a struct array with fields 'ranges'
+            % assuming these times have the same origin
             obj.tLocal = 0; obj.tLocalLog = [];
             obj.tEncArray = tEncArray; obj.encArray = encArray; 
             obj.tLaserArray = tLaserArray; obj.laserArray = laserArray;
+            obj.encCount = 1; obj.laserCount = 1;
             
             obj.tMax = max([tEncArray tLaserArray]);
             obj.tPauseStart = 0; obj.tPauseEnd = 0;
             obj.playFlag = 0; obj.startedFlag = 0; obj.endedFlag = 0; obj.shutdownFlag = 0;
                         
-            obj.encPub = encoderPublisher();
-            obj.laserPub = laserPublisher(robotModel.laser);
+            obj.encoders = encoderPublisher();
+            obj.laser = laserPublisher(robotModel.laser);
             
             obj.timerObj = timer;
             obj.timerObj.Tag = 'playbackTool'; 
@@ -43,15 +46,15 @@ classdef playbackTool < handle
         
         
         function listenerObj = createEncListener(obj)
-            listenerObj = sensorListener(obj.encPub);
-            obj.encPub.setData(obj.encArray(1));
-            obj.encPub.publish();
+            listenerObj = sensorListener(obj.encoders);
+            obj.encoders.setData(obj.encArray(1));
+            obj.encoders.publish();
         end
         
         function listenerObj = createLaserListener(obj)
-            listenerObj = sensorListener(obj.laserPub);
-            obj.laserPub.setData(obj.laserArray(1));
-            obj.laserPub.publish();
+            listenerObj = sensorListener(obj.laser);
+            obj.laser.setData(obj.laserArray(1));
+            obj.laser.publish();
         end
         
         function play(obj)
@@ -86,38 +89,39 @@ classdef playbackTool < handle
         function timerUpdate(obj,src,evt)
             if obj.playFlag
                 obj.tLocal = toc(obj.ticRef)-(obj.tPauseEnd-obj.tPauseStart);
-                obj.tLocalLog(end+1) = obj.tLocal;
-                if obj.tLocal > obj.tMax+playbackTool.tEps;
-                    obj.playFlag = 0;
-                    obj.endedFlag = 1;
-                else
-                    % find and publish encoder data
-                    flag1 = obj.tEncArray >= obj.tLocal-playbackTool.tEps;
-                    flag2 = obj.tEncArray <= obj.tLocal+playbackTool.tEps;
-                    encData = obj.encArray(flag1 & flag2);
-                    if ~isempty(encData)
-                        if length(encData) > 1
-                            warning('FOUND MORE THAN ONE MATCH FOR ENCODER DATA. REDUCE PLAYBACKPUBLISHER.TEPS\n');
-                        end
-                        encData = encData(1);
-                        obj.encPub.setData(encData);
-                        obj.encPub.publish();
-                    end
-                    
-                    % find and publish laser data
-                    flag1 = obj.tLaserArray >= obj.tLocal-playbackTool.tEps;
-                    flag2 = obj.tLaserArray <= obj.tLocal+playbackTool.tEps;
-                    laserData = obj.laserArray(flag1 & flag2);
-                    if ~isempty(laserData)
-                        if length(laserData) > 1
-                            warning('FOUND MORE THAN ONE MATCH FOR LASER DATA. REDUCE PLAYBACKPUBLISHER.TEPS\n');
-                        end
-                        laserData = laserData(1);
-                        obj.laserPub.setData(laserData);
-                        obj.laserPub.publish();
+                
+                % publish encoder data
+                if obj.encCount <= length(obj.encArray)
+                    if obj.tLocal > obj.tEncArray(obj.encCount)
+                        encData = obj.encArray(obj.encCount);
+                        encData.header.stamp = obj.timestamp();
+                        obj.encoders.setData(encData);
+                        obj.encoders.publish();
+                        obj.encCount = obj.encCount+1;
                     end
                 end
+                
+                % publish laser data
+                if obj.laserCount <= length(obj.laserArray) 
+                    if obj.tLocal > obj.tLaserArray(obj.laserCount)
+                        laserData = obj.laserArray(obj.laserCount);
+                        laserData.header.stamp = obj.timestamp();
+                        obj.laser.setData(laserData);
+                        obj.laser.publish();
+                        obj.laserCount = obj.laserCount+1;
+                    end
+                end
+                
+                if obj.laserCount > length(obj.laserArray) && obj.encCount > length(obj.encArray)
+                    obj.playFlag = 0;
+                    obj.endedFlag = 1;
+                end
             end
+        end
+        
+        function stamp = timestamp(obj)
+            stamp.secs = floor(obj.tLocal);
+            stamp.nsecs = (obj.tLocal-stamp.secs)*1e9;
         end
                        
         function shutdown(obj)

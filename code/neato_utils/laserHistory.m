@@ -66,7 +66,7 @@ classdef laserHistory < handle
             obj.update_count = obj.update_count+1;
             obj.tArray(obj.update_count) = evt.data.header.stamp.secs + (evt.data.header.stamp.nsecs*1e-9);
             obj.rangeArray{obj.update_count+1} = evt.data.ranges;
-            obj.intensityArray{obj.update_count+1} = evt.data.intensities;
+            %obj.intensityArray{obj.update_count+1} = evt.data.intensities;
             if obj.plot_flag
                 obj.updatePlot;
             end

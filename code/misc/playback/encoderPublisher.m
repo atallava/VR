@@ -11,23 +11,26 @@ classdef encoderPublisher < handle
     
     methods
         function obj = encoderPublisher()
-           obj.data = struct('left',[],'right',[]);
+           obj.data = struct('left',[],'right',[],'header',struct('secs',0,'nsecs',0));
         end
         
         function setData(obj,data)
-            validInput = 1;
+            obj.data = data;
+        end
+        
+        function res = validInput(obj,data)
             if isstruct(data)
-                if all(isfield(data,{'left','right'}))
-                    obj.data = data;
+                if all(isfield(data,{'left','right','header'}))
+                    res = 1;
                 else
-                    validInput = 0;
+                    res = 0;
                 end
             else
-                validInput = 0;
+                res = 0;
             end
             
-            if ~validInput
-                error('DATA MUST BE STRUCT WITH FIELDS LEFT, RIGHT.');
+            if ~res
+                error('DATA MUST BE STRUCT WITH FIELDS LEFT, RIGHT, HEADER.');
             end
         end
         

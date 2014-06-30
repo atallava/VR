@@ -13,23 +13,26 @@ classdef laserPublisher < handle
     methods
         function obj = laserPublisher(laserObj)
             obj.laserObj = laserObj;
-            obj.data = struct('ranges',zeros(1,obj.laserObj.nPixels));
+            obj.data = struct('ranges',zeros(1,obj.laserObj.nPixels),'header',struct('secs',0,'nsecs',0));
         end
         
         function setData(obj,data)
-            validInput = 1;
+           obj.data = data;
+        end
+        
+        function res = validInput(obj,data)
             if isstruct(data)
-                if isfield(data,'ranges')
-                    obj.data = data;
+                if all(isfield(data,{'ranges','header'}))
+                    res = 1;
                 else
-                    validInput = 0;
+                    res = 0;
                 end
             else
-                validInput = 0;
+                res = 0;
             end
             
-            if ~validInput
-                error('DATA MUST BE STRUCT WITH FIELD RANGES.');
+            if ~res
+                error('DATA MUST BE STRUCT WITH FIELDS RANGES, HEADER.');
             end
         end
         
