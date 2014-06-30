@@ -43,15 +43,6 @@ classdef pose2D < handle
             Trans = inv(obj.T);
         end
         
-        function xnew = transformPoints(obj,x)
-           % x is of size 2 x num points or 3 x num points
-           if size(x,1) == 2
-               x = [x; ones(1,size(x,2))];
-           end
-           xnew = obj.T*x;
-           xnew(3,:) = [];
-        end
-        
         function p = getPose(obj)
             p = [obj.x; obj.y; obj.th];
         end
@@ -79,6 +70,18 @@ classdef pose2D < handle
             p2 = pose2D.transformToPose(Tp2);
             if objInput
                 p2 = pose2D(p2);
+            end
+        end
+        
+        function ptsNew = transformPoints(pts,pose)
+            % x is of size 2 x num points or 3 x num points
+            isH = size(pts,1) == 3;
+            if ~isH
+                pts = [pts; ones(1,size(pts,2))];
+            end
+            ptsNew = pose2D.poseToTransform(pose)*pts;
+            if ~isH
+                ptsNew(3,:) = [];
             end
         end
     end

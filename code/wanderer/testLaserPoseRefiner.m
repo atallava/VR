@@ -8,6 +8,7 @@ t1 = tic();
 [success,poseOut] = refiner.refine(ranges,poseIn);
 fprintf('scan match took %fs\n',toc(t1));
 lPoseOut = laser.refPoseToLaserPose(poseOut);
-hf1 = vizRealRanges(localizer,ranges,lPoseOut); title('lPoseOut');
-hf2 = vizRealRanges(localizer,ranges,lPoseIn); title('lPoseIn');
+vizRanges = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser));
+hf1 = vizRanges.viz(localizer,ranges,lPoseOut); title('lPoseOut');
+hf2 = vizRanges.viz(localizer,ranges,lPoseIn); title('lPoseIn');
 

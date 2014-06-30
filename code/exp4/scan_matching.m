@@ -19,13 +19,13 @@ localizer = lineMapLocalizer(roomLineMap.objects);
 for i = 1:nPoses
     ranges = rangesFromObsArray(obsArray,i,obsId);
     %ranges = obsArray(i,obsId,:); ranges = squeeze(ranges);
-    poseObj = pose2D(poses(:,i));
+    pose = poses(:,i);
     riObj = rangeImage(struct('ranges',ranges,'cleanup',1));
     ptsLocal = [riObj.xArray; riObj.yArray; ones(1,riObj.npix)];
     hf = localizer.drawLines();
-    outIds = localizer.throwOutliers(poseObj,ptsLocal);
+    outIds = localizer.throwOutliers(pose,ptsLocal);
     ptsLocal(:,outIds) = [];
-    hf = plotScan(poseObj,ptsLocal,hf);
+    hf = plotScan(pose,ptsLocal,hf);
     title(sprintf('pose %d',i));
     k = waitforbuttonpress;
     close(hf);

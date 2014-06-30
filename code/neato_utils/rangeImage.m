@@ -19,23 +19,23 @@ classdef rangeImage < handle
     end
     
     methods 
-        function obj = rangeImage(inputData)
-            % inputData fields ('ranges','bearings','cleanup')
+        function obj = rangeImage(inputStruct)
+            % inputStruct fields ('ranges','bearings','cleanup')
             % default (,deg2rad(0:359),0)
-            if isfield(inputData,'bearings')
-                obj.thArray = inputData.bearings;
+            if isfield(inputStruct,'bearings')
+                obj.thArray = inputStruct.bearings;
             else
                 obj.thArray = deg2rad(0:359);
             end
-            obj.rArray = inputData.ranges;
+            obj.rArray = inputStruct.ranges;
             if iscolumn(obj.rArray)
                 obj.rArray = obj.rArray';
             end
             obj.nPix = length(obj.rArray);
             obj.xArray = obj.rArray.*cos(obj.thArray);
             obj.yArray = obj.rArray.*sin(obj.thArray);
-            if isfield(inputData,'cleanup')
-                if inputData.cleanup
+            if isfield(inputStruct,'cleanup')
+                if inputStruct.cleanup
                     obj.cleanup();
                 end
             end
@@ -61,13 +61,29 @@ classdef rangeImage < handle
             scatter(obj.thArray(ids), obj.rArray(ids), 10);
         end
         
-        function hf = plotXvsY(obj,maxRange)
-            if nargin < 2
+        function hf = plotXvsY(obj,pose,maxRange)
+            %PLOTXVSY
+            %
+            % hf = PLOTXVSY(obj,pose,maxRange)
+            %
+            % maxRange - Optional. Discard ranges beyond maxRange
+            %            when plotting. Default = obj.maxRange.
+            % pose     - Optional. Transform points to pose.
+            %            Pose is a length 3 array or [].
+            %
+            % hf       - Figure handle.
+            x = obj.xArray; y = obj.yArray;
+            if nargin < 3
                 maxRange = obj.maxUsefulRange;
+            end
+            if nargin > 1 && ~isempty(pose)
+                pts = pose2D.transformPoints([x; y],pose);
+                x = pts(1,:); y = pts(2,:);
             end
             ids = find(obj.rArray <= maxRange);
             hf = figure;
-            scatter(obj.xArray(ids), obj.yArray(ids), 10);
+            
+            scatter(x(ids), y(ids), 10);
             axis equal; 
             xlabel('x');
             ylabel('y');

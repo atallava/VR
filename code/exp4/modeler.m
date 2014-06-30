@@ -4,6 +4,7 @@
 clear all; clear classes; clc;
 addpath ~/Documents/MATLAB/neato_utils/
 load processed_data_mar27
+load poses_after_icp
 
 fprintf('Initializing...\n');
 skip = 1;

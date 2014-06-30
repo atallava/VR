@@ -23,10 +23,9 @@ rstate = robState(rob,'robot',start);
 pose = start; 
 
 rob.startLaser;
-Tsensor = eye(3); Tsensor(1,3) = -0.1;
-laser = laserClass(struct('Tsensor',Tsensor));
 localizer = lineMapLocalizer(roomLineMap.objects);
-refiner = laserPoseRefiner(struct('localizer',localizer,'laser',laser));
+vizRanges = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser));
+refiner = laserPoseRefiner(struct('localizer',localizer,'laser',robotModel.laser));
 
 for i = 1:nPoses
     % get goal state

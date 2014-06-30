@@ -45,7 +45,7 @@ classdef robState < handle
             end
         end
         
-        function obj = setEncoders(obj,enc,t)
+        function setEncoders(obj,enc,t)
             % enc is a struct with fields left and right
             % t is the timestamp of the values
             if ~strcmp(obj.mode,'manual')
@@ -72,7 +72,7 @@ classdef robState < handle
             end
         end
         
-        function obj = updatePose(obj,t_new)
+        function updatePose(obj,t_new)
             % updates based on encoders
             
             % don't perform calculations if encoders don't change
@@ -99,15 +99,9 @@ classdef robState < handle
             obj.pose_history(:,obj.motion_count) = obj.pose;
             obj.t_history(obj.motion_count) = t_new-obj.t_start;
             obj.motion_count = obj.motion_count+1;
-            %{
-            if obj.motion_count > obj.HISTORY_SIZE
-               obj.pose_history = [obj.pose_history zeros(3,obj.HISTORY_SIZE)];
-               obj.t_history = [obj.t_history zeros(1,obj.HISTORY_SIZE)];
-            end
-            %}
         end
         
-        function obj = reset(obj,pose)
+        function reset(obj,pose)
             % delete history and start over
             if strcmp(obj.mode,'robot')
                 obj.listenerHandle.delete();

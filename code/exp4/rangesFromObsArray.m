@@ -1,6 +1,9 @@
 function ranges = rangesFromObsArray(obsArray,poseId,obsId)
-%rangesFromObsArray get ranges from observation array
-% obsArray is a cell array of size num poses x num pixels
+%RANGESFROMOBSARRAY 
+% 
+% ranges = RANGESFROMOBSARRAY(obsArray,poseId,obsId)
+% 
+% obsArray - nPoses x nPixels cell array.
 
 ranges = cell2mat(obsArray(poseId,:));
 if nargin < 3

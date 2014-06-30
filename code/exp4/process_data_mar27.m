@@ -1,6 +1,5 @@
 %process march 27 collected data
 clear all; clc;
-init;
 load data_mar27
 
 nPoses = length(t_range_collection);
@@ -11,23 +10,14 @@ tCommonEnc = tCommonEnc-tCommonEnc(1);
 tCommonLzr = lzr.tArray;
 tCommonLzr = tCommonLzr-tCommonLzr(1);
 
-%% fill observation array
-obsArray = cell(nPoses,360);
-
-for i = 1:nPoses
-    ids = find(lzr.tArray >= t_range_collection(i).start & lzr.tArray <= t_range_collection(i).end);
-    temp = lzr.rangeArray(ids);
-    temp = cell2mat(temp');
-    for j = 1:360
-        obsArray{i,j} = temp(:,j);
-    end    
-end
+%% get observation array
+obsArray = fillObsArray(lzr,t_range_collection);
 
 %% pose from encoders + laser
 clc;
 load map;
 poses = zeros(3,nPoses);
-rState = robState([],'manual',[0.103;0.166;0]);
+rState = robState([],'manual',[0.103;0.166;0]); % hacked start state
 poseCount = 1;
 lzrCount = 1;
 localizer = lineMapLocalizer(roomLineMap.objects);
@@ -40,6 +30,7 @@ for i = 1:enc.update_count
     end
     
     if tCommonEnc(i) > tStart(poseCount) && tCommonEnc(i) < tEnd(poseCount)
+        % ignore encoder information when recording range data
         continue;
     end
     

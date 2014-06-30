@@ -6,6 +6,10 @@ classdef robotModel < handle
         wMax = 2.553 % maximum angular velocity in rad/sec
         bBox = [0.165 -0.165; 0.165 0.165; -0.165 0.165; -0.165 -0.165; 0.165 -0.165]; % bounding box in m
         tPause = 0.001; % time in sec between sending velocity commands
+        Tlaser = [1 0 -0.1; ...
+            0 1 0; ...
+            0 0 1];
+        laser = laserClass(struct('maxRange',4.5,'rangeRes',0.001,'bearings',deg2rad(0:359),'nullReading',0,'Tsensor',robotModel.Tlaser));
     end
     
     methods (Static = true)

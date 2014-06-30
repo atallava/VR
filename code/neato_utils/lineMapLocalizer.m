@@ -53,25 +53,42 @@ classdef lineMapLocalizer < handle
             end
         end
         
-        function ids = throwOutliers(obj,ptsLocal,pose)
-           % ptsLocal are range readings expressed in the local frame
-           % ptsLocal are 2 x n or 3 x n (homogeneous 2D coordinates)
-           % pose is a pose2D object
-           
-           if size(ptsLocal,1) == 2
-               ptsLocal = [ptsLocal; ones(1,size(ptsLocal,2))];
-           end
-           if ~isa(pose,'pose2D')
-               pose = pose2D(pose);
-           end
-           pts = pose.transformPoints(ptsLocal);
-           ids = [];
-           for i = 1:size(pts,2)
-               r2 = obj.closestSquaredDistanceToLines(pts(:,i));
-               if(r2 > lineMapLocalizer.maxErr)
-                   ids = [ids i];
-               end
-           end           
+        function ids = throwOutliers(obj,varargin)
+            %THROWOUTLIERS Idenitfy outliers in scan.
+            %
+            % ids = THROWOUTLIERS(obj,ptsWorld)
+            %
+            % ptsWorld - Range readings expressed in the world frame,
+            %            2 x n or 3 x n (homogeneous 2D coordinates)
+            % 
+            % ids = THROWOUTLIERS(obj,ptsLocal,pose)
+            % ptsLocal - Range readings expressed in the local frame,
+            %            2 x n or 3 x n (homogeneous 2D coordinates)
+            % pose     - Array of length 3 or pose2D object.
+            %
+            % ids      - Ids of outliers in ptsLocal.
+            
+            if length(varargin) == 1
+                pts = varargin{1};
+            elseif length(varargin) == 2
+                ptsLocal = varargin{1};
+                pose = varargin{2};
+                if size(ptsLocal,1) == 2
+                    ptsLocal = [ptsLocal; ones(1,size(ptsLocal,2))];
+                end
+                if ~isa(pose,'pose2D')
+                    pose = pose2D(pose);
+                end
+                pts = pose2D.transformPoints(ptsLocal,pose.getPose);
+            end
+                        
+            ids = [];
+            for i = 1:size(pts,2)
+                r2 = obj.closestSquaredDistanceToLines(pts(:,i));
+                if(r2 > lineMapLocalizer.maxErr)
+                    ids = [ids i];
+                end
+            end
         end
         
         function avgErr = fitError(obj,pose,ptsInModelFrame)
