@@ -33,8 +33,10 @@ classdef playbackTool < handle
             obj.tPauseStart = 0; obj.tPauseEnd = 0;
             obj.playFlag = 0; obj.startedFlag = 0; obj.endedFlag = 0; obj.shutdownFlag = 0;
                         
-            obj.encoders = encoderPublisher();
+            obj.encoders = encoderPublisher(); 
+            obj.encoders.setData(obj.encArray(1));
             obj.laser = laserPublisher(robotModel.laser);
+            obj.laser.setData(obj.laserArray(1));
             
             obj.timerObj = timer;
             obj.timerObj.Tag = 'playbackTool'; 

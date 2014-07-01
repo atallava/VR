@@ -34,7 +34,7 @@ classdef laserPoseRefiner < handle
             end
         end
         
-        function [success,poseOut] = refine(obj,ranges,poseIn,d)
+        function [success,poseOut] = refine(obj,ranges,poseIn)
             % [success,poseOut] = REFINE(obj,ranges,poseIn)
             % ranges  - Range array.
             % poseIn  - pose2D object or length 3 array.
@@ -51,17 +51,19 @@ classdef laserPoseRefiner < handle
             ptsLocal = ptsLocal(:,1:obj.skip:end);
             outIds = obj.localizer.throwOutliers(ptsLocal,laserPoseIn);
             ptsLocal(:,outIds) = [];
-            [success, laserPoseOut] = obj.localizer.refinePose(laserPoseIn,ptsLocal,20);
+            [success, laserPoseOut] = obj.localizer.refinePose(laserPoseIn,ptsLocal,obj.numIterations);
             poseOut = pose2D.transformToPose(laserPoseOut.T/(obj.laser.Tsensor));
             if objInput
                 poseOut = pose2D(poseOut);
             end
+            %{
             hf = obj.localizer.drawLines();
             hf = plotScan(pose2D(poseOut),ptsLocal,hf);
             xlim([-2 2]); ylim([-2 2]);
             set(hf,'visible','off');
             print('-dpng','-r72',sprintf('images/refiner_1/%d.png',d));
             close(hf);
+            %}
         end
     end
 

@@ -1,14 +1,23 @@
 clearAll;
 load('map.mat','roomLineMap');
-load test_refiner_data;
-refiner = laserPoseRefiner(struct('localizer',localizer,'laser',laser));
-lPoseIn = laser.refPoseToLaserPose(poseIn);
-ranges = roomLineMap.raycast(lPoseIn,laser.maxRange,laser.bearings);
-t1 = tic();
-[success,poseOut] = refiner.refine(ranges,poseIn);
-fprintf('scan match took %fs\n',toc(t1));
-lPoseOut = laser.refPoseToLaserPose(poseOut);
-vizRanges = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser));
-hf1 = vizRanges.viz(localizer,ranges,lPoseOut); title('lPoseOut');
-hf2 = vizRanges.viz(localizer,ranges,lPoseIn); title('lPoseIn');
+load test_refiner_data
+load sample_sensor_data_1
+% start pose
 
+refiner = laserPoseRefiner(struct('localizer',localizer,'laser',laser,'numIterations',40,'skip',4));
+vizRanges = vizRangesOnMap(struct('localizer',localizer,'laser',laser));
+
+ranges = laserArray(2).ranges;
+[success,startPose] = refiner.refine(ranges,[0.1;0.05;0]);
+hf = vizRanges.viz(ranges,startPose);
+
+%% test steady-state localization via laser
+rob = playbackTool(tEncArray,encArray,tLaserArray,laserArray);
+rState = robState(rob,'robot',startPose);
+rob.play();
+while ~rob.endedFlag
+    continue;
+end
+ranges = laserArray(end).ranges;
+pose = rState.pose;
+hf = vizRanges(ranges,pose);

@@ -1,8 +1,13 @@
 classdef robState < handle
-    % class to update pose estimates based on encoder values
-    % attach an instance of this class to a real or sim neato
-    % under robot mode to listen to encoder events
-    % use manual mode to set encoder values by hand
+    %ROBSTATE Update robot state based on encoders.
+    %
+    % obj = ROBSTATE(rob,mode,pose)
+    %
+    % rob  - Real or simulated robot. Can be left empty in manual mode.
+    % mode - 'robot' or 'manual'
+    % pose - Length 3 array to start integration from.
+    %
+    % obj  - Instance.
     
     properties (Constant = true)
         HISTORY_SIZE = 5000;
@@ -23,6 +28,7 @@ classdef robState < handle
     
     methods
         function obj = robState(rob,mode,pose)
+            
             obj.rob = rob;
             if nargin < 3
                 obj.pose = [0;0;0];
