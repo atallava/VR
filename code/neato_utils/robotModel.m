@@ -14,22 +14,60 @@ classdef robotModel < handle
     
     methods (Static = true)
         function [vl,vr] =  Vw2vlvr(V,w)
+            % VW2VLVR Body to wheel velocities.
+            %
+            % [vl,vr] =  VW2VLVR(V,w)
+            %
+            % V  - Body linear velocity.
+            % w  - Body angular velocity.
+            %
+            % vl - Left wheel velocity.
+            % vr - Right wheel velocity.
+            
             vl = V-w*robotModel.W/2;
             vr = V+w*robotModel.W/2;
         end
         
         function [V,w] =  vlvr2Vw(vl,vr)
+            % VLVR2VW Wheel to body velocities.
+            %
+            % [V,w] =  VLVR2VW(vl,vr)
+            %
+            % vl - Left wheel velocity.
+            % vr - Right wheel velocity.
+            %
+            % V  - Body linear velocity.
+            % w  - Body angular velocity.
+            
             V = (vl+vr)*0.5;
             w = (-vl+vr)/robotModel.W;
         end
         
         function p2 = eulerIntegrate(p1,V,w,dt)
+            %EULERINTEGRATE
+            %
+            % p2 = EULERINTEGRATE(p1,V,w,dt)
+            %
+            % p1 - Input pose.
+            % V  - Linear velocity.
+            % w  - Angular velocity.
+            % dt - Time step.
+            %
+            % p2 - Output pose.
+            
            p2(3) = p1(3)+w*dt; p2(3) = mod(p2(3),2*pi);
            p2(1) = p1(1)+V*cos(p1(3))*dt;
            p2(2) = p1(2)+V*sin(p1(3))*dt;
         end
         
         function [vl,vr] = scaleWheelVel(vl,vr)
+            %SCALEWHEELVEL Scale wheel velocities to maximum allowed. 
+            %
+            % [vl,vr] = SCALEWHEELVEL(vl,vr)
+            %
+            % vl - Input/output left wheel velocity.
+            % vr - Input/output right wheel velocity.
+            
             v = max(abs(vl),abs(vr));
             if v == 0
                 return;
@@ -40,8 +78,14 @@ classdef robotModel < handle
         end
                     
         function tBBox = getTransformedBBox(pose)
-            % Orient bBox to align with pose
-            % pose is array of length 3
+            %GETTRANSFORMEDBBOX Orient bBox to align with pose.
+            %
+            % tBBox = GETTRANSFORMEDBBOX(pose)
+            %
+            % pose  - Length 3 array.
+            %
+            % tBBox - 5 x 2 array of coordinates.
+            
             p2d = pose2D(pose);
             tBBox = p2d.Tb2w*[robotModel.bBox'; ones(1,size(robotModel.bBox,1))];
             tBBox(3,:) = []; tBBox = tBBox';                

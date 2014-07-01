@@ -1,5 +1,29 @@
+#backup files
 *~
 *#
+
+#folders
 writings/
 papers/
 rcr_2014/
+calibration/
+exp1/
+exp2/
+exp3/
+metrics/
+images/
+code/pcl/examples/
+code/pcl/scan_match/build/
+code/pcl/scan_match/files/
+code/pcl/scan_match/post_process/neato_data
+
+#initialization scripts
+initLocal.m
+
+#saved data
+*.mat
+
+#image files
+*.png
+
+

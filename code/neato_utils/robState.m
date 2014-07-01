@@ -28,7 +28,6 @@ classdef robState < handle
     
     methods
         function obj = robState(rob,mode,pose)
-            
             obj.rob = rob;
             if nargin < 3
                 obj.pose = [0;0;0];
@@ -80,8 +79,18 @@ classdef robState < handle
         
         function updatePose(obj,t_new)
             % updates based on encoders
-            
+                            
             % don't perform calculations if encoders don't change
+            %{
+            try (obj.encoders.data.left == obj.left_enc_old) && (obj.encoders.data.right == obj.right_enc_old)
+            catch
+                obj.encoders.data
+                obj.left_enc_old
+                obj.right_enc_old
+                error('error\n');
+            end
+            %}
+                
             if (obj.encoders.data.left == obj.left_enc_old) && (obj.encoders.data.right == obj.right_enc_old)
                 obj.t_old = t_new;
                 obj.vl = 0;
@@ -137,6 +146,10 @@ classdef robState < handle
          obj.encoders.data.right = evt.data.right;
          % initialize values if first time 
          if obj.first_time
+             if isempty(evt.data.left)
+                 % no data written to encoders yet
+                return;
+             end
              obj.t_start = tstamp;
              obj.t_old = tstamp;
              obj.left_enc_old = evt.data.left;

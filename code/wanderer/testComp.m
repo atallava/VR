@@ -7,28 +7,28 @@ clear all; close all; clc;
 load map;
 rng('shuffle');
 
-pgen = poseGenerator(struct('map',roomLineMap));
-start = [0.25;0.25;0]; %PLACEHOLDER: set start. get from scan-match
-pgen.addToPoseHist(start);
-
-nPoses = 100;
-maxBackups = 5;
-
-ctrl = controllerClass(struct());
-ctrlBackup = controllerClass(struct('gainV',0.1));
 rob = neato('sim');
-rob.sim_robot.pose = start;
 rob.genMap(roomLineMap.objects);
-rstate = robState(rob,'robot',start);
-pose = start; 
-
 rob.startLaser;
+
 localizer = lineMapLocalizer(roomLineMap.objects);
 vizRanges = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser));
 refiner = laserPoseRefiner(struct('localizer',localizer,'laser',robotModel.laser));
+ctrl = controllerClass(struct());
+ctrlBackup = controllerClass(struct('gainV',0.1));
+pgen = poseGenerator(struct('map',roomLineMap));
 
+poseStartEst = [0.25;0.25;0];
+rob.sim_robot.pose = poseStartEst; % For simulation, set robot at start pose estimate.
+[success,poseStart] = refiner.refine(rob.laser.data.ranges,poseStartEst);
+rstate = robState(rob,'robot',poseStart);
+pgen.addToPoseHist(poseStart);
+
+nPoses = 100;
+maxBackups = 5;
+pose = poseStart; 
 for i = 1:nPoses
-    % get goal state
+    % get next goal state
     success = false;
     backupCount = 0;
     while ~success && backupCount <= maxBackups
@@ -79,11 +79,8 @@ for i = 1:nPoses
     fprintf('scan match took %fs\n',toc(t1));
     % PLACEHOLDER: read off exact state
     pose = rob.sim_robot.pose;
-    lPose = laser.refPoseToLaserPose(pose);
-    lPoseOut = laser.refPoseToLaserPose(poseOut);
-    lPoseIn = laser.refPoseToLaserPose(poseIn);
-    hf1 = vizRealRanges(localizer,ranges,lPoseOut); title('lPoseOut');
-    hf2 = vizRealRanges(localizer,ranges,lPose); title('lPose');
+    hf1 = vizRealRanges(localizer,ranges,poseOut); title('poseOut');
+    hf2 = vizRealRanges(localizer,ranges,pose); title('pose');
     waitforbuttonpress; close(hf1,hf2);
     
     pgen.addToPoseHist(pose);

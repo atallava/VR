@@ -16,8 +16,10 @@ rob = playbackTool(tEncArray,encArray,tLaserArray,laserArray);
 rState = robState(rob,'robot',startPose);
 rob.play();
 while ~rob.endedFlag
-    continue;
+    pause(0.001);
 end
 ranges = laserArray(end).ranges;
 pose = rState.pose;
-hf = vizRanges(ranges,pose);
+hf1 = vizRanges.viz(ranges,pose); title('before scan matching.');
+[success,pose] = refiner.refine(ranges,pose);
+hf2 = vizRanges.viz(ranges,pose); title('after scan matching.');
