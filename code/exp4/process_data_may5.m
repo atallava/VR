@@ -36,8 +36,8 @@ laser = laserClass(struct('maxRange',5,'bearings',bearings));
 close all; clear all; clc;
 load processed_data_may5
 nPoses = size(obsArray,1);
-inputData = struct('poses',1:nPoses,'obsArray',{obsArray},'laser',laser,'trainPoseIds',1:nPoses,'testPoseIds',[]);
-dp = dataProcessor(inputData);
+inputStruct = struct('poses',1:nPoses,'obsArray',{obsArray},'laser',laser,'trainPoseIds',1:nPoses,'testPoseIds',[]);
+dp = dataProcessor(inputStruct);
 
 for i = 1:nPoses
     fprintf('pose %d\n',i);

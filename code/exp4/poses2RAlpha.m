@@ -9,11 +9,11 @@ classdef poses2RAlpha < handle & abstractInputTransformer
     end
     
     methods
-        function obj = poses2RAlpha(inputData)
-            % inputData fields ('envLineMap','laser')
+        function obj = poses2RAlpha(inputStruct)
+            % inputStruct fields ('envLineMap','laser')
             if nargin > 0
-                obj.envLineMap = inputData.envLineMap;
-                obj.laser = inputData.laser;
+                obj.envLineMap = inputStruct.envLineMap;
+                obj.laser = inputStruct.laser;
             end
         end
         

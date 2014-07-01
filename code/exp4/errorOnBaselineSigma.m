@@ -3,8 +3,8 @@ function avgError = errorOnBaselineSigma(dataProcInput,K)
 % calculate std in the baseline predictor
 
 load map;
-inputData = struct('envLineMap',roomLineMap,'laser',dataProcInput.laser);
-p2ra = poses2RAlpha(inputData);
+inputStruct = struct('envLineMap',roomLineMap,'laser',dataProcInput.laser);
+p2ra = poses2RAlpha(inputStruct);
 frac = 0.7;
 totalPoses = length(dataProcInput.poses);
 numTrials = 10;
@@ -16,22 +16,22 @@ for i = 1:numTrials
     dp = dataProcessor(dataProcInput);
 
     % fit pdf models to training data
-    inputData = struct('fitClass',@normWithDrops,'data',{dp.obsArray(dp.trainPoseIds,:)});
-    trainPdfs = pdfBundle(inputData);
+    inputStruct = struct('fitClass',@normWithDrops,'data',{dp.obsArray(dp.trainPoseIds,:)});
+    trainPdfs = pdfBundle(inputStruct);
     trainPdfs.markOutliers();
 
     % initialize regressor
-    inputData = struct('XTrain',dp.XTrain,'YTrain',trainPdfs.paramArray,'poseTransf', p2ra, ...
+    inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainPdfs.paramArray,'poseTransf', p2ra, ...
         'regClass',@baselineRegressor, 'K', K);
-    pxRegBundle = pixelRegressorBundle(inputData);
+    pxRegBundle = pixelRegressorBundle(inputStruct);
 
     % predict at test poses
     predParamArray = pxRegBundle.predict(dp.XTest);
 
     % diagnose error
     % fit pdf models to test data
-    inputData = struct('fitClass',@normWithDrops,'data',{dp.obsArray(dp.testPoseIds,:)});
-    testPdfs = pdfBundle(inputData);
+    inputStruct = struct('fitClass',@normWithDrops,'data',{dp.obsArray(dp.testPoseIds,:)});
+    testPdfs = pdfBundle(inputStruct);
     errTest = abs(testPdfs.paramArray-predParamArray);
     err = errorStats(errTest);
     paramME = err.getParamME();

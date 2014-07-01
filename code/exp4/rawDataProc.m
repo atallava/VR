@@ -14,19 +14,19 @@ classdef rawDataProc < handle
     end
     
     methods
-        function obj = rawDataProc(inputData)
-            % inputData fields ('lzrHist','encHist','t_range_collection')
+        function obj = rawDataProc(inputStruct)
+            % inputStruct fields ('lzrHist','encHist','t_range_collection')
             % default (,,)
-            if isfield(inputData,'lzrHist')
-                obj.lzrHist = inputData.lzrHist;
+            if isfield(inputStruct,'lzrHist')
+                obj.lzrHist = inputStruct.lzrHist;
             else
             end
-            if isfield(inputData,'encHist')
-                obj.encHist = inputData.encHist;
+            if isfield(inputStruct,'encHist')
+                obj.encHist = inputStruct.encHist;
             else
             end
-            if isfield(inputData,'t_range_collection')
-                obj.t_range_collection = inputData.t_range_collection;
+            if isfield(inputStruct,'t_range_collection')
+                obj.t_range_collection = inputStruct.t_range_collection;
             else
             end
             obj.nPoses = length(obj.t_range_collection);

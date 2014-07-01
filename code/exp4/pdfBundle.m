@@ -19,10 +19,10 @@ classdef pdfBundle < handle
     end
     
     methods
-        function obj = pdfBundle(inputData)
-            % inputData fields ('fitClass','data')
-            obj.fitClass = inputData.fitClass;
-            obj.data = inputData.data;
+        function obj = pdfBundle(inputStruct)
+            % inputStruct fields ('fitClass','data')
+            obj.fitClass = inputStruct.fitClass;
+            obj.data = inputStruct.data;
             obj.nPixels = size(obj.data,2);
             tempObj = obj.fitClass(struct('vec',[]));
             obj.nParams = tempObj.nParams;

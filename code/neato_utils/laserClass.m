@@ -13,32 +13,32 @@ classdef laserClass < handle
     end
     
     methods
-        function obj = laserClass(inputData)
-            % inputData fields ('maxRange','rangeRes','bearings','nullReading','Tsensor')
+        function obj = laserClass(inputStruct)
+            % inputStruct fields ('maxRange','rangeRes','bearings','nullReading','Tsensor')
             % default (4.5, 0.001, deg2rad(0:359), 0, eye(3))
-            if isfield(inputData,'maxRange')
-                obj.maxRange = inputData.maxRange;
+            if isfield(inputStruct,'maxRange')
+                obj.maxRange = inputStruct.maxRange;
             else
                 obj.maxRange = 4.5;
             end
-            if isfield(inputData,'rangeRes')
-                obj.rangeRes = inputData.rangeRes;
+            if isfield(inputStruct,'rangeRes')
+                obj.rangeRes = inputStruct.rangeRes;
             else
                 obj.rangeRes = 0.001;
             end
-            if isfield(inputData,'bearings')
-                obj.bearings = inputData.bearings;
+            if isfield(inputStruct,'bearings')
+                obj.bearings = inputStruct.bearings;
             else
                 obj.bearings = deg2rad(0:359);
             end
-            if isfield(inputData,'Tsensor')
-                obj.Tsensor = inputData.Tsensor;
+            if isfield(inputStruct,'Tsensor')
+                obj.Tsensor = inputStruct.Tsensor;
             else
                 obj.Tsensor = eye(3);
             end
             obj.nPixels = length(obj.bearings);
-            if isfield(inputData,'nullReading')
-                obj.nullReading = inputData.nullReading;
+            if isfield(inputStruct,'nullReading')
+                obj.nullReading = inputStruct.nullReading;
             else
                 obj.nullReading = 0;
             end

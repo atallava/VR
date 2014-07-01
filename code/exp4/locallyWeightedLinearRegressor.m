@@ -10,19 +10,19 @@ classdef locallyWeightedLinearRegressor < handle & abstractRegressor
     end
     
     methods
-        function obj = locallyWeightedLinearRegressor(inputData)
-            % inputData fields ('XTrain','YTrain','XSpaceSwitch','kernelFn','kernelParams')
+        function obj = locallyWeightedLinearRegressor(inputStruct)
+            % inputStruct fields ('XTrain','YTrain','XSpaceSwitch','kernelFn','kernelParams')
             if nargin > 0
-                obj.XTrain = inputData.XTrain;
-                obj.YTrain = inputData.YTrain;
-                if isfield(inputData,'XSpaceSwitch')
-                   obj.XSpaceSwitch = inputData.XSpaceSwitch;
+                obj.XTrain = inputStruct.XTrain;
+                obj.YTrain = inputStruct.YTrain;
+                if isfield(inputStruct,'XSpaceSwitch')
+                   obj.XSpaceSwitch = inputStruct.XSpaceSwitch;
                    obj.removeSwitchedTrainingData();
                 else
                     obj.XSpaceSwitch = [];
                 end
-                obj.kernelFn = inputData.kernelFn;
-                obj.kernelParams = inputData.kernelParams;
+                obj.kernelFn = inputStruct.kernelFn;
+                obj.kernelParams = inputStruct.kernelParams;
                 obj.dimY = size(obj.YTrain,2);
             end
         end

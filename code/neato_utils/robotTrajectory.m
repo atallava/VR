@@ -12,26 +12,26 @@ classdef robotTrajectory < handle
     end
 
     methods
-        function obj = robotTrajectory(inputData)
-            % inputData fields ('initPose','initDist','numSamples','refControl')
+        function obj = robotTrajectory(inputStruct)
+            % inputStruct fields ('initPose','initDist','numSamples','refControl')
             % default ([0;0;0],0,1000,)
-            if isfield(inputData,'initPose')
-                obj.initPose = inputData.initPose;
+            if isfield(inputStruct,'initPose')
+                obj.initPose = inputStruct.initPose;
             else
                 obj.initPose = [0;0;0];
             end
-            if isfield(inputData,'initDist')
-                obj.initDist = inputData.initDist;
+            if isfield(inputStruct,'initDist')
+                obj.initDist = inputStruct.initDist;
             else
                 obj.initDist = 0;
             end
-            if isfield(inputData,'numSamples')
-                obj.numSamples = inputData.numSamples;
+            if isfield(inputStruct,'numSamples')
+                obj.numSamples = inputStruct.numSamples;
             else
                 obj.numSamples = 1000;
             end
-            if isfield(inputData,'refControl')
-                obj.refControl = inputData.refControl;
+            if isfield(inputStruct,'refControl')
+                obj.refControl = inputStruct.refControl;
             else
                 error('REFERENCE CONTROL NOT INPUT');
             end

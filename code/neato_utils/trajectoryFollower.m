@@ -12,16 +12,16 @@ classdef trajectoryFollower < handle
     end
 
     methods
-        function obj = trajectoryFollower(inputData)
-            % inputData fields ('trajectory','controller')
+        function obj = trajectoryFollower(inputStruct)
+            % inputStruct fields ('trajectory','controller')
             % default (,)
-            if isfield(inputData,'trajectory')
-                obj.trajectory = inputData.trajectory;
+            if isfield(inputStruct,'trajectory')
+                obj.trajectory = inputStruct.trajectory;
             else
                 error('TRAJECTORY NOT INPUT');
             end
-            if isfield(inputData,'controller')
-                obj.controller = inputData.controller;
+            if isfield(inputStruct,'controller')
+                obj.controller = inputStruct.controller;
             else
                 error('CONTROLLER NOT INPUT');
             end

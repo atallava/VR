@@ -23,24 +23,24 @@ classdef pixelRegressorBundle < handle
     end
     
     methods
-        function obj = pixelRegressorBundle(inputData)
-            % inputData fields ('XTrain', 'YTrain', 'inputPoseTransf',
+        function obj = pixelRegressorBundle(inputStruct)
+            % inputStruct fields ('XTrain', 'YTrain', 'inputPoseTransf',
             % 'regClass', <regressor specific fields>)
             
-            obj.XTrain = inputData.XTrain;
-            obj.YTrain = inputData.YTrain;
+            obj.XTrain = inputStruct.XTrain;
+            obj.YTrain = inputStruct.YTrain;
             if ndims(obj.YTrain) == 2 %#ok<ISMAT>
                 obj.dimY = 1;
                 obj.YTrain = reshape(obj.YTrain,[size(obj.YTrain,1) 1 size(obj.YTrain,2)]);
             else
                 obj.dimY = size(obj.YTrain,2);
             end
-            if isfield(inputData,'inputPoseTransf')
-                obj.inputPoseTransf = inputData.inputPoseTransf;
+            if isfield(inputStruct,'inputPoseTransf')
+                obj.inputPoseTransf = inputStruct.inputPoseTransf;
             end
-            obj.regClass = inputData.regClass;
+            obj.regClass = inputStruct.regClass;
             obj.nPixels = size(obj.YTrain,3);
-            obj.fillPixelRegressorArray(inputData);
+            obj.fillPixelRegressorArray(inputStruct);
         end
         
         function Y = predict(obj,X,queryMap)
@@ -68,7 +68,7 @@ classdef pixelRegressorBundle < handle
     end
     
     methods (Access = private)
-       function obj = fillPixelRegressorArray(obj,inputData)
+       function obj = fillPixelRegressorArray(obj,inputStruct)
             obj.regressorArray = cell(1,obj.nPixels);
             if isempty(obj.inputPoseTransf)
                 XTransf = repmat(obj.XTrain,[1,1,obj.nPixels]);
@@ -78,7 +78,7 @@ classdef pixelRegressorBundle < handle
             %naive, indpendent pixels
             
             for i = 1:obj.nPixels
-                tempInput = inputData;
+                tempInput = inputStruct;
                 tempInput.XTrain = XTransf(:,:,i);
                 tempInput.YTrain = obj.YTrain(:,:,i);
                 obj.regressorArray{i} = obj.regClass(tempInput);
@@ -91,7 +91,7 @@ classdef pixelRegressorBundle < handle
                 bigX = [bigX; XTransf(:,:,i)];
                 bigY = [bigY; obj.YTrain(:,:,i)];
             end
-            tempInput = inputData;
+            tempInput = inputStruct;
             tempInput.XTrain = bigX;
             tempInput.YTrain = bigY;
             tempObj = obj.regClass(tempInput);

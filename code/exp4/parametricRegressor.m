@@ -10,20 +10,20 @@ classdef parametricRegressor < handle & abstractRegressor
     end
     
     methods
-        function obj = parametricRegressor(inputData)
-            % inputData fields ('XTrain','YTrain','XSpaceSwitch','fnForms','weights0')
+        function obj = parametricRegressor(inputStruct)
+            % inputStruct fields ('XTrain','YTrain','XSpaceSwitch','fnForms','weights0')
             % empty constructor to allow object arrays
             if nargin > 0
-                obj.XTrain = inputData.XTrain;
-                obj.YTrain = inputData.YTrain;
-                if isfield(inputData,'XSpaceSwitch')
-                   obj.XSpaceSwitch = inputData.XSpaceSwitch;
+                obj.XTrain = inputStruct.XTrain;
+                obj.YTrain = inputStruct.YTrain;
+                if isfield(inputStruct,'XSpaceSwitch')
+                   obj.XSpaceSwitch = inputStruct.XSpaceSwitch;
                    obj.removeSwitchedTrainingData();
                 else
                     obj.XSpaceSwitch = [];
                 end
                 obj.nTargets = size(obj.YTrain,2);
-                obj.fitModels2TrainingData(inputData.fnForms,inputData.weights0);
+                obj.fitModels2TrainingData(inputStruct.fnForms,inputStruct.weights0);
             end
         end
    

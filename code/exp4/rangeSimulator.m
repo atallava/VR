@@ -14,13 +14,13 @@ classdef rangeSimulator < handle
     end
     
     methods
-        function obj = rangeSimulator(inputData)
-            % inputData fields ('fitClass','pxRegBundleArray','laser','map')
-            obj.fitClass = inputData.fitClass;
-            obj.pxRegBundleArray = inputData.pxRegBundleArray;
+        function obj = rangeSimulator(inputStruct)
+            % inputStruct fields ('fitClass','pxRegBundleArray','laser','map')
+            obj.fitClass = inputStruct.fitClass;
+            obj.pxRegBundleArray = inputStruct.pxRegBundleArray;
             obj.nParams = length(obj.pxRegBundleArray);
-            obj.laser = inputData.laser;
-            obj.map = inputData.map;
+            obj.laser = inputStruct.laser;
+            obj.map = inputStruct.map;
         end
         
         function res = simulate(obj,poses)

@@ -9,11 +9,11 @@ classdef baselineRegressor < handle & abstractRegressor
     end
     
     methods
-        function obj = baselineRegressor(inputData)
-            % inputData fields ('K')
+        function obj = baselineRegressor(inputStruct)
+            % inputStruct fields ('K')
             if nargin > 0
-                if isfield(inputData,'K')
-                    obj.K = inputData.K;
+                if isfield(inputStruct,'K')
+                    obj.K = inputStruct.K;
                 end
             end
         end

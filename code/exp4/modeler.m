@@ -1,8 +1,7 @@
 %end-to-end pixel modeler
 
 %% initialize
-clear all; clear classes; clc;
-addpath ~/Documents/MATLAB/neato_utils/
+clearAll;
 load processed_data_mar27
 load poses_after_icp
 
@@ -10,26 +9,26 @@ fprintf('Initializing...\n');
 skip = 1;
 pixelIds = 1:skip:360; bearings = deg2rad(pixelIds-1);
 laser = laserClass(struct('maxRange',4.5,'bearings',bearings,'nullReading',0));
-inputData = struct('poses',poses,'obsArray',{obsArray(:,pixelIds)},'laser',laser);
-totalPoses = length(inputData.poses);
+inputStruct = struct('poses',poses,'obsArray',{obsArray(:,pixelIds)},'laser',laser);
+totalPoses = length(inputStruct.poses);
 frac = 0.7;
-%inputData.trainPoseIds = randperm(totalPoses,floor(frac*totalPoses));
-inputData.trainPoseIds = 1:42;%[1    21    17    38     6    32    27    29    24    35    28    40    10     4    34    13     8     9    31    11 23    22    37    15     7    33    41     5    42];
-inputData.testPoseIds = setdiff(1:totalPoses,inputData.trainPoseIds);
-dp = dataProcessor(inputData);
+%inputStruct.trainPoseIds = randperm(totalPoses,floor(frac*totalPoses));
+inputStruct.trainPoseIds = 1:42;%[1    21    17    38     6    32    27    29    24    35    28    40    10     4    34    13     8     9    31    11 23    22    37    15     7    33    41     5    42];
+inputStruct.testPoseIds = setdiff(1:totalPoses,inputStruct.trainPoseIds);
+dp = dataProcessor(inputStruct);
 
 %% fit pdf models to training data
 fprintf('Fitting pixel models...\n');
-inputData = struct('fitClass',@normWithDrops,'data',{dp.obsArray(dp.trainPoseIds,:)});
-trainPdfs = pdfBundle(inputData);
+inputStruct = struct('fitClass',@normWithDrops,'data',{dp.obsArray(dp.trainPoseIds,:)});
+trainPdfs = pdfBundle(inputStruct);
 %trainPdfs.markOutliers();
 
 %% initialize regressor
 fprintf('Initializing regressor(s)...\n');
 load map;
-inputData = struct('envLineMap',roomLineMap,'laser',dp.laser);
-p2ra = poses2RAlpha(inputData);
-p2r = poses2R(inputData);
+inputStruct = struct('envLineMap',roomLineMap,'laser',dp.laser);
+p2ra = poses2RAlpha(inputStruct);
+p2r = poses2R(inputStruct);
 localizer = lineMapLocalizer(roomLineMap.objects);
 
 trainMuArray = trainPdfs.paramArray(:,1,:);
@@ -49,25 +48,25 @@ bsSigma = boxSwitch(struct('XRanges',[0 0; dp.laser.maxRange 2*pi],'switchY',nan
 bsPz = boxSwitch(struct('XRanges',[0 0; dp.laser.maxRange 2*pi],'switchY',1));
 
 % nonparametric
-inputData = struct('XTrain',dp.XTrain,'YTrain',trainMuArray,'inputPoseTransf', p2r, ...
+inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainMuArray,'inputPoseTransf', p2r, ...
     'regClass',@locallyWeightedLinearRegressor,'XSpaceSwitch',bsMu,'kernelFn',@kernelR, 'kernelParams',struct('h',0.0025));
 %h = 0.055, lambda = 0.1, np
 %h = 0.0025 lwl
 %h 0.0058, 0.0384 locallyWeightedLinear nonParametric
-muPxRegBundle = pixelRegressorBundle(inputData);
+muPxRegBundle = pixelRegressorBundle(inputStruct);
 
-inputData = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,'inputPoseTransf', p2ra, ...
+inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,'inputPoseTransf', p2ra, ...
     'regClass',@nonParametricRegressor, 'XSpaceSwitch',bsSigma,'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0559,'lambda',0.1));
-sigmaPxRegBundle = pixelRegressorBundle(inputData);
+sigmaPxRegBundle = pixelRegressorBundle(inputStruct);
 
-inputData = struct('XTrain',dp.XTrain,'YTrain',trainPzArray,'inputPoseTransf', p2ra, ...
+inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainPzArray,'inputPoseTransf', p2ra, ...
     'regClass',@nonParametricRegressor,'XSpaceSwitch',bsPz,'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0559,'lambda',0.1));
-pzPxRegBundle = pixelRegressorBundle(inputData);
+pzPxRegBundle = pixelRegressorBundle(inputStruct);
 %{
 % baseline
-inputData = struct('XTrain',dp.XTrain,'YTrain',trainPdfs.paramArray,'inputPoseTransf', p2ra, ...
+inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainPdfs.paramArray,'inputPoseTransf', p2ra, ...
     'regClass',@baselineRegressor); 
-pxRegBundle = pixelRegressorBundle(inputData);
+pxRegBundle = pixelRegressorBundle(inputStruct);
 %}
 
 %% predict at test poses
@@ -87,13 +86,13 @@ predParamArray(:,3,:) = predPzArray;
 %% diagnose error
 % fit pdf models to test data
 fprintf('Calculating error...\n');
-inputData = struct('fitClass',@normWithDrops,'data',{dp.obsArray(dp.testPoseIds,:)});
-testPdfs = pdfBundle(inputData);
+inputStruct = struct('fitClass',@normWithDrops,'data',{dp.obsArray(dp.testPoseIds,:)});
+testPdfs = pdfBundle(inputStruct);
 errTest = abs(testPdfs.paramArray-predParamArray);
 err = errorStats(errTest);
 [paramME,nOutliers] = err.getParamME();
 
 %% create a simulator instance
-inputData = struct('fitClass',trainPdfs.fitClass,'pxRegBundleArray',[muPxRegBundle sigmaPxRegBundle pzPxRegBundle], ...
+inputStruct = struct('fitClass',trainPdfs.fitClass,'pxRegBundleArray',[muPxRegBundle sigmaPxRegBundle pzPxRegBundle], ...
     'laser',dp.laser,'map',roomLineMap);
-rsim = rangeSimulator(inputData);
+rsim = rangeSimulator(inputStruct);

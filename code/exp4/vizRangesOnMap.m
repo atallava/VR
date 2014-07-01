@@ -7,16 +7,16 @@ classdef vizRangesOnMap < handle
     end
 
     methods
-        function obj = vizRangesOnMap(inputData)
-            % inputData fields ('localizer','laser')
+        function obj = vizRangesOnMap(inputStruct)
+            % inputStruct fields ('localizer','laser')
             % default (,laserClass(struct()))
-            if isfield(inputData,'localizer')
-                obj.localizer = inputData.localizer;
+            if isfield(inputStruct,'localizer')
+                obj.localizer = inputStruct.localizer;
             else
                 error('LOCALIZER NOT INPUT.');
             end
-            if isfield(inputData,'laser')
-                obj.laser = inputData.laser;
+            if isfield(inputStruct,'laser')
+                obj.laser = inputStruct.laser;
             else
                 obj.laser = laserClass(struct());
             end

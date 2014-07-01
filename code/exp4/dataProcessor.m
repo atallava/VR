@@ -19,14 +19,14 @@ classdef dataProcessor < handle
     end
     
     methods
-        function obj = dataProcessor(inputData)
-            % inputData fields
+        function obj = dataProcessor(inputStruct)
+            % inputStruct fields
             % ('poses','obsArray','laser','trainPoseIds','testPoseIds')
-            obj.poses = inputData.poses;
-            obj.obsArray = inputData.obsArray;
-            obj.laser = inputData.laser;
-            obj.trainPoseIds = inputData.trainPoseIds;
-            obj.testPoseIds = inputData.testPoseIds;
+            obj.poses = inputStruct.poses;
+            obj.obsArray = inputStruct.obsArray;
+            obj.laser = inputStruct.laser;
+            obj.trainPoseIds = inputStruct.trainPoseIds;
+            obj.testPoseIds = inputStruct.testPoseIds;
             
             obj.XTrain = obj.poses';
             obj.XTrain = obj.XTrain(obj.trainPoseIds,:);

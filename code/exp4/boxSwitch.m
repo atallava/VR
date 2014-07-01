@@ -9,15 +9,15 @@ classdef boxSwitch < abstractSwitch & handle
     end
 
     methods
-        function obj = boxSwitch(inputData)
-            % inputData fields ('XRanges','switchY')
-            if isfield(inputData,'XRanges')
-                obj.XRanges = inputData.XRanges;
+        function obj = boxSwitch(inputStruct)
+            % inputStruct fields ('XRanges','switchY')
+            if isfield(inputStruct,'XRanges')
+                obj.XRanges = inputStruct.XRanges;
             else
                 error('XRANGES NOT INPUT.');
             end
-            if isfield(inputData,'switchY')
-                obj.switchY = inputData.switchY;
+            if isfield(inputStruct,'switchY')
+                obj.switchY = inputStruct.switchY;
             else
                 error('SWITCHY NOT INPUT.');
             end

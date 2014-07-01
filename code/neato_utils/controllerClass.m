@@ -13,16 +13,16 @@ classdef controllerClass < handle
     end
     
     methods
-        function obj = controllerClass(inputData)
-            % inputData fields ('gainV','gainW')
+        function obj = controllerClass(inputStruct)
+            % inputStruct fields ('gainV','gainW')
             % default (0.2,0.05)
-            if isfield(inputData,'gainV')
-                obj.gainV = inputData.gainV;
+            if isfield(inputStruct,'gainV')
+                obj.gainV = inputStruct.gainV;
             else
                 obj.gainV = 0.2;
             end
-            if isfield(inputData,'gainW')
-                obj.gainW = inputData.gainW;
+            if isfield(inputStruct,'gainW')
+                obj.gainW = inputStruct.gainW;
             else
                 obj.gainW = 0.05;
             end

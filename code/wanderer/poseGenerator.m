@@ -11,34 +11,34 @@ classdef poseGenerator < handle
     end
 
     methods
-        function obj = poseGenerator(inputData)
-            % inputData fields ('map','nDraws','dRange','phiRange','candidateBufferMaxSize','scoringPolygon')
+        function obj = poseGenerator(inputStruct)
+            % inputStruct fields ('map','nDraws','dRange','phiRange','candidateBufferMaxSize','scoringPolygon')
             % default (,,,,,)
-            if isfield(inputData,'map')
-                obj.map = inputData.map;
+            if isfield(inputStruct,'map')
+                obj.map = inputStruct.map;
                 obj.walls = obj.map.objects(1); % assuming the first object is the walls
                 obj.lObjArray = obj.map.objects;
             else
                 error('MAP NOT INPUT');
             end
-            if isfield(inputData,'nDraws')
-                obj.nDraws = inputData.nDraws;
+            if isfield(inputStruct,'nDraws')
+                obj.nDraws = inputStruct.nDraws;
             else
             end
-            if isfield(inputData,'dRange')
-                obj.dRange = inputData.dRange;
+            if isfield(inputStruct,'dRange')
+                obj.dRange = inputStruct.dRange;
             else
             end
-            if isfield(inputData,'phiRange')
-                obj.phiRange = inputData.phiRange;
+            if isfield(inputStruct,'phiRange')
+                obj.phiRange = inputStruct.phiRange;
             else
             end
-            if isfield(inputData,'candidateBufferMaxSize')
-                obj.candidateBufferMaxSize = inputData.candidateBufferMaxSize;
+            if isfield(inputStruct,'candidateBufferMaxSize')
+                obj.candidateBufferMaxSize = inputStruct.candidateBufferMaxSize;
             else
             end
-            if isfield(inputData,'scoringPolygon')
-                obj.scoringPolygon = inputData.scoringPolygon;
+            if isfield(inputStruct,'scoringPolygon')
+                obj.scoringPolygon = inputStruct.scoringPolygon;
             else
             end
         end
