@@ -1,7 +1,6 @@
 %test an app on predicted-vs-real data
 % in this case, line-finding
 clear all; clc;
-addpath ~/courses/mrpl/code/lab8/
 load('full_predictor_mar27_2','dp');
 np = load('full_predictor_mar27_2','predParamArray');
 baseline = load('full_predictor_mar27_baseline','predParamArray');

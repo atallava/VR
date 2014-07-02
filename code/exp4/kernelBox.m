@@ -9,7 +9,7 @@ function res = kernelBox(x1,x2,kernelParams)
 % kernelParams - struct with fields ('h'), kernel width. Default = 1.0 if
 %                passed empty struct.
 % 
-% res          - 1 x n kernel values.
+% res          - 1 x n kernel values.x
 
 if isfield(kernelParams,'h')
     h = kernelParams.h;
