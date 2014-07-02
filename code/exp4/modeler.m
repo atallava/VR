@@ -3,7 +3,7 @@
 %% initialize
 clearAll;
 load processed_data_mar27
-load poses_after_icp
+load poses_after_icp_mar27
 
 fprintf('Initializing...\n');
 skip = 1;
@@ -13,7 +13,7 @@ inputStruct = struct('poses',poses,'obsArray',{obsArray(:,pixelIds)},'laser',las
 totalPoses = length(inputStruct.poses);
 frac = 0.7;
 %inputStruct.trainPoseIds = randperm(totalPoses,floor(frac*totalPoses));
-inputStruct.trainPoseIds = 1:42;%[1    21    17    38     6    32    27    29    24    35    28    40    10     4    34    13     8     9    31    11 23    22    37    15     7    33    41     5    42];
+inputStruct.trainPoseIds = [1    21    17    38     6    32    27    29    24    35    28    40    10     4    34    13     8     9    31    11 23    22    37    15     7    33    41     5    42];
 inputStruct.testPoseIds = setdiff(1:totalPoses,inputStruct.trainPoseIds);
 dp = dataProcessor(inputStruct);
 
@@ -32,8 +32,8 @@ p2r = poses2R(inputStruct);
 localizer = lineMapLocalizer(roomLineMap.objects);
 
 trainMuArray = trainPdfs.paramArray(:,1,:);
-trainSigmaArray = trainPdfs.paramArray(:,2,:);
-trainPzArray = trainPdfs.paramArray(:,3,:);
+trainSigmaArray = size(trainPdfs.paramArray(:,2,:));
+trainPzArray = size(trainPdfs.paramArray(:,3,:));
 
 % hack hack hack. throwing outliers in regression stage
 thresh = 0.05;

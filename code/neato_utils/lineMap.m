@@ -56,8 +56,18 @@ classdef lineMap < handle
            hold off
         end
 		
-		function [ranges,incidence_angles] = raycast(obj, pose, max_range, ang_range)
-            % ang_range is in rad
+        function [ranges,incidence_angles] = raycast(obj, pose, max_range, ang_range)
+            %RAYCAST
+            %
+            % [ranges,incidence_angles] = RAYCAST(obj, pose, max_range, ang_range)
+            %
+            %  pose            - Length 3 array.
+            %  max_range       - In m.
+            %  ang_range       - Vector in radian.
+            %
+            % ranges           - Vector in m.
+            % incidence_angles - Vector in rad.
+            
             sweep = pose(3) + ang_range;
             
             p0x = pose(1);

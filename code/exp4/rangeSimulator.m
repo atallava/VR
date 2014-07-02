@@ -24,8 +24,14 @@ classdef rangeSimulator < handle
         end
         
         function res = simulate(obj,poses)
-            % predict parameters at poses
-            % poses is n x 3
+            %SIMULATE
+            %
+            % res = SIMULATE(obj,poses)
+            %
+            % poses - Length 3 array.
+            %
+            % res   - Output ranges.
+            
             if size(poses,1) == 3
                 poses = poses';
             end

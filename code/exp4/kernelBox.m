@@ -1,9 +1,15 @@
 function res = kernelBox(x1,x2,kernelParams)
-% box kernel centered about x1
-% x1 is 1 x dimX
-% x2 is n x dimX
-% kernelParams has fields ('h')
-% res is 1 x n
+%KERNELBOX 
+% Written to work with pdist2.
+%
+% res = KERNELBOX(x1,x2,kernelParams)
+% 
+% x1           - 1 x dimX.
+% x2           - n x dimX.
+% kernelParams - struct with fields ('h'), kernel width. Default = 1.0 if
+%                passed empty struct.
+% 
+% res          - 1 x n kernel values.
 
 if isfield(kernelParams,'h')
     h = kernelParams.h;

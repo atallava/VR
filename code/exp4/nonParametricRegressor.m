@@ -31,7 +31,7 @@ classdef nonParametricRegressor < handle & abstractRegressor
             nQueries = size(X,1);
             Y = zeros(nQueries,obj.dimY);
             K = pdist2(obj.XTrain,X,@(x,y) obj.kernelFn(x,y,obj.kernelParams));
-            
+                        
             % flu is a flag that waves when a point is far from the sphere
             % of influence of training data
             weightThresh = 0.1;
