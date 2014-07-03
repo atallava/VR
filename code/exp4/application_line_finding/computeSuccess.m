@@ -9,7 +9,7 @@ nPoses = length(obsArrayByPose);
 nTrials = 10;
 numLines = 2;
 targetLen = 0.61;
-
+%{
 %% score on real range data
 plot_option = 1;
 poseScore = zeros(1,nPoses);
@@ -42,7 +42,7 @@ for i = 8%1:nPoses
     end
     poseScore(i) = score/nTrials;
 end
-
+%}
 %% score on simulated data
 plot_option = 0;
 poseScore = zeros(1,nPoses);
