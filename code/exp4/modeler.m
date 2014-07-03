@@ -25,15 +25,15 @@ trainPdfs = pdfBundle(inputStruct);
 
 %% initialize regressor
 fprintf('Initializing regressor(s)...\n');
-load map;
-inputStruct = struct('envLineMap',roomLineMap,'laser',dp.laser);
+load roomLineMap;
+inputStruct = struct('envLineMap',map,'laser',dp.laser);
 p2ra = poses2RAlpha(inputStruct);
 p2r = poses2R(inputStruct);
-localizer = lineMapLocalizer(roomLineMap.objects);
+localizer = lineMapLocalizer(map.objects);
 
 trainMuArray = trainPdfs.paramArray(:,1,:);
-trainSigmaArray = size(trainPdfs.paramArray(:,2,:));
-trainPzArray = size(trainPdfs.paramArray(:,3,:));
+trainSigmaArray = trainPdfs.paramArray(:,2,:);
+trainPzArray = trainPdfs.paramArray(:,3,:);
 
 % hack hack hack. throwing outliers in regression stage
 thresh = 0.05;
@@ -45,7 +45,6 @@ trainSigmaArray(flag) = nan;
 % switches to account for laser.maxRange
 bsMu = boxSwitch(struct('XRanges',[0; dp.laser.maxRange],'switchY',nan));
 bsSigma = boxSwitch(struct('XRanges',[0 0; dp.laser.maxRange 2*pi],'switchY',nan));
-bsPz = boxSwitch(struct('XRanges',[0 0; dp.laser.maxRange 2*pi],'switchY',1));
 
 % nonparametric
 inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainMuArray,'inputPoseTransf', p2r, ...
@@ -59,9 +58,11 @@ inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,'inputPoseTrans
     'regClass',@nonParametricRegressor, 'XSpaceSwitch',bsSigma,'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0559,'lambda',0.1));
 sigmaPxRegBundle = pixelRegressorBundle(inputStruct);
 
-inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainPzArray,'inputPoseTransf', p2ra, ...
-    'regClass',@nonParametricRegressor,'XSpaceSwitch',bsPz,'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0559,'lambda',0.1));
+inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,'poolOption',1,'inputPoseTransf', p2ra, ...
+    'regClass',@nonParametricRegressor, 'XSpaceSwitch',bsSigma,'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0559,'lambda',0.1));
 pzPxRegBundle = pixelRegressorBundle(inputStruct);
+%pzPxRegBundle = nullFraction(struct('bearings',dp.laser.bearings));
+
 %{
 % baseline
 inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainPdfs.paramArray,'inputPoseTransf', p2ra, ...
@@ -93,6 +94,7 @@ err = errorStats(errTest);
 [paramME,nOutliers] = err.getParamME();
 
 %% create a simulator instance
-inputStruct = struct('fitClass',trainPdfs.fitClass,'pxRegBundleArray',[muPxRegBundle sigmaPxRegBundle pzPxRegBundle], ...
-    'laser',dp.laser,'map',roomLineMap);
+fprintf('Creating simulator...\n');
+inputStruct = struct('fitClass',trainPdfs.fitClass,'pxRegBundleArray',{{muPxRegBundle sigmaPxRegBundle pzPxRegBundle}}, ...
+    'laser',dp.laser,'map',map);
 rsim = rangeSimulator(inputStruct);

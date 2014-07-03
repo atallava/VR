@@ -14,6 +14,7 @@ classdef pixelRegressorBundle < handle
         XTrain
         YTrain
         dimY
+        poolOption = 0
         nPixels
         inputPoseTransf
         regClass
@@ -24,8 +25,8 @@ classdef pixelRegressorBundle < handle
     
     methods
         function obj = pixelRegressorBundle(inputStruct)
-            % inputStruct fields ('XTrain', 'YTrain', 'inputPoseTransf',
-            % 'regClass', <regressor specific fields>)
+            % inputStruct fields ('XTrain', 'YTrain', 'inputPoseTransf', 
+            % 'poolOption','regClass', <regressor specific fields>)
             
             obj.XTrain = inputStruct.XTrain;
             obj.YTrain = inputStruct.YTrain;
@@ -46,6 +47,7 @@ classdef pixelRegressorBundle < handle
         function Y = predict(obj,X,queryMap)
             % if not supplied, assumed to be working in the same map as
             % contained in obj.inputPoseTransf
+            % Y is size nQueries x dimY x nPixels
             queryPoseTransf = obj.inputPoseTransf;
             if nargin > 2
                 queryPoseTransf.setMap(queryMap);
@@ -75,28 +77,33 @@ classdef pixelRegressorBundle < handle
             else
                 XTransf = obj.inputPoseTransf.transform(obj.XTrain);
             end
-            %naive, indpendent pixels
-            
-            for i = 1:obj.nPixels
+            if ~obj.poolOption
+                %naive, indpendent pixels
+                for i = 1:obj.nPixels
+                    tempInput = inputStruct;
+                    tempInput.XTrain = XTransf(:,:,i);
+                    tempInput.YTrain = obj.YTrain(:,:,i);
+                    obj.regressorArray{i} = obj.regClass(tempInput);
+                end
+                
+                %other end, throw everything together
+            else
+                bigX = []; bigY = [];
+                for i = 1:obj.nPixels
+                    bigX = [bigX; XTransf(:,:,i)];
+                    bigY = [bigY; obj.YTrain(:,:,i)];
+                end
+                
+                [~,ids] = sort(bigX(:,1));
+                bigX = bigX(ids,:); bigY = bigY(ids,:);
+                bigX = bigX(1:100:end,:); bigY = bigY(1:100:end,:);
+                
                 tempInput = inputStruct;
-                tempInput.XTrain = XTransf(:,:,i);
-                tempInput.YTrain = obj.YTrain(:,:,i);
-                obj.regressorArray{i} = obj.regClass(tempInput);
+                tempInput.XTrain = bigX;
+                tempInput.YTrain = bigY;
+                tempObj = obj.regClass(tempInput);
+                obj.regressorArray(:) = {tempObj};
             end
-            
-            %other end, throw everything together
-            %{
-            bigX = []; bigY = [];
-            for i = 1:obj.nPixels
-                bigX = [bigX; XTransf(:,:,i)];
-                bigY = [bigY; obj.YTrain(:,:,i)];
-            end
-            tempInput = inputStruct;
-            tempInput.XTrain = bigX;
-            tempInput.YTrain = bigY;
-            tempObj = obj.regClass(tempInput);
-            obj.regressorArray(:) = {tempObj};
-            %}
        end
     end
     

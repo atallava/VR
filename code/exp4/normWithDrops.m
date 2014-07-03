@@ -44,7 +44,7 @@ classdef normWithDrops < handle & abstractPdf
                    vec1 = (data == obj.mu)*(1-obj.pZero);
                else
                    temp = (data-obj.mu)/obj.sigma;
-                   x2 = temp+obj.dx*0.5; x1 = temp-obj.dx*0.5;
+                   x2 = temp+normWithDrops.dx*0.5; x1 = temp-normWithDrops.dx*0.5;
                    vec1 = 0.5*(erf(x2/sqrt(2))-erf(x1/sqrt(2)))*(1-obj.pZero);
                    %vec1 = pdf('normal',data,obj.mu,obj.sigma)*obj.dx*(1-obj.pZero);
                end

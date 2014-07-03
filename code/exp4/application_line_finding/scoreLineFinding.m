@@ -25,14 +25,6 @@ else
     res = false;
 end
 
-%{
-if (norm(candidate.p2-target.p2) < threshold) && (norm(candidate.p1-target.p1) < threshold) || ...
-        (norm(candidate.p2-target.p1) < threshold) && (norm(candidate.p1-target.p2) < threshold)
-    res = true;
-else
-    res = false;
-end
-%}
 end
 
 function res = checkSegment(targetSegment,candidateSegment)

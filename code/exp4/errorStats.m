@@ -97,6 +97,27 @@ classdef errorStats < handle
             qrange = iqr(vec);
             ids = find(vec > uq+f*qrange);
          end
+         
+         function nll = getNll(paramArray,fitClass,data)
+             %GETNLL
+             %
+             % nll = GETNLL(paramArray,fitClass,data)
+             %
+             % paramArray - Parameter array of size nParams x nPixels.
+             % fitClass   - Handle to pdf class.
+             % data       - NLL calculated on this data.
+             %
+             % nll        - Scalar.
+             
+             nll = [];
+             nPixels = size(paramArray,2);
+             inputStruct.choice = 'params';
+             for i = 1:nPixels
+                 inputStruct.vec = squeeze(paramArray(:,i));
+                 pdfObject = fitClass(inputStruct);
+                 nll = [nll pdfObject.negLogLike(data(i))];
+             end
+         end
     end
     
 end

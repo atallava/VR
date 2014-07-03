@@ -61,7 +61,7 @@ classdef localGeomRegressor < handle
             for i = 1:obj.nPixels
                 [left,right] = obj.getNbrIds(i);
                 if any(ranges([left i right]) == 0)
-                    continue;
+                    res(i) = ranges(i);
                 else
                     %res(i) = obj.regressorArray{i}.predict([ranges(left) ranges(right)]);
                     res(i) = obj.singleReg.predict([ranges(left) ranges(right)]);
