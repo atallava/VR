@@ -23,7 +23,7 @@ lzrCount = 1;
 localizer = lineMapLocalizer(roomLineMap.objects);
 
 for i = 1:enc.update_count
-    if enc.encArray(i+1).left == 0 && enc.encArray(i+1).right == 0
+    if enc.log(i+1).left == 0 && enc.log(i+1).right == 0
         % hack, since zero encoder readings screw up things since no
         % filtering
         continue;
@@ -44,7 +44,7 @@ for i = 1:enc.update_count
     if tCommonEnc(i) > tCommonLzr(lzrCount)
         t1 = tic;
         % update using laser
-        ranges = lzr.rangeArray{lzrCount+1};
+        ranges = lzr.log(lzrCount+1).ranges};
         ri = rangeImage(struct('ranges',ranges,'cleanup',1));
         ptsLocal = [ri.xArray; ri.yArray];
         ptsLocal = [ptsLocal; ones(1,size(ptsLocal,2))];
@@ -66,7 +66,7 @@ for i = 1:enc.update_count
         print('-dpng','-r72',sprintf('images/pose_est/enc%d_lzr%d.png',i,lzrCount));
         close(hf);
     end
-    rState.setEncoders(enc.encArray(i+1),tCommonEnc(i));
+    rState.setEncoders(enc.log(i+1),tCommonEnc(i));
     
     if tCommonEnc(i) <= tStart(poseCount) && tCommonEnc(i+1) > tStart(poseCount)
         fprintf('encCount: %d, lzrCount: %d, poseCount: %d\n',i,lzrCount,poseCount);

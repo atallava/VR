@@ -8,6 +8,8 @@ classdef laserPoseRefiner < handle
         skip = 5
         numIterations = 40
         laser
+        lastMatchDuration = []
+        lastNumOutliers = []
     end
 
     methods
@@ -35,12 +37,18 @@ classdef laserPoseRefiner < handle
         end
         
         function [success,poseOut] = refine(obj,ranges,poseIn)
+            %REFINE Refine pose estimate.
+            % Transforms pose laser frame, cleans up ranges, throws
+            % outliers and matches scans.
+            %
             % [success,poseOut] = REFINE(obj,ranges,poseIn)
+            %
             % ranges  - Range array.
-            % poseIn  - pose2D object or length 3 array.
+            % poseIn  - pose2D object or length 3 array. Reference pose.
             % success - struct.
             % poseOut - Refined pose of same format as poseIn.
             
+            t1 = tic();
             objInput = isa(poseIn,'pose2D');
             if ~objInput
                 poseIn = pose2D(poseIn);
@@ -50,21 +58,24 @@ classdef laserPoseRefiner < handle
             ptsLocal = ri.getPtsHomogeneous();
             ptsLocal = ptsLocal(:,1:obj.skip:end);
             outIds = obj.localizer.throwOutliers(ptsLocal,laserPoseIn);
+            obj.lastNumOutliers = length(outIds);
             ptsLocal(:,outIds) = [];
             [success, laserPoseOut] = obj.localizer.refinePose(laserPoseIn,ptsLocal,obj.numIterations);
             poseOut = pose2D.transformToPose(laserPoseOut.T/(obj.laser.Tsensor));
             if objInput
                 poseOut = pose2D(poseOut);
             end
-            %{
-            hf = obj.localizer.drawLines();
-            hf = plotScan(pose2D(poseOut),ptsLocal,hf);
-            xlim([-2 2]); ylim([-2 2]);
-            set(hf,'visible','off');
-            print('-dpng','-r72',sprintf('images/refiner_1/%d.png',d));
-            close(hf);
-            %}
+            obj.lastMatchDuration = toc(t1);
         end
+        
+        function setSkip(obj,skip)
+            obj.skip = skip;
+        end
+        
+        function setNumIterations(obj,numIterations)
+            obj.numIterations = numIterations;
+        end
+        
     end
 
     methods (Static = true)

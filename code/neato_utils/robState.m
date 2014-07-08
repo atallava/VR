@@ -1,13 +1,5 @@
 classdef robState < handle
     %ROBSTATE Update robot state based on encoders.
-    %
-    % obj = ROBSTATE(rob,mode,pose)
-    %
-    % rob  - Real or simulated robot. Can be left empty in manual mode.
-    % mode - 'robot' or 'manual'
-    % pose - Length 3 array to start integration from.
-    %
-    % obj  - Instance.
     
     properties (Constant = true)
         HISTORY_SIZE = 5000;
@@ -28,6 +20,16 @@ classdef robState < handle
     
     methods
         function obj = robState(rob,mode,pose)
+            %ROBSTATE Constructor.
+            %
+            % obj = ROBSTATE(rob,mode,pose)
+            %
+            % rob  - Real or simulated robot. Can be left empty in manual mode.
+            % mode - 'robot' or 'manual'
+            % pose - Length 3 array to start integration from.
+            %
+            % obj  - Instance.
+            
             obj.rob = rob;
             if nargin < 3
                 obj.pose = [0;0;0];
@@ -81,16 +83,6 @@ classdef robState < handle
             % updates based on encoders
                             
             % don't perform calculations if encoders don't change
-            %{
-            try (obj.encoders.data.left == obj.left_enc_old) && (obj.encoders.data.right == obj.right_enc_old)
-            catch
-                obj.encoders.data
-                obj.left_enc_old
-                obj.right_enc_old
-                error('error\n');
-            end
-            %}
-                
             if (obj.encoders.data.left == obj.left_enc_old) && (obj.encoders.data.right == obj.right_enc_old)
                 obj.t_old = t_new;
                 obj.vl = 0;
@@ -117,7 +109,13 @@ classdef robState < handle
         end
         
         function reset(obj,pose)
-            % delete history and start over
+            %RESET Delete history and start over.
+            %
+            % RESET(obj,pose)
+            %
+            % pose - Optional. Length 3 array to start from. Defaults to
+            %        [0;0;0].
+            
             if strcmp(obj.mode,'robot')
                 obj.listenerHandle.delete();
             end

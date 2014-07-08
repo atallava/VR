@@ -2,8 +2,7 @@ classdef laserHistory < handle
     %laserHistory store laser values in an array
         
     properties
-        rangeArray
-        intensityArray
+        log
         tArray
         update_count
         listenerHandle
@@ -16,12 +15,20 @@ classdef laserHistory < handle
     
     methods
         function obj = laserHistory(rob)
+            %LASERHISTORY Constructor.
+            %
+            % obj = LASERHISTORY(rob)
+            %
+            % rob - An object that broadcasts range data, e.g. real,
+            %       neato or playbackTool object.
+            %
+            % obj - Instance.
+            
             if ~isfield(rob.laser.data,'header')
                 error('LASER MUST BE ON');
             end
             obj.rob = rob;
-            obj.rangeArray = cell(0);
-            obj.intensityArray = cell(0);
+            obj.log = struct('ranges',{},'intensities',{});
             obj.tArray = [];
             obj.update_count = 0;
             obj.bearings = deg2rad(0:359);
@@ -31,11 +38,10 @@ classdef laserHistory < handle
             obj.listenerHandle = addlistener(rob.laser,'OnMessageReceived',@(src,evt) laserHistory.laserEventResponse(src,evt,obj));
         end
         
-        function obj = Reset(obj)
+        function obj = reset(obj)
             obj.listenerHandle.delete;
             pause(0.01);
-            obj.rangeArray = cell(0);
-            obj.intensityArray = cell(0);
+            obj.log = struct('ranges',{},'intensities',{});
             obj.tArray = [];
             obj.update_count = 0;
             obj.listenerHandle = addlistener(obj.rob.laser,'OnMessageReceived',@(src,evt) encHistory.laserEventResponse(src,evt,obj));
@@ -51,8 +57,8 @@ classdef laserHistory < handle
         end
         
         function obj = updatePlot(obj)
-            x = obj.rangeArray{end}.*cos(obj.bearings);
-            y = obj.rangeArray{end}.*sin(obj.bearings);
+            x = obj.log(end).ranges.*cos(obj.bearings);
+            y = obj.log(end).ranges.*sin(obj.bearings);
             set(obj.hplot,'XData',x,'YData',y);
         end
         
@@ -65,8 +71,11 @@ classdef laserHistory < handle
         function laserEventResponse(src,evt,obj)
             obj.update_count = obj.update_count+1;
             obj.tArray(obj.update_count) = evt.data.header.stamp.secs + (evt.data.header.stamp.nsecs*1e-9);
-            obj.rangeArray{obj.update_count+1} = evt.data.ranges;
-            %obj.intensityArray{obj.update_count+1} = evt.data.intensities;
+            obj.log(obj.update_count+1).ranges = evt.data.ranges;
+            if isfield(evt.data,'intensities')
+                % Currently not all laser interfaces broadcast intensities.
+                obj.log(obj.update_count+1).intensities = evt.data.ranges;
+            end
             if obj.plot_flag
                 obj.updatePlot;
             end
