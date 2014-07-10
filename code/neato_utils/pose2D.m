@@ -8,7 +8,7 @@ classdef pose2D < handle
     methods(Static = true)
         function res = poseNorm(p1,p2)
            % p1, p2 are [x,y,th]
-           scale = 0.5;
+           scale = 0.5/0.44;
            dth = atan2(sin(p1(3)-p2(3)),cos(p1(3)-p2(3)));
            res = (p1(1)-p2(1))^2+(p1(2)-p2(2))^2+(scale*dth)^2;
            res = sqrt(res);

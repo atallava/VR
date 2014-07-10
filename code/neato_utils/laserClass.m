@@ -53,6 +53,16 @@ classdef laserClass < handle
             % given laser pose, return reference pose
             refPose = pose2D.pose1ToPose2(laserPose,inv(obj.Tsensor));
         end
+        
+        function [l,r] = getNbrIds(obj,i,numNbrs,nPix)
+            if nargin < 4
+                nPix = obj.nPixels;
+            end
+            l = i-numNbrs/2:i-1;
+            l(l<1) = l(l<1)+nPix;
+            r = i+1:i+numNbrs/2;
+            r(r>nPix) = r(r>nPix)-nPix+1;
+        end
     end
 end
 

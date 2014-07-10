@@ -41,17 +41,17 @@ classdef rangeImage < handle
             end
         end
         
-        function obj = cleanup(obj,minUsefulRange,maxUsefulRange)
+        function flag = cleanup(obj,minUsefulRange,maxUsefulRange)
             % throw away points outside [minUsefulRange maxUsefulRange]
             if nargin == 1
-                ids = find(obj.rArray < obj.minUsefulRange | obj.rArray > obj.maxUsefulRange);
+                flag = obj.rArray < obj.minUsefulRange | obj.rArray > obj.maxUsefulRange;
             else
-                ids = find(obj.rArray < minUsefulRange | obj.rArray > maxUsefulRange);
+                flag = obj.rArray < minUsefulRange | obj.rArray > maxUsefulRange;
             end
-            obj.rArray(ids) = []; 
-            obj.thArray(ids) = [];
-            obj.xArray(ids) = [];
-            obj.yArray(ids) =[];
+            obj.rArray(flag) = []; 
+            obj.thArray(flag) = [];
+            obj.xArray(flag) = [];
+            obj.yArray(flag) =[];
             obj.nPix = length(obj.rArray);
         end
         

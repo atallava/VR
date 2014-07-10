@@ -86,8 +86,8 @@ classdef robotModel < handle
             %
             % tBBox - 5 x 2 array of coordinates.
             
-            p2d = pose2D(pose);
-            tBBox = p2d.Tb2w*[robotModel.bBox'; ones(1,size(robotModel.bBox,1))];
+            Tb2w = pose2D.poseToTransform(pose);
+            tBBox = Tb2w*[robotModel.bBox'; ones(1,size(robotModel.bBox,1))];
             tBBox(3,:) = []; tBBox = tBBox';                
         end
     end

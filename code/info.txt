@@ -1,0 +1,56 @@
+code/exp3/
+contents of data_22Jan:
+* moved robot in straight line. at 20 poses, took 500 readings of world.
+code/exp3/processed_data.mat derived from above file. contains a struct array called datax-position in world, and range readings of ids 1-10, 351-360. assuming that these readings are from a static world. 
+
+code/exp4:
+contents of data_Feb7:
+* made a mistake: no time logs of encoder returns.
+
+data_Feb7
+Range readings in artificial environment for building simulator. Robot: mega.
+
+data_mar27
+Range readings in artificial environment for building simulator. Robot: peta.
+
+data_may5_peta
+Collected data to test maximum range of laser and unexplained large-range readings. Robot: peta.
+
+data_june6
+To test simulator on line-finding. Robot: peta.
+
+full_predictor_mar27_1
+29 training poses
+
+full_predictor_mar27_2
+42 training poses
+
+full_predictor_mar27_3
+29 training poses. single model for all pixels (collated and compressed data), using nullFraction for pz.
+
+full_predictor_mar27_4
+same as above but performing no-pool predictions for pz.
+
+application_scan_match:
+application_test_data
+data is a struct array with fields 'poses', 'ranges'. 20 ranges for each pose to obtain error on. Pattern set is for displacing reference pose. Constructed from data_mar27. 
+The poses are not in the training poses for full_predictor_mar27_{1,3,4}
+
+smoothness_tester
+all 42 poses, \emph{but mu and sigma are the same for all pixels}. 
+
+code/exp6/
+full_predictor_means_only_mar27_1
+trained on all poses
+
+full_predictor_means_only_mar27_2
+trained on 29 poses
+
+simulated_means_mar27
+robot placed in poses of mar27 and ranges generated from map.raycast()
+
+local_geom_regressor_instance
+localGeomRegressor instance, with muArray from full_predictor_means_only_mar27_1
+
+density_data
+triplets is a set of observed three consecutive (and non-nan) ranges from all training poses.

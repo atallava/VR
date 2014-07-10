@@ -41,7 +41,7 @@ classdef rangeSimulator < handle
             % TODO: optimize for speed
             % array of predicted parameters
             for i = 1:obj.nParams
-                regBundle = obj.pxRegBundleArray{i};
+                regBundle = obj.pxRegBundleArray(i);
                 predParamArray(:,i,:) = regBundle.predict(poses,obj.map);
             end
             res = zeros(nPoses,obj.laser.nPixels);

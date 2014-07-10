@@ -40,17 +40,23 @@ classdef lineMapLocalizer < handle
         end
 
         function ro2 = closestSquaredDistanceToLines(obj,p)
+            %CLOSESTSQUAREDDISTANCETOLINES
             % Find the squared shortest distance from p to any line
             % segment in the supplied list of line segments. p1 is the
-            % array of start point and p2 is the array of end points.
-            ro2 = inf;
+            % array of start point and p2 is the array of end points.            
+            %
+            % ro2 = CLOSESTSQUAREDDISTANCETOLINES(obj,p)
+            %
+            % p   - Array of 2D points of size 2 x n.
+            %
+            % ro2 - Array of closest distances of size 1 x n.
+            
+            r2Array = zeros(size(obj.lines_p1,2),size(p,2));
             for i = 1:size(obj.lines_p1,2)
-                [r2 , ~] = closestPointOnLineSegment(p,...
-                    obj.lines_p1(:,i),obj.lines_p2(:,i));
-                if(r2 < ro2)
-                    ro2 = r2; 
-                end
+                [r2Array(i,:) , ~] = closestPointOnLineSegment(p,...
+                    obj.lines_p1(:,i),obj.lines_p2(:,i));                
             end
+            ro2 = min(r2Array,[],1);
         end
         
         function ids = throwOutliers(obj,varargin)
@@ -66,7 +72,7 @@ classdef lineMapLocalizer < handle
             %            2 x n or 3 x n (homogeneous 2D coordinates)
             % pose     - Array of length 3 or pose2D object.
             %
-            % ids      - Ids of outliers in ptsLocal.
+            % ids      - Logical array indicating outliers.
             
             if length(varargin) == 1
                 pts = varargin{1};
@@ -81,14 +87,9 @@ classdef lineMapLocalizer < handle
                 end
                 pts = pose2D.transformPoints(ptsLocal,pose.getPose);
             end
-                        
-            ids = [];
-            for i = 1:size(pts,2)
-                r2 = obj.closestSquaredDistanceToLines(pts(:,i));
-                if(r2 > lineMapLocalizer.maxErr)
-                    ids = [ids i];
-                end
-            end
+                     
+            r2 = obj.closestSquaredDistanceToLines(pts);
+            ids = r2 > lineMapLocalizer.maxErr;
         end
         
         function avgErr = fitError(obj,pose,ptsInModelFrame)
@@ -131,6 +132,12 @@ classdef lineMapLocalizer < handle
         end
         
         function [successStory, outPose] = refinePose(obj, inPose, ptsInModelFrame, maxIters)
+            if isempty(ptsInModelFrame)
+                warning('NO POINTS INPUT.');
+                successStory = struct('success',{},'err',{});
+                outPose = inPose;
+                return;
+            end
             successStory.success = 0;
             outPose = pose2D(inPose.getPose());
             if nargin < 4

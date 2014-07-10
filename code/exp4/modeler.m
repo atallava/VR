@@ -1,4 +1,4 @@
-%end-to-end pixel modeler
+%end-to-end modeler
 
 %% initialize
 clearAll;

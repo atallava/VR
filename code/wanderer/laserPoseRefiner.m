@@ -54,12 +54,15 @@ classdef laserPoseRefiner < handle
                 poseIn = pose2D(poseIn);
             end 
             laserPoseIn = obj.laser.refPoseToLaserPose(poseIn);
-            ri = rangeImage(struct('ranges',ranges,'cleanup',1));
+            ri = rangeImage(struct('ranges',ranges,'bearings',obj.laser.bearings,'cleanup',1));
             ptsLocal = ri.getPtsHomogeneous();
             ptsLocal = ptsLocal(:,1:obj.skip:end);
             outIds = obj.localizer.throwOutliers(ptsLocal,laserPoseIn);
-            obj.lastNumOutliers = length(outIds);
+            obj.lastNumOutliers = sum(outIds);
             ptsLocal(:,outIds) = [];
+            if isempty(ptsLocal)
+                warning('NO INLIERS LEFT.');
+            end
             [success, laserPoseOut] = obj.localizer.refinePose(laserPoseIn,ptsLocal,obj.numIterations);
             poseOut = pose2D.transformToPose(laserPoseOut.T/(obj.laser.Tsensor));
             if objInput

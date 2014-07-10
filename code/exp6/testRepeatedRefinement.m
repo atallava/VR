@@ -1,7 +1,7 @@
 clearAll
 
 load full_predictor_means_only_mar27_1
-load test_repeated_refinement
+load test_repeated_refinement_data
 load roomLineMap
 
 localizer = lineMapLocalizer(map.objects);
