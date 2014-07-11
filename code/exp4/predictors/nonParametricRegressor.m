@@ -15,6 +15,7 @@ classdef nonParametricRegressor < handle & abstractRegressor
             if nargin > 0
                 obj.XTrain = inputStruct.XTrain;
                 obj.YTrain = inputStruct.YTrain;
+                obj.cleanTrainingData();
                 if isfield(inputStruct,'XSpaceSwitch')
                    obj.XSpaceSwitch = inputStruct.XSpaceSwitch;
                    obj.removeSwitchedTrainingData();

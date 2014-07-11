@@ -41,7 +41,7 @@ classdef localGeomRegressor < handle
             
             for i = 1:obj.nPixels
                 tempInput = inputStruct;
-                [left,right] = obj.getNbrIds(i,obj.nPixels);
+                [left,right] = circArray.circNbrs(i,obj.nPixels,obj.numNbrs);
                 tempInput.XTrain = [obj.muArray(:,left) obj.muArray(:,right)];
                 tempInput.YTrain = obj.muArray(:,i);
                 bigX = [bigX; obj.muArray(:,left) obj.muArray(:,right)];
@@ -59,7 +59,7 @@ classdef localGeomRegressor < handle
             % res - nPixels length array
             res = zeros(size(ranges));
             for i = 1:length(ranges)
-                [left,right] = obj.getNbrIds(i,length(ranges));
+                [left,right] = circArray.circNbrs(i,length(ranges),obj.numNbrs);
                 if any(ranges([left i right]) == 0)
                     res(i) = ranges(i);
                 else
@@ -67,13 +67,6 @@ classdef localGeomRegressor < handle
                     res(i) = obj.singleReg.predict([ranges(left) ranges(right)]);
                 end
             end
-        end
-        
-        function [l,r] = getNbrIds(obj,i,nPix)
-            l = i-obj.numNbrs/2:i-1;
-            l(l<1) = l(l<1)+nPix;
-            r = i+1:i+obj.numNbrs/2;
-            r(r>nPix) = r(r>nPix)-nPix+1;
         end
     end
     

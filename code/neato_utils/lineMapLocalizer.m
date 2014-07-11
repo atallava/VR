@@ -2,7 +2,7 @@ classdef lineMapLocalizer < handle
     %lineMapLocalizer localize by matching range points to line map
         
     properties(Constant)        
-        maxErr = 0.5;
+        maxErr = 0.1;
         minPts = 5;
         % step increment when computing jacobian
         eps = [0.001,0.001,deg2rad(0.5)];
@@ -108,7 +108,7 @@ classdef lineMapLocalizer < handle
                 err = err + r2;
                 num = num + 1;
             end
-            if(num > lineMapLocalizer.minPts)
+            if(num >= lineMapLocalizer.minPts)
                 avgErr = sqrt(err)/num;
             else
                 % not enough points to make a guess
@@ -145,8 +145,7 @@ classdef lineMapLocalizer < handle
             end
             for i = 1:maxIters
                 [err, J] = obj.getJacobian(outPose, ptsInModelFrame);
-                %fprintf('iter %d, error %f\n', i, err);
-                if err == inf
+                if (err == inf) || any(J == inf)
                     break;
                 end
                 if norm(J) < obj.gradThresh

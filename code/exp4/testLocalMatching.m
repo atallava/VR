@@ -2,27 +2,23 @@ load roomLineMap
 load test_local_matching_data
 
 localizer = lineMapLocalizer(map.objects);
-defaultLaser = laserClass(struct());
-ri = rangeImage(struct('ranges',ranges));
+laser = laserClass(struct());
+ri = rangeImage(struct('ranges',muRanges));
 outFlag = ri.rArray < ri.minUsefulRange | ri.rArray > ri.maxUsefulRange;
 ptsInLaserFrame = ri.getPtsHomogeneous();
 outFlag = outFlag | localizer.throwOutliers(ptsInLaserFrame,pose);
 outIds = find(outFlag);
 inIds = find(~outFlag);
-numNbrs = 10;
-minNbrs = floor(0.6*numNbrs);
+clusterer = clusterPixels(struct('laser',laser));
+outClusters = clusterer.getOutClusters(outIds);
+inClusters = clusterer.getInClusters(outClusters,inIds);
+
+%%
 p2d = pose2D(pose);
-plot_option = 0;
-pxId = inIds(1);
-for pxId = inIds
-    [left,right] = defaultLaser.getNbrIds(pxId,numNbrs);
-    nbrs = [left right];
-    nbrs = setdiff(nbrs,outIds);
-    if length(nbrs) < minNbrs
-        % accept current phi?
-        continue;
-    end
-    ptsLocal = ptsInLaserFrame(:,nbrs);
+plot_option = 1;
+for i = 1:length(inClusters)
+    section = inClusters(i).members;
+    ptsLocal = ptsInLaserFrame(:,section);
     [success,poseLocal] = localizer.refinePose(p2d,ptsLocal,10);
     if plot_option
         hf = localizer.drawLines; hold on;
@@ -31,6 +27,7 @@ for pxId = inIds
         plot(ptsBefore(1,:),ptsBefore(2,:),'ro');
         plot(ptsAfter(1,:),ptsAfter(2,:),'go');
         hold off;
+        title(sprintf('%s',mat2str(section)));
         waitforbuttonpress;
         close(hf);
     end

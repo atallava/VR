@@ -1,4 +1,4 @@
-%end-to-end model
+%end-to-end modeler
 
 %% initialize
 clearAll;
@@ -31,7 +31,7 @@ p2ra = poses2RAlpha(inputStruct);
 p2r = poses2R(inputStruct);
 localizer = lineMapLocalizer(map.objects);
 
-trainMuArray = trainPdfs.paramArray(:,1,:);
+trainMuArray = trainPdfs.paramArray(:,1,:); 
 trainSigmaArray = trainPdfs.paramArray(:,2,:);
 trainPzArray = trainPdfs.paramArray(:,3,:);
 
@@ -46,12 +46,13 @@ trainSigmaArray(flag) = nan;
 bsMu = boxSwitch(struct('XRanges',[0; dp.laser.maxRange],'switchY',nan));
 bsSigma = boxSwitch(struct('XRanges',[0 0; dp.laser.maxRange 2*pi],'switchY',nan));
 
-inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainMuArray,'poolOption',1,'inputPoseTransf', p2r, ...
+% nonparametric
+inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainMuArray,'poolOption',0,'inputPoseTransf', p2r, ...
     'regClass',@locallyWeightedLinearRegressor,'XSpaceSwitch',bsMu,'kernelFn',@kernelR, 'kernelParams',struct('h',0.0025));
-%h = 0.055, lambda = 0.1, np
-%h = 0.0025 lwl
-%h 0.0058, 0.0384 locallyWeightedLinear nonParametric
-muPxRegBundle = pixelRegressorBundle(inputStruct);
+scans = scansFromMuArray(squeeze(trainMuArray));
+matcher = localMatch(struct('localizer',localizer,'laser',dp.laser,'map',map));
+%%
+muPxRegBundle = localRBundle(inputStruct,scans,matcher);
 
 inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,'poolOption',1,'inputPoseTransf', p2ra, ...
     'regClass',@nonParametricRegressor, 'XSpaceSwitch',bsSigma,'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0559,'lambda',0.1));
@@ -60,13 +61,6 @@ sigmaPxRegBundle = pixelRegressorBundle(inputStruct);
 inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,'inputPoseTransf', p2ra, ...
     'regClass',@nonParametricRegressor, 'XSpaceSwitch',bsSigma,'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0559,'lambda',0.1));
 pzPxRegBundle = pixelRegressorBundle(inputStruct);
-
-%{
-% baseline
-inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainPdfs.paramArray,'inputPoseTransf', p2ra, ...
-    'regClass',@baselineRegressor); 
-pxRegBundle = pixelRegressorBundle(inputStruct);
-%}
 
 %% predict at test poses
 fprintf('Predicting...\n');
@@ -79,8 +73,6 @@ predParamArray(:,1,:) = predMuArray;
 predParamArray(:,2,:) = predSigmaArray;
 predParamArray(:,3,:) = predPzArray;
 
-% baseline
-%predParamArray = pxRegBundle.predict(dp.XTest);
 
 %% diagnose error
 % fit pdf models to test data

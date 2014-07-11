@@ -39,6 +39,9 @@ classdef pixelRegressorBundle < handle
             if isfield(inputStruct,'inputPoseTransf')
                 obj.inputPoseTransf = inputStruct.inputPoseTransf;
             end
+            if isfield(inputStruct,'poolOption')
+                obj.poolOption = inputStruct.poolOption;
+            end
             obj.regClass = inputStruct.regClass;
             obj.nPixels = size(obj.YTrain,3);
             obj.fillPixelRegressorArray(inputStruct);

@@ -24,6 +24,14 @@ classdef (Abstract) abstractRegressor < handle
             dimY = size(obj.YTrain,2);
             obj.YTrain(flag,:) = nan(sum(flag),dimY);
         end
+        
+        function cleanTrainingData(obj)
+            % Remove training data containing nans in XTrain
+            throwIds = isnan(obj.XTrain);
+            throwIds = logical(sum(throwIds,2));
+            obj.XTrain(throwIds,:) = [];
+            obj.YTrain(throwIds,:) = [];
+        end
     end
     
 end

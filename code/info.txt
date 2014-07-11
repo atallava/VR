@@ -41,10 +41,10 @@ all 42 poses, \emph{but mu and sigma are the same for all pixels}.
 
 code/exp6/
 full_predictor_means_only_mar27_1
-trained on all poses
+trained on all poses. sigma and pz are zero in all predictions.
 
 full_predictor_means_only_mar27_2
-trained on 29 poses
+trained on 29 poses. sigma and pz are zero in all predictions.
 
 simulated_means_mar27
 robot placed in poses of mar27 and ranges generated from map.raycast()
