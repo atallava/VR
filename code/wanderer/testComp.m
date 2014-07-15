@@ -13,10 +13,12 @@ rob.startLaser;
 
 localizer = lineMapLocalizer(roomLineMap.objects);
 vizRanges = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser));
-refiner = laserPoseRefiner(struct('localizer',localizer,'laser',robotModel.laser));
+refiner = laserPoseRefiner(struct('localizer',localizer,'laser',robotModel.laser,'skip',5,'numIterations',30));
 ctrl = controllerClass(struct());
 ctrlBackup = controllerClass(struct('gainV',0.1));
 pgen = poseGenerator(struct('map',roomLineMap));
+encLog = encHistory(rob);
+lzrLog = laserHistory(rob);
 
 poseStartEst = [0.25;0.25;0];
 rob.sim_robot.pose = poseStartEst; % For simulation, set robot at start pose estimate.
@@ -24,6 +26,9 @@ rob.sim_robot.pose = poseStartEst; % For simulation, set robot at start pose est
 rstate = robState(rob,'robot',poseStart);
 pgen.addToPoseHist(poseStart);
 
+tRangeCollection = struct('start',{},'end',{});
+numScansPerPose = 100;
+recCount = 1;
 nPoses = 100;
 maxBackups = 5;
 pose = poseStart; 
@@ -45,7 +50,8 @@ for i = 1:nPoses
             
             % execute traj, get pose and reset rstate
             trajFlrBackup.execute(rob,rstate);
-            pose = rob.sim_robot.pose; % PLACEHOLDER: read off exact state
+            [success,pose] = refiner.refine(rob.laser.data.ranges,rstate.pose);
+            %pose = rob.sim_robot.pose; % PLACEHOLDER: read off exact state
             rstate.reset(pose);
             pause(robotModel.tPause);
             backupCount = backupCount+1;
@@ -74,9 +80,8 @@ for i = 1:nPoses
     % estimate pose using scan match
     poseIn = rstate.pose;
     ranges = rob.laser.data.ranges;
-    t1 = tic();
-    [success,poseOut] = refiner.refine(ranges,poseIn); 
-    fprintf('scan match took %fs\n',toc(t1));
+    [success,poseOut] = refiner.refine(ranges,poseIn);
+    fprintf('scan match took %fs\n',refiner.lastMatchDuration);
     % PLACEHOLDER: read off exact state
     pose = rob.sim_robot.pose;
     hf1 = vizRealRanges(localizer,ranges,poseOut); title('poseOut');
@@ -88,8 +93,19 @@ for i = 1:nPoses
     pause(robotModel.tPause);
     
     % collectData
-    
+%     tRangeCollection(recCount).start = lzrLog.tArray(end);
+%     fprintf('Collecting data set %d \n', data_count);
+%     for j = 1:numScansPerPose
+%         pause(0.3);
+%     end
+%     tRangeCollection(recCount).end = lzrLog.tArray(end);
+%     beep; beep; % alert grad student
+%     pause(0.1);
 end
+
+% stop loggers
+% encLog.stopListening();
+% lzrLog.stopListening();
 
 %%
 h1 = figure; hold on;

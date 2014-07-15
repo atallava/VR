@@ -46,7 +46,6 @@ classdef normWithDrops < handle & abstractPdf
                    temp = (data-obj.mu)/obj.sigma;
                    x2 = temp+normWithDrops.dx*0.5; x1 = temp-normWithDrops.dx*0.5;
                    vec1 = 0.5*(erf(x2/sqrt(2))-erf(x1/sqrt(2)))*(1-obj.pZero);
-                   %vec1 = pdf('normal',data,obj.mu,obj.sigma)*obj.dx*(1-obj.pZero);
                end
                vec2 = (data == 0)*obj.pZero;
                res = -sum(log(vec1+vec2));
@@ -54,6 +53,7 @@ classdef normWithDrops < handle & abstractPdf
                res = +(data == 0);
                res = -sum(log(res));
            end
+           res = res/length(data);
         end
         
         function res = snap2PMF(obj,centers)

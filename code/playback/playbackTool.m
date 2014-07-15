@@ -1,6 +1,6 @@
 classdef playbackTool < handle
     %playbackTool
-    %
+    
     
     properties (Constant = true)
         freq = 100;
