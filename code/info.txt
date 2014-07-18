@@ -31,6 +31,12 @@ full_predictor_mar27_3
 full_predictor_mar27_4
 same as above but performing no-pool predictions for pz.
 
+full_predictor_mar27_5
+used local matching to create the muPxRegBundle, other regressors as before. trained with canonical 29 poses.
+
+full_predictor_mar27_6
+used local matching + indiscriminate pooling to create the muPxRegBundle. trained with canonical 29 poses. 
+
 application_scan_match:
 application_test_data
 data is a struct array with fields 'poses', 'ranges'. 20 ranges for each pose to obtain error on. Pattern set is for displacing reference pose. Constructed from data_mar27. 
@@ -54,3 +60,6 @@ localGeomRegressor instance, with muArray from full_predictor_means_only_mar27_1
 
 density_data
 triplets is a set of observed three consecutive (and non-nan) ranges from all training poses.
+
+code/misc/kde
+scores has scores1, hist similarity scores between real histograms and normWithDrops, scores2, hist similarity between kernel density estimate and normWithDrops

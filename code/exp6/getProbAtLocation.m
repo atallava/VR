@@ -1,8 +1,7 @@
 function res = getProbAtLocation(pdf,x)
 % x is nQueries x dimX
 % right now works for dimX = 3
-
-% TODO: Needs debugging.
+% pdf is from the fast_MVBW library
 
 nCenters = length(pdf.w);
 nQueries = size(x,1);

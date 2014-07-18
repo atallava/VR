@@ -64,7 +64,13 @@ classdef swingStraight < handle & abstractTrajectory
             bBox1 = robotModel.getTransformedBBox(pose);
             pose = obj.goal; pose(3) = obj.thFinal;
             bBox2 = robotModel.getTransformedBBox(pose);
-            obj.bBox = [bBox1(3:4,:); bBox2(1:2,:); bBox1(3,:)];
+            pathBBox = [bBox1(3:4,:); bBox2(1:2,:); bBox1(3,:)]; obj.bBox = pathBBox;
+%             rotBBox = robotModel.bBox*sqrt(2);
+%             rotBBox = bsxfun(@plus,rotBBox,[obj.start(1) obj.start(2)]);
+%             warning('off','map:polygon:noExternalContours');
+%             [xi,yi] = polybool('union',pathBBox(:,1),pathBBox(:,2),rotBBox(:,1),rotBBox(:,2));
+%             obj.bBox = [xi,yi];
+%             warning('on','map:polygon:noExternalContours');
         end
         
     end

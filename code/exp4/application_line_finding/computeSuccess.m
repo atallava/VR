@@ -1,7 +1,7 @@
 clear all; clc
 load processed_data_june6
 load lineSetFixedLength
-load('../full_predictor_mar27_4','rsim');
+load('../mats/full_predictor_mar27_5','rsim');
 load map1.mat
 load local_geom_regressor_instance
 
@@ -57,7 +57,6 @@ for i = 1:nPoses
     for j = 1:nTrials
         ranges = rsim.simulate(robotPose);
         %ranges = tempMap.raycastNoisy(robotPose,5,deg2rad(0:359));
-        ranges = lGeomReg.predict(ranges);
         ri = rangeImage(struct('ranges',ranges,'cleanup',1));
         %lines = findLinesHT(ri,numLines);
         [lines,~] = getLines(ri,targetLen);

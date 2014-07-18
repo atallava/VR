@@ -1,7 +1,6 @@
-function pxRegBundle = localRBundle(inputStruct,scans,matcher)
+function [pxRegBundle,localPhiArray] = localRBundle(inputStruct,scans,matcher)
 % create a pixel regressor bundle using inputstruct and locally matched
 % scans. build the regressor array explicitly
-% choice = 1 for r, 2 for (r,alpha)
 
 pxRegBundle = pixelRegressorBundle(inputStruct);
 nPoses = size(inputStruct.XTrain,1);
@@ -21,8 +20,6 @@ for i = 1:nPixels
     tempInput = inputStruct;
     tempInput.XTrain = squeeze(localPhiArray(:,:,i));
     tempInput.YTrain = inputStruct.YTrain(:,:,i);
-    tempInput.XTrain
-    tempInput.YTrain
     pxRegBundle.regressorArray{i} = inputStruct.regClass(tempInput);
 end
 end

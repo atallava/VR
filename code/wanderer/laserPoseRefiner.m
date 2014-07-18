@@ -2,14 +2,16 @@ classdef laserPoseRefiner < handle
     %laserPoseRefiner refine pose by matching scans to a map
     % wrapper around exising functionality
     % fast but requires good initial pose estimate
+    
+    properties (Constant = true)
+        timePerIter = 0.09;
+    end
 
     properties (SetAccess = private)
         localizer
         skip = 5
         numIterations = 40
         laser
-        lastMatchDuration = []
-        lastNumOutliers = []
     end
 
     methods
@@ -36,7 +38,7 @@ classdef laserPoseRefiner < handle
             end
         end
         
-        function [success,poseOut] = refine(obj,ranges,poseIn)
+        function [stats,poseOut] = refine(obj,ranges,poseIn)
             %REFINE Refine pose estimate.
             % Transforms pose laser frame, cleans up ranges, throws
             % outliers and matches scans.
@@ -58,17 +60,17 @@ classdef laserPoseRefiner < handle
             ptsLocal = ri.getPtsHomogeneous();
             ptsLocal = ptsLocal(:,1:obj.skip:end);
             outIds = obj.localizer.throwOutliers(ptsLocal,laserPoseIn);
-            obj.lastNumOutliers = sum(outIds);
             ptsLocal(:,outIds) = [];
             if isempty(ptsLocal)
                 warning('NO INLIERS LEFT.');
             end
-            [success, laserPoseOut] = obj.localizer.refinePose(laserPoseIn,ptsLocal,obj.numIterations);
+            [stats, laserPoseOut] = obj.localizer.refinePose(laserPoseIn,ptsLocal,obj.numIterations);
+            stats.numOutliers = sum(outIds);
             poseOut = pose2D.transformToPose(laserPoseOut.T/(obj.laser.Tsensor));
             if objInput
                 poseOut = pose2D(poseOut);
             end
-            obj.lastMatchDuration = toc(t1);
+            stats.duration = toc(t1);
         end
         
         function setSkip(obj,skip)

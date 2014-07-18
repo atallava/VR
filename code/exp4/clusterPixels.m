@@ -23,6 +23,11 @@ classdef clusterPixels < handle
             % outIds are outlier ids
             % outClusters is a struct array with field 'members' of
             % ids in laser
+            
+            if isempty(outIds)
+                outClusters = struct('members',{});
+                return;
+            end
                                  
             nOuts = length(outIds);
             % outIdsClusters is a struct array with fields 'first','last'
@@ -69,27 +74,32 @@ classdef clusterPixels < handle
             % ids in laser
             
             inClusters = struct('members',{});
-            for i = 1:length(outClusters)
-                [left,~] = circArray.circNbrs(i,length(outClusters));
-                [~,first] = circArray.circNbrs(outClusters(left).members(end),obj.laser.nPixels);
-                [last,~] = circArray.circNbrs(outClusters(i).members(1),obj.laser.nPixels);
-                if first > last
-                    dummyLast = circArray.circDiff(first,last,obj.laser.nPixels);
-                    [vec1,vec2] = clusterPixels.splitVector(0,dummyLast,obj.minInClusterLength,obj.maxInClusterLength);
-                    vec1 = circArray.projectToCircIds(vec1+first,obj.laser.nPixels);
-                    vec2 = circArray.projectToCircIds(vec2+first,obj.laser.nPixels);
-                else
-                    [vec1,vec2] = clusterPixels.splitVector(first,last,obj.minInClusterLength,obj.maxInClusterLength);
-                end
+            if isempty(outClusters)
+                [vec1,vec2] = clusterPixels.splitVector(1,obj.laser.nPixels,obj.minInClusterLength,obj.maxInClusterLength);
                 for j = 1:length(vec1)
                     section = circArray.getCircSection(vec1(j),vec2(j),obj.laser.nPixels);
                     section = intersect(section,inIds);
                     inClusters(end+1).members = section;
                 end
-                %{
-                temp = struct('first',num2cell(vec1),'last',num2cell(vec2));
-                inClusters = [inClusters temp];
-                %}
+            else
+                for i = 1:length(outClusters)
+                    [left,~] = circArray.circNbrs(i,length(outClusters));
+                    [~,first] = circArray.circNbrs(outClusters(left).members(end),obj.laser.nPixels);
+                    [last,~] = circArray.circNbrs(outClusters(i).members(1),obj.laser.nPixels);
+                    if first > last
+                        dummyLast = circArray.circDiff(first,last,obj.laser.nPixels);
+                        [vec1,vec2] = clusterPixels.splitVector(0,dummyLast,obj.minInClusterLength,obj.maxInClusterLength);
+                        vec1 = circArray.projectToCircIds(vec1+first,obj.laser.nPixels);
+                        vec2 = circArray.projectToCircIds(vec2+first,obj.laser.nPixels);
+                    else
+                        [vec1,vec2] = clusterPixels.splitVector(first,last,obj.minInClusterLength,obj.maxInClusterLength);
+                    end
+                    for j = 1:length(vec1)
+                        section = circArray.getCircSection(vec1(j),vec2(j),obj.laser.nPixels);
+                        section = intersect(section,inIds);
+                        inClusters(end+1).members = section;
+                    end
+                end
             end
         end
     end

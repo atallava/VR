@@ -52,7 +52,7 @@ inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainMuArray,'poolOption',0,'in
 scans = scansFromMuArray(squeeze(trainMuArray));
 matcher = localMatch(struct('localizer',localizer,'laser',dp.laser,'map',map));
 %%
-muPxRegBundle = localRBundle(inputStruct,scans,matcher);
+[muPxRegBundle,lphi] = localRBundle(inputStruct,scans,matcher);
 
 inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,'poolOption',1,'inputPoseTransf', p2ra, ...
     'regClass',@nonParametricRegressor, 'XSpaceSwitch',bsSigma,'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0559,'lambda',0.1));

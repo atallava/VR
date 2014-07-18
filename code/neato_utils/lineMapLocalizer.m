@@ -8,7 +8,7 @@ classdef lineMapLocalizer < handle
         eps = [0.001,0.001,deg2rad(0.5)];
         maxIters = 15;
         % step size in pose when optimizing
-        eta = 0.05;
+        eta = 0.01;
     end
     
     properties (SetAccess = private)
@@ -101,7 +101,8 @@ classdef lineMapLocalizer < handle
             err = 0.0;
             num = 0;
             for i = 1:size(worldPts,2)
-                r2 = obj.closestSquaredDistanceToLines(worldPts(:,i));
+                r2 = obj.closestSquaredDistanceToLines(worldPts(:,i)); 
+                %fprintf('i,err: %d,%f\n',i,r2);
                 if r2 == Inf
                     continue;
                 end
@@ -119,16 +120,38 @@ classdef lineMapLocalizer < handle
         function [errPlus0,J] = getJacobian(obj,poseIn,modelPts)
             % Computes the  numerical gradient of the error function
             errPlus0 = obj.fitError(poseIn,modelPts);
-                        
-            poseDx = pose2D(poseIn.getPose() + [obj.eps(1);0;0]);
-            errPlusDx = obj.fitError(poseDx, modelPts);
-            poseDy = pose2D(poseIn.getPose() + [0;obj.eps(2);0]);
-            errPlusDy = obj.fitError(poseDy, modelPts);
-            poseDth = pose2D(poseIn.getPose() + [0;0;obj.eps(3)]);
-            errPlusDth = obj.fitError(poseDth, modelPts);
             
-            J = [errPlusDx, errPlusDy, errPlusDth]-errPlus0*ones(1,3);
-            J = J./obj.eps;
+            J = zeros(1,3);
+            for i = 1:3
+                dP = zeros(3,1); dP(i) = obj.eps(i);
+                posePlus = pose2D(poseIn.getPose()+dP);
+                poseMinus = pose2D(poseIn.getPose()-dP);
+                errPlus = obj.fitError(posePlus,modelPts);
+                errMinus = obj.fitError(poseMinus,modelPts);
+                J(i) = (errPlus-errMinus);
+            end
+            J = J./(2*obj.eps);
+            
+%             for i = 1:3
+%                 vec1 = -obj.eps(i):1e-4:obj.eps(i); vec2 = [];
+%                 for j = 1:length(vec1)
+%                     dp = zeros(3,1); dp(i) = vec1(j);
+%                     p = pose2D(poseIn.getPose()+dp);
+%                     vec2(j) = obj.fitError(p,modelPts);
+%                 end
+%                 figure;
+%                 plot(vec1,vec2,'+'); title(i);
+%             end
+                        
+%             poseDx = pose2D(poseIn.getPose() + [obj.eps(1);0;0]);
+%             errPlusDx = obj.fitError(poseDx, modelPts);
+%             poseDy = pose2D(poseIn.getPose() + [0;obj.eps(2);0]);
+%             errPlusDy = obj.fitError(poseDy, modelPts);
+%             poseDth = pose2D(poseIn.getPose() + [0;0;obj.eps(3)]);
+%             errPlusDth = obj.fitError(poseDth, modelPts);
+%             
+%             J = [errPlusDx, errPlusDy, errPlusDth]-errPlus0*ones(1,3);
+%             J = J./obj.eps;
         end
         
         function [successStory, outPose] = refinePose(obj, inPose, ptsInModelFrame, maxIters)
@@ -152,6 +175,15 @@ classdef lineMapLocalizer < handle
                     break;
                 end
                 dPose = -obj.eta*J';
+                while true
+                    newPose = pose2D(outPose.getPose+dPose);
+                    newErr = obj.fitError(newPose,ptsInModelFrame);
+                    if newErr <= err
+                        break;
+                    else
+                        dPose = 0.5*dPose;
+                    end
+                end
                 outPose.updatePose(outPose.getPose+dPose);
                 if err < obj.errThresh
                     successStory.success = 1;
@@ -173,28 +205,3 @@ classdef lineMapLocalizer < handle
     end
         
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

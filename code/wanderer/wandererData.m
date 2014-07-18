@@ -1,27 +1,9 @@
-% prepare workspace
-if exist('rob','var') 
-    if rob.timerUp
-        rob.shutdown();
-    end
-end
-clear all; close all; clc;
-load roomLineMap;
-rng('shuffle');
+function wandererData(rob,map,poseStart,imagesDirName)
+% rob is an object of class neato
+% map is a lineMap object
+% poseStart is an estimate of start pose, length 3 array
+% imagesDirName is a string of where to save scan match images to
 
-% get robot
-rob = neato('sim');
-rob.genMap(map.objects);
-rob.startLaser;
-
-imagesDirName = 'images/scan_match';
-poseStart = [0.25;0.25;0];
-rob.sim_robot.pose = poseStart; % For simulation, set robot at start pose estimate.
-pause(1);
-
-%% use function
-wandererData(rob,map,poseStart,imagesDirName);
-
-%% test script
 % initialize objects
 localizer = lineMapLocalizer(map.objects);
 vizer = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser));
@@ -65,7 +47,6 @@ for i = 1:nPoses
             % execute traj, get pose and reset rstate
             trajFlrBackup.execute(rob,rstate);
             [refinerStats,pose] = refiner.refine(rob.laser.data.ranges,rstate.pose);
-            %pose = rob.sim_robot.pose; % PLACEHOLDER: read off exact state
             rstate.reset(pose);
             pause(robotModel.tPause);
             backupCount = backupCount+1;
@@ -111,7 +92,7 @@ for i = 1:nPoses
     end
     hf = vizer.viz(rob.laser.data.ranges,pose); 
     set(hf,'visible','off'); title('After refining.'); 
-    print('-dpng','-r72',sprintf('images/scan_match/scan_match_%d.png',i));
+    print('-dpng','-r72',sprintf('%s/scan_match_%d.png',imagesDirName,i));
         
     pgen.addToPoseHist(pose);
     rstate.reset(pose);
@@ -139,6 +120,3 @@ save(fname,'lzrLog','encLog','pgen','tRangeCollection','refinerLog');
 
 rob.stopLaser;
 fprintf('Finished.\n');
-
-
-

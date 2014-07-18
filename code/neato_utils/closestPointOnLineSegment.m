@@ -48,13 +48,19 @@ end
 flag2 = v1dotv2 <= 0.0;
 if any(flag2)
     po(:,flag2) = repmat([p1(1); p1(2)],1,sum(flag2));
-    rad2(flag2) = inf;
+    dx = pi(1,flag2)-po(1,flag2);
+    dy = pi(2,flag2)-po(2,flag2);
+    rad2(flag2) = dx.*dx+dy.*dy;
+    %rad2(flag2) = inf;
 end
 
 % Closest is second endpoint
 flag3 = ones(size(1,nPoints)) & ~flag1 & ~flag2;
 if any(flag3)
     po(:,flag3) = repmat([p2(1) ; p2(2)],1,sum(flag3));
-    rad2(flag3) = inf;
+    dx = pi(1,flag3)-po(1,flag3);
+    dy = pi(2,flag3)-po(2,flag3);
+    rad2(flag3) = dx.*dx+dy.*dy;
+    %rad2(flag3) = inf;
 end
 end

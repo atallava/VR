@@ -7,6 +7,7 @@ classdef localGeomObjective < handle
         % lambda is weight to tweaking
         ranges
         alpha = 0.1
+        maxTweakFraction = 0.1;
         lambda
         localGeomExtent
         likelihoodScoreFlat
@@ -33,7 +34,7 @@ classdef localGeomObjective < handle
             if isfield(inputStruct,'lambda')
                 obj.lambda = inputStruct.lambda;
             else
-                obj.lambda = obj.likelihoodScoreFlat/0.02;
+                obj.lambda = obj.likelihoodScoreFlat/min(0.2*obj.alpha,obj.maxTweakFraction);
             end
         end
         
@@ -46,16 +47,16 @@ classdef localGeomObjective < handle
         
         function res = likelihoodScore(obj,r)
             res = 0;
-            for i = 1:length(r)-obj.localGeomExtent
-               section = obj.ranges(i:i+obj.localGeomExtent);
+            for i = 1:(length(r)-obj.localGeomExtent+1)
+               section = r(i:i+obj.localGeomExtent-1);
                logDensity = getLogDensityAtLocation(obj.pdf,section);
-               res = res+max(logDensity,obj.likelihoodScoreFlat);
+               res = res+min(logDensity,obj.likelihoodScoreFlat);
             end
         end
         
         function res = tweakCost(obj,dr)
             drRelative = dr./obj.ranges;
-            res = norm(drRelative);
+            res = sum(abs(drRelative));
         end
     end
 

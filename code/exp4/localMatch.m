@@ -6,7 +6,7 @@ classdef localMatch < handle
         laser
         map
         clusterer
-        refineIterations = 10;
+        refineIterations = 20;
     end
 
     methods
@@ -35,7 +35,7 @@ classdef localMatch < handle
             % note this implies that the outliers will not be replicated
             % in the simulator
             ri = rangeImage(struct('ranges',ranges));
-            outFlag = ri.rArray < ri.minUsefulRange | ri.rArray > ri.maxUsefulRange;
+            outFlag = ~(ri.rArray >= ri.minUsefulRange & ri.rArray <= ri.maxUsefulRange);
             ptsInLaserFrame = ri.getPtsHomogeneous();
             outFlag = outFlag | obj.localizer.throwOutliers(ptsInLaserFrame,pose);
             outIds = find(outFlag);

@@ -23,9 +23,6 @@ classdef laserHistory < handle
             %
             % obj - Instance.
 
-%             if ~isfield(rob.laser.data,'header')
-%                 error('LASER MUST BE ON');
-%             end
             obj.rob = rob;
             obj.log = struct('ranges',{},'intensities',{});
             obj.tArray = [];

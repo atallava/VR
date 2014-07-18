@@ -57,29 +57,27 @@ classdef normWithDrops < handle & abstractPdf
         end
         
         function res = snap2PMF(obj,centers)
-            % centers is a vector of equally spaced values starting from
-            % zero and ending at the maximum range value of a sensor
+            % centers is a vector of equally spaced values
             % snap the pdf to a pmf about centers
             
             res = zeros(size(centers));
             binSize = centers(2)-centers(1);
-            if obj.pZero == 1
-                res(1) = 1;
-                return;
-            else
+            if obj.pZero < 1
                 if isnan(obj.sigma) || obj.sigma == 0
-                    index = floor(obj.mu/binSize);
-                    res(index) = 1;
+                    res(findBinId(centers,obj.mu)) = 1;
                 else
-                    prob = pdf('normal',centers,obj.mu,obj.sigma);
-                    % assuming small bin sizes
-                    % assuming negligible probability mass outside centers
-                    res = prob*binSize;
+                    x2 = centers+binSize*0.5; x1 = centers-binSize*0.5;
+                    x2 = (x2-obj.mu)/obj.sigma; x1 = (x1-obj.mu)/obj.sigma; 
+                    res = 0.5*(erf(x2/sqrt(2))-erf(x1/sqrt(2)));
                 end
-                % should sum to one under assumptions, but extra check
-                res = res/sum(res);
-                res = res*(1-obj.pZero);
-                res(1) = res(1)+obj.pZero;
+            end
+            res = res*(1-obj.pZero);
+            id = findBinId(centers,0);
+            res(id) = res(id)+obj.pZero;
+            
+            function id = findBinId(centers,x)
+                flag = x <= centers+binSize*0.5 & x > centers-binSize*0.5;
+                id = find(flag);
             end
         end
         

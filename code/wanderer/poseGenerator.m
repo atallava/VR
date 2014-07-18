@@ -3,7 +3,7 @@ classdef poseGenerator < handle
 
     properties (SetAccess = private)
         map; walls; lObjArray;
-        nDraws = 40;
+        nDraws = 50;
         dRange = [0.05 0.5]; phiRange = pi/2*[-1 1];
         candidateBufferMaxSize = 10;
         scoringPolygon = [1 -1; 1 1; -1 1; -1 -1; 1 -1]*0.15;
@@ -52,21 +52,18 @@ classdef poseGenerator < handle
                 th = mod(pose(3)+phi,2*pi);
                 poseSample = pose+[r*cos(th); r*sin(th); phi];
                 sampleTraj = swingStraight(pose,poseSample);
-                %currentBBox = robotModel.getTransformedBBox(poseSample);
-                currentBBox = sampleTraj.bBox;
+                % get rotated bbox
+                %currentBBox = robotModel.getTransformedBBox(poseSample); 
+                % shortcut: get bbox for entire trajectory since we know
+                % what it will be
+                currentBBox = sampleTraj.bBox; 
                 
                 % check if sample is within walls
                 if ~inpolygon(poseSample(1),poseSample(2),obj.walls.lines(:,1),obj.walls.lines(:,2))
                     continue;
                 end
                 
-                % check if sample is in collision
-                %{
-                obj.map.plot; hold on;
-                quiver(poseSample(1),poseSample(2),0.1*cos(poseSample(3)),0.1*sin(poseSample(3)),'r','LineWidth',2);
-                plot(currentBBox(:,1),currentBBox(:,2),'g'); 
-                waitforbuttonpress; close all;
-                %}
+                % check if sample is in collision      
                 inCollision = obj.checkCollision(currentBBox);
                 if ~inCollision
                     candidateBuffer(:,end+1) = poseSample;
@@ -104,8 +101,20 @@ classdef poseGenerator < handle
                 end
             end
         end
+        
         function obj = addToPoseHist(obj,pose)
             obj.poseHistory(:,end+1) = pose;
+        end
+        
+        function hf = plotPosesVsSamples(obj)
+            hf = figure; hold on;
+            for i = 1:length(obj.sampleHistory)
+                quiver(obj.sampleHistory(1,i),obj.sampleHistory(2,i),0.1*cos(obj.sampleHistory(3,i)),0.1*sin(obj.sampleHistory(3,i)),'r','LineWidth',2);
+                text(obj.sampleHistory(1,i),obj.sampleHistory(2,i),sprintf('%d',i));
+                quiver(obj.poseHistory(1,i+1),obj.poseHistory(2,i+1),0.1*cos(obj.poseHistory(3,i+1)),0.1*sin(obj.poseHistory(3,i+1)),'b','LineWidth',2);
+                text(obj.poseHistory(1,i+1),obj.poseHistory(2,i+1),sprintf('%d',i));
+            end
+            axis equal;
         end
     end
 

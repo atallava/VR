@@ -4,7 +4,7 @@ load test_local_matching_data
 localizer = lineMapLocalizer(map.objects);
 laser = laserClass(struct());
 ri = rangeImage(struct('ranges',muRanges));
-outFlag = ri.rArray < ri.minUsefulRange | ri.rArray > ri.maxUsefulRange;
+outFlag = ~(ri.rArray >= ri.minUsefulRange & ri.rArray <= ri.maxUsefulRange);
 ptsInLaserFrame = ri.getPtsHomogeneous();
 outFlag = outFlag | localizer.throwOutliers(ptsInLaserFrame,pose);
 outIds = find(outFlag);
@@ -19,7 +19,7 @@ plot_option = 1;
 for i = 1:length(inClusters)
     section = inClusters(i).members;
     ptsLocal = ptsInLaserFrame(:,section);
-    [success,poseLocal] = localizer.refinePose(p2d,ptsLocal,10);
+    [success,poseLocal] = localizer.refinePose(p2d,ptsLocal,20);
     if plot_option
         hf = localizer.drawLines; hold on;
         ptsBefore = pose2D.transformPoints(ptsLocal,pose);

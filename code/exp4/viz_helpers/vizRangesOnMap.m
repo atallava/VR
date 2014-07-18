@@ -33,8 +33,10 @@ classdef vizRangesOnMap < handle
             %
             % hf        - Plot handle.
             
+            if iscolumn(ranges)
+                ranges = ranges';
+            end
             lPose = obj.laser.refPoseToLaserPose(refPose);
-            
             hf = obj.localizer.drawLines();
             xl0 = xlim;
             yl0 = ylim;
