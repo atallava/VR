@@ -34,13 +34,13 @@ classdef localGeomObjective < handle
             if isfield(inputStruct,'lambda')
                 obj.lambda = inputStruct.lambda;
             else
-                obj.lambda = obj.likelihoodScoreFlat/min(0.2*obj.alpha,obj.maxTweakFraction);
+                obj.lambda = obj.likelihoodScoreFlat/min(0.1*obj.alpha,obj.maxTweakFraction);
             end
         end
         
         function val = value(obj,dr)
             % dr is a set of tweaks
-            score =obj.likelihoodScore(obj.ranges+dr);
+            score = obj.likelihoodScore(obj.ranges+dr);
             cost = obj.tweakCost(dr);
             val = -score+obj.lambda*cost;
         end
@@ -55,7 +55,13 @@ classdef localGeomObjective < handle
         end
         
         function res = tweakCost(obj,dr)
-            drRelative = dr./obj.ranges;
+            % TODO: change cost to penalize not range deviation but
+            % absolute x,y deviation.
+            
+            drRelative = abs(dr./obj.ranges);
+            % if percentage above some threshold, assign large cost
+            % two parameters here, what values should they be assigned?
+            drRelative(drRelative > 0.05) = 20;
             res = sum(abs(drRelative));
         end
     end

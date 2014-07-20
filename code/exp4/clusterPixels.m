@@ -11,10 +11,22 @@ classdef clusterPixels < handle
 
     methods
         function obj = clusterPixels(inputStruct)
-            % inputStruct fields ('laser')
+            % inputStruct fields ('laser','maxInClusterLength','minInClusterLength','minOutClusterLength')
             % default (laserClass(struct()))
             if isfield(inputStruct,'laser')
                 obj.laser = inputStruct.laser;
+            else
+            end
+            if isfield(inputStruct,'minOutClusterLength')
+                obj.minOutClusterLength = inputStruct.minOutClusterLength;
+            else
+            end
+            if isfield(inputStruct,'maxInClusterLength')
+                obj.maxInClusterLength = inputStruct.maxInClusterLength;
+            else
+            end
+            if isfield(inputStruct,'minInClusterLength')
+                obj.minInClusterLength = inputStruct.minInClusterLength;
             else
             end
         end

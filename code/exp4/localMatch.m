@@ -11,7 +11,7 @@ classdef localMatch < handle
 
     methods
         function obj = localMatch(inputStruct)
-            % inputStruct fields ('localizer','laser','map')
+            % inputStruct fields ('localizer','laser','map',<clusterer specific fields>)
             % default (,,)
             if isfield(inputStruct,'localizer')
                 obj.localizer = inputStruct.localizer;
@@ -22,13 +22,14 @@ classdef localMatch < handle
                 obj.laser = inputStruct.laser;
             else
                 obj.laser = laserClass(struct());
+                inputStruct.laser = obj.laser;
             end
             if isfield(inputStruct,'map')
                 obj.map = inputStruct.map;
             else
                 error('MAP NOT INPUT.');
             end
-            obj.clusterer = clusterPixels(struct('laser',obj.laser));
+            obj.clusterer = clusterPixels(inputStruct);
         end
         
         function outIds = getOutIds(obj,ranges,pose)
