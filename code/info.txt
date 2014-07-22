@@ -32,7 +32,7 @@ full_predictor_mar27_4
 same as above but performing no-pool predictions for pz.
 
 full_predictor_mar27_5
-used local matching to create the muPxRegBundle, other regressors as before. trained with canonical 29 poses.
+used local matching to create the muPxRegBundle, other regressors as in _4. trained with canonical 29 poses.
 
 full_predictor_mar27_6
 used local matching + indiscriminate pooling to create the muPxRegBundle. trained with canonical 29 poses. 

@@ -3,11 +3,19 @@ classdef localGeomObjective < handle
 
     properties (SetAccess = private)
         % ranges is array of ranges
-        % alpha decides threshold for likelihood
-        % lambda is weight to tweaking
+        % the alpha percentile from the likelihood of the training data
+        % points is what we would like a patch to get to
+        % tweakRadius - tweak cost is a high value outside the tweakRadius
+        % outside the original point
+        % tweakCostFlat is just a large number
+        % lambda is weight to tweakCost
         ranges
+        bearings
+        x; y
         alpha = 0.1
-        maxTweakFraction = 0.1;
+        maxTweakFraction = 0.05;
+        tweakRadius = 0.02; % in m
+        tweakCostFlat = 10; 
         lambda
         localGeomExtent
         likelihoodScoreFlat
@@ -16,13 +24,20 @@ classdef localGeomObjective < handle
 
     methods
         function obj = localGeomObjective(inputStruct)
-            % inputStruct fields ('ranges','alpha','lambda')
+            % inputStruct fields ('ranges','bearings','alpha','lambda')
             % default (,,)
             if isfield(inputStruct,'ranges')
                 obj.ranges = inputStruct.ranges;
             else
                 error('RANGES NOT INPUT.');
             end
+            if isfield(inputStruct,'ranges')
+                obj.bearings = inputStruct.bearings;
+            else
+                error('BEARINGS NOT INPUT.');
+            end
+            obj.x = obj.ranges.*cos(obj.bearings);
+            obj.y = obj.ranges.*sin(obj.bearings);
             if isfield(inputStruct,'alpha')
                 obj.alpha = inputStruct.alpha;
             else
@@ -34,7 +49,7 @@ classdef localGeomObjective < handle
             if isfield(inputStruct,'lambda')
                 obj.lambda = inputStruct.lambda;
             else
-                obj.lambda = obj.likelihoodScoreFlat/min(0.1*obj.alpha,obj.maxTweakFraction);
+                obj.lambda = obj.likelihoodScoreFlat/obj.normCost(obj.tweakRadius);
             end
         end
         
@@ -55,14 +70,17 @@ classdef localGeomObjective < handle
         end
         
         function res = tweakCost(obj,dr)
-            % TODO: change cost to penalize not range deviation but
-            % absolute x,y deviation.
-            
-            drRelative = abs(dr./obj.ranges);
-            % if percentage above some threshold, assign large cost
-            % two parameters here, what values should they be assigned?
-            drRelative(drRelative > 0.05) = 20;
-            res = sum(abs(drRelative));
+            dx = (obj.ranges+dr).*cos(obj.bearings)-obj.x;
+            dy = (obj.ranges+dr).*sin(obj.bearings)-obj.y;
+            tweakNorm = sqrt(dx.^2+dy.^2);
+            res = sum(obj.normCost(tweakNorm));
+        end
+        
+        function res = normCost(obj,tweakNorm)
+            % tweakNorm is a vector of norm([dx dy]).
+            res = tweakNorm;
+            flag = tweakNorm > obj.tweakRadius;
+            res(flag) = obj.tweakCostFlat;
         end
     end
 

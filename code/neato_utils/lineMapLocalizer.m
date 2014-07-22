@@ -8,7 +8,7 @@ classdef lineMapLocalizer < handle
         eps = [0.001,0.001,deg2rad(0.5)];
         maxIters = 15;
         % step size in pose when optimizing
-        eta = 0.01;
+        eta = 0.05;
     end
     
     properties (SetAccess = private)
@@ -129,29 +129,9 @@ classdef lineMapLocalizer < handle
                 errPlus = obj.fitError(posePlus,modelPts);
                 errMinus = obj.fitError(poseMinus,modelPts);
                 J(i) = (errPlus-errMinus);
+                %J(i) = (errPlus-errPlus0);
             end
             J = J./(2*obj.eps);
-            
-%             for i = 1:3
-%                 vec1 = -obj.eps(i):1e-4:obj.eps(i); vec2 = [];
-%                 for j = 1:length(vec1)
-%                     dp = zeros(3,1); dp(i) = vec1(j);
-%                     p = pose2D(poseIn.getPose()+dp);
-%                     vec2(j) = obj.fitError(p,modelPts);
-%                 end
-%                 figure;
-%                 plot(vec1,vec2,'+'); title(i);
-%             end
-                        
-%             poseDx = pose2D(poseIn.getPose() + [obj.eps(1);0;0]);
-%             errPlusDx = obj.fitError(poseDx, modelPts);
-%             poseDy = pose2D(poseIn.getPose() + [0;obj.eps(2);0]);
-%             errPlusDy = obj.fitError(poseDy, modelPts);
-%             poseDth = pose2D(poseIn.getPose() + [0;0;obj.eps(3)]);
-%             errPlusDth = obj.fitError(poseDth, modelPts);
-%             
-%             J = [errPlusDx, errPlusDy, errPlusDth]-errPlus0*ones(1,3);
-%             J = J./obj.eps;
         end
         
         function [successStory, outPose] = refinePose(obj, inPose, ptsInModelFrame, maxIters)
@@ -168,6 +148,7 @@ classdef lineMapLocalizer < handle
             end
             for i = 1:maxIters
                 [err, J] = obj.getJacobian(outPose, ptsInModelFrame);
+                %fprintf('iteration %d, err: %f\n',i,err);
                 if (err == inf) || any(J == inf)
                     break;
                 end
@@ -175,14 +156,24 @@ classdef lineMapLocalizer < handle
                     break;
                 end
                 dPose = -obj.eta*J';
-                while true
+                count = 0;
+                % Reduce step size till error reduces or maximum counts are
+                % exceeded.
+                while true && count < 7
+                    count = count+1;
                     newPose = pose2D(outPose.getPose+dPose);
                     newErr = obj.fitError(newPose,ptsInModelFrame);
-                    if newErr <= err
+                    %fprintf('count %d, newErr: %f\n',count,newErr);
+                    if newErr < err
                         break;
                     else
                         dPose = 0.5*dPose;
                     end
+                end
+                % If error could not be reduced even after decreasing step
+                % size, break.
+                if newErr > err
+                    break;
                 end
                 outPose.updatePose(outPose.getPose+dPose);
                 if err < obj.errThresh

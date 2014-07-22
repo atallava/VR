@@ -33,6 +33,7 @@ classdef errorStats < handle
            for i = 1:nParams
                mat = squeeze(obj.validMat(:,i,:));
                validIds = squeeze(obj.validMask(:,i,:));
+               % throwing outliers
                uq = quantile(mat(validIds),0.75);
                qrange = iqr(mat(validIds));
                outlierIds = mat > uq+2*qrange;
@@ -95,7 +96,7 @@ classdef errorStats < handle
             f = 2;
             uq = quantile(vec,0.75);
             qrange = iqr(vec);
-            ids = find(vec > uq+f*qrange);
+            ids = vec > uq+f*qrange;
          end
          
          function nll = getNll(paramArray,fitClass,data)

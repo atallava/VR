@@ -1,6 +1,13 @@
 function score = scoreLineFinding(targetLines,candidateLines)
-% targetLines, candidateLines are ('p1','p2') struct arrays
-% score is the fraction of targetLines in candidateLines
+%SCORELINEFINDING
+%
+% score = SCORELINEFINDING(targetLines,candidateLines)
+%
+% targetLines    - Struct array with fields ('p1','p2').
+% candidateLines - Struct array with fields ('p1','p2').
+%
+% score          - Fraction of targets in candidates.
+
 score = 0;
 for i = 1:length(targetLines)
     for j = 1:length(candidateLines)
@@ -15,6 +22,15 @@ score = score/length(targetLines);
 end
 
 function res = checkLinePair(target,candidate)
+%CHECKLINEPAIR Check equality of a pair of lines.
+% 
+% res = CHECKLINEPAIR(target,candidate)
+%
+% target    - Struct with fields ('p1','p2').
+% candidate - Struct with fields ('p1','p2').
+%
+% res       - true if candidate is 'close to' target, false if else.
+
 threshold = 0.05;
 mid_target = (target.p1+target.p2)*0.5;
 mid_candidate = (candidate.p1+candidate.p2)*0.5;
@@ -28,28 +44,20 @@ end
 end
 
 function res = checkSegment(targetSegment,candidateSegment)
-% TODO: horrible mess of angle check
+
 toleranceTh = deg2rad(5);
+toleranceLength = 0.06;
 
 targetLen = norm(targetSegment);
 candidateLen = norm(candidateSegment);
-targetTh = wrapTo2Pi(atan(targetSegment(2)/targetSegment(1)));
-candidateTh = wrapTo2Pi(atan(candidateSegment(2)/candidateSegment(1)));
-lenCheck = toleranceCheck(candidateLen,targetLen,0.06);
+targetTh = atan(targetSegment(2)/targetSegment(1));
+candidateTh = atan(candidateSegment(2)/candidateSegment(1));
+
+lenCheck = toleranceCheck(candidateLen,targetLen,toleranceLength);
 thCheck = thetaCheck(candidateTh,targetTh,toleranceTh);
 if  lenCheck && thCheck
     res = 1;
 else
     res = 0;
 end
-end
-
-
-function res = thetaCheck(th1,th2,tolerance)
-% given th1 and th2 are within [0,2*pi]
-
-res = toleranceCheck(th1,th2,tolerance);
-thmax = max(th1,th2);
-thmin = min(th1,th2);
-res = res | (thmin < wrapTo2Pi(thmax+tolerance));
 end

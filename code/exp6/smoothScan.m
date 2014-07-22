@@ -2,6 +2,7 @@ clearAll
 load test_full_scan_smoothing
 localizer = lineMapLocalizer(map.objects);
 matcher = localMatch(struct('localizer',localizer,'map',map,'maxInClusterLength',20,'minInClusterLength',10));
+vizer = vizRangesOnMap(struct('localizer',localizer));
 outIds = matcher.getOutIds(ranges,pose);
 inClusters = matcher.getInClusters(outIds);
 
@@ -17,7 +18,8 @@ for i = 1:length(inClusters)
     fprintf('Cluster %d...\n',i)
     section = inClusters(i).members;
     patch = ranges(section);
-    objective = localGeomObjective(struct('ranges',patch,'alpha',0.1));
+    patchBearings = bearings(section);
+    objective = localGeomObjective(struct('ranges',patch,'bearings',patchBearings,'alpha',0.1));
     if length(section) < objective.localGeomExtent
         continue
     end

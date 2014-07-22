@@ -11,6 +11,7 @@ classdef pixelRegressorBundle < handle
         % pixel
         % XLast is num queries x dimX, cache of last query
         % YLast is num queries x dimY x numPixels, cache of last query
+        inputStruct
         XTrain
         YTrain
         dimY
@@ -27,7 +28,7 @@ classdef pixelRegressorBundle < handle
         function obj = pixelRegressorBundle(inputStruct)
             % inputStruct fields ('XTrain', 'YTrain', 'inputPoseTransf', 
             % 'poolOption','regClass', <regressor specific fields>)
-            
+            obj.inputStruct = inputStruct;
             obj.XTrain = inputStruct.XTrain;
             obj.YTrain = inputStruct.YTrain;
             if ndims(obj.YTrain) == 2 %#ok<ISMAT>
