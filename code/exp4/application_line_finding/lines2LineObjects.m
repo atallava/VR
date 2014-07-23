@@ -1,6 +1,11 @@
 function lObjArray = lines2LineObjects(lines)
-% lines is a sruct ('p1','p2') array
-% lObjArray is an array of lineObjects
+%LINES2LINEOBJECTS 
+% 
+% lObjArray = LINES2LINEOBJECTS(lines)
+% 
+% lines     - Struct array with fields ('p1','p2').
+% 
+% lObjArray - Array of lineObject objects.
 
 lObjArray = lineObject.empty(0,length(lines));
 for i = 1:length(lines)

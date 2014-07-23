@@ -1,6 +1,5 @@
 function res = examineStd(choiceVec)
-%EXAMINESTD 
-% Look at quantile stds for poseError various cases.
+%EXAMINESTD Look at quantile stds for poseError various cases.
 % 
 % res = EXAMINESTD(choiceVec)
 % 

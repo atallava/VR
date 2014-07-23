@@ -12,7 +12,8 @@ targetLen = 0.61;
 %% score on real range data
 plot_option = 1;
 poseScore = zeros(1,nPoses);
-for i = 1%:nPoses
+%{
+for i = 6%1:nPoses
     fprintf('pose %d\n',i);
     obsIds = randperm(size(obsArrayByPose{i},1),nTrials);
     score = 0;
@@ -41,13 +42,13 @@ for i = 1%:nPoses
     end
     poseScore(i) = score/nTrials;
 end
-%{
+%}
 %% score on simulated data
-plot_option = 0;
+plot_option = 1;
 poseScore = zeros(1,nPoses);
 robotPose = [0;0;0];
-%warning('off');
-for i = 1:nPoses
+warning('off');
+for i = 8%1:nPoses
     fprintf('pose %d\n',i);
     lObjArray = lines2LineObjects(lineSet{i});
     tempMap = lineMap([room.objects lObjArray]);
@@ -82,4 +83,3 @@ for i = 1:nPoses
     end
     poseScore(i) = score/nTrials;
 end
-%}
