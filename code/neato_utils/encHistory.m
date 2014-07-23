@@ -31,6 +31,12 @@ classdef encHistory < handle
         function stopListening(obj)
             obj.listenerHandle.delete;
         end
+        
+        function delete(obj)
+            if obj.listenerHandle.isvalid
+                obj.listenerHandle.delete;
+            end
+        end
     end
             
     methods (Static)

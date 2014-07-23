@@ -4,7 +4,7 @@ classdef robotModel < handle
         W = 0.235 % wheel base in m
         VMax = 0.3 % maximum linear velocity in m/sec
         wMax = 2.553 % maximum angular velocity in rad/sec
-        bBox = [0.165 -0.165; 0.165 0.165; -0.165 0.165; -0.165 -0.165; 0.165 -0.165]; % bounding box in m
+        bBox = [0.167 -0.167; 0.167 0.167; -0.167 0.167; -0.167 -0.167; 0.167 -0.167]; % bounding box in m
         tPause = 0.001; % time in sec between sending velocity commands
         Tlaser = [1 0 -0.1; ...
             0 1 0; ...

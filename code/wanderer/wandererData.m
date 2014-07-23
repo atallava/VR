@@ -7,7 +7,7 @@ function wandererData(rob,map,poseStart,imagesDirName)
 % initialize objects
 localizer = lineMapLocalizer(map.objects);
 vizer = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser));
-refiner = laserPoseRefiner(struct('localizer',localizer,'laser',robotModel.laser,'skip',5,'numIterations',30));
+refiner = laserPoseRefiner(struct('localizer',localizer,'laser',robotModel.laser,'skip',5,'numIterations',50));
 ctrl = controllerClass(struct());
 ctrlBackup = controllerClass(struct('gainV',0.1));
 pgen = poseGenerator(struct('map',map));
@@ -22,9 +22,9 @@ pgen.addToPoseHist(pose);
 
 fname = sprintf('data_%s',datestr(now,'mmmdd')); fname = lower(fname);
 tRangeCollection = struct('start',{},'end',{});
-numScansPerPose = 2;
+numScansPerPose = 1;
 recCount = 1;
-nPoses = 3;
+nPoses = 10;
 maxBackups = 5;
 outlierFracnThreshold = 0.5;
 for i = 1:nPoses
@@ -74,18 +74,18 @@ for i = 1:nPoses
     end
     trajFlr.execute(rob,rstate);
     
+    pause(1);
+    % estimate pose using scan match
+    % TODO: check if multiple ranges need to be tried in case data is
+    % corrupt
     fprintf('Performing scan match...\n');
     [refinerStats,pose] = refiner.refine(rob.laser.data.ranges,rstate.pose);
     if refinerStats.numOutliers/length(rob.laser.data.ranges) > outlierFracnThreshold
         warning('NUMBER OF OUTLIERS IN SCAN EXCEEDS THRESHOLD. POSE ESTIMATE NO LONGER RELIABLE.');
         break;
     end
-        
     refinerLog(end+1).stats = refinerStats;
-    % estimate pose using scan match
-    poseIn = rstate.pose;
-    ranges = rob.laser.data.ranges;
-
+  
     % visualize scan match
     if exist('hf','var')
         close(hf);
@@ -105,7 +105,7 @@ for i = 1:nPoses
         pause(0.3);
     end
     tRangeCollection(recCount).end = lzrLog.tArray(end);
-    if mod(i,5) == 0
+    if mod(i,1) == 0
         save(fname,'lzrLog','encLog','pgen','tRangeCollection','refinerLog');
     end
     beep; beep; % alert grad student

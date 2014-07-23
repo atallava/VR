@@ -8,7 +8,7 @@ classdef lineMapLocalizer < handle
         eps = [0.001,0.001,deg2rad(0.5)];
         maxIters = 15;
         % step size in pose when optimizing
-        eta = 0.01;
+        eta = 0.05;
     end
     
     properties (SetAccess = private)

@@ -1,6 +1,25 @@
 classdef laserHistory < handle
-    %laserHistory store laser values in an array
-        
+    %LASERHISTORY
+    %
+    % Class properties.
+    %  log            - Struct array with fields {'ranges','intensities'}.
+    %  tArray         - Timestamps.
+    %  update_count   - Current update number.
+    %  listenerHandle - 
+    %  rob            - Neato object.
+    %  bearings       - deg2rad(0:359).
+    %  hfig           - Handle to figure.
+    %  hplot          - Handle to plot.
+    %  plot_flag      - Plot toggle.
+    %
+    % Class methods.
+    %  laserHistory       - Constructor.
+    %  laserEventResponse - Callback function.
+    %  reset              - Delete logs and start over.
+    %  stopListening      - Delete listenerHandle.
+    %  togglePlot         - Turn plot on/off.
+    %  updatePlot         - Given new ranges.
+    
     properties
         log
         tArray
@@ -71,6 +90,12 @@ classdef laserHistory < handle
         
         function stopListening(obj)
             obj.listenerHandle.delete;
+        end
+        
+        function delete(obj)
+            if obj.listenerHandle.isvalid
+                obj.listenerHandle.delete;
+            end
         end
     end
             
