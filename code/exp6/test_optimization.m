@@ -1,6 +1,6 @@
 clearAll;
 load test_optimization_data
-objective = localGeomObjective(struct('ranges',patch,'alpha',0.1));
+objective = localGeomObjective(struct('ranges',patch,'bearings',patchBearings,'alpha',0.1));
 
 problem.objective = @objective.value;
 problem.Aineq = []; problem.bineq = [];

@@ -20,10 +20,10 @@ data_june6
 To test simulator on line-finding. Robot: peta.
 
 full_predictor_mar27_1
-29 training poses
+canonical 29 training poses. individual models for each pixel.
 
 full_predictor_mar27_2
-42 training poses
+same as above, but with all poses as (42) training poses.
 
 full_predictor_mar27_3
 29 training poses. single model for all pixels (collated and compressed data), using nullFraction for pz.
@@ -32,7 +32,7 @@ full_predictor_mar27_4
 same as above but performing no-pool predictions for pz.
 
 full_predictor_mar27_5
-used local matching to create the muPxRegBundle, other regressors as before. trained with canonical 29 poses.
+used local matching to create the muPxRegBundle, other regressors as in _4. trained with canonical 29 poses.
 
 full_predictor_mar27_6
 used local matching + indiscriminate pooling to create the muPxRegBundle. trained with canonical 29 poses. 

@@ -1,17 +1,29 @@
-%optimize error wrt kernel window size
-warning('off')
-clear all; clear classes; clc;
-addpath ~/Documents/MATLAB/neato_utils/
-load processed_data_mar27
+% optimize error wrt kernel parameters
+clearAll;
+load('../mats/full_predictor_mar27_5.mat');
 
-skip = 1;
-pixelIds = 1:skip:360; bearings = deg2rad(pixelIds-1);
-dpInput.poses = poses;
-dpInput.obsArray = obsArray(:,pixelIds);
-laser = laserClass(struct('bearings',bearings));
-dpInput.laser = laser;
+inputStruct.regClass = @pixelRegressorBundle; 
+inputStruct.regClassInput = muPxRegBundle.inputStruct;
+%inputStruct.regClassInput = struct('XTrain',muPxRegBundle.XTrain,'YTrain',muPxRegBundle.YTrain,'poolOption',muPxRegBundle.poolOption,'inputPoseTransf', muPxRegBundle.inputPoseTransf, ...
+%    'regClass',muPxRegBundle.regClass,'XSpaceSwitch',muPxRegBundle.regressorArray{1}.XSpaceSwitch,'kernelFn',muPxRegBundle.regressorArray{1}.kernelFn);
+inputStruct.XTest = dp.XTest;
+inputStruct.YTest = testPdfs.paramArray(:,1,:);
+oldH = muPxRegBundle.regressorArray{1}.kernelParams.h;
+err = errorOnKernelParams(inputStruct);
 
-h0 = 0.07; lambda0 = 0.1;
-options = optimoptions('fmincon','Display','iter');
-%params = fmincon(@(x) errorOnKernelWidth(dpInput,x(1),x(2)),[h0;lambda0],[],[],[],[],[0; 0],[Inf; Inf],[],options);
-params = fmincon(@(x) errorOnKernelWidth(dpInput,x,lambda0),h0,[],[],[],[],0,Inf,[],options);
+%% run optimizer
+warning('off');
+problem.objective = @(x) err.value(struct('h',x));
+problem.x0 = 0.01;
+problem.Aineq = []; problem.bineq = [];
+problem.Aeq = []; problem.beq = [];
+problem.lb = 0; problem.ub = Inf;
+problem.nonlcon = [];
+problem.solver = 'fmincon';
+problem.options = optimoptions('fmincon','Algorithm','interior-point','Display','iter');
+t1 = tic();
+h = fmincon(problem);
+fprintf('Computation took %fs.\n',toc(t1));
+fprintf('Error with old kernel parameters: %f\n',err.value(struct('h',oldH)));
+fprintf('Error with optimized kernel parameters: %f\n',err.value(struct('h',h)));
+warning('on');

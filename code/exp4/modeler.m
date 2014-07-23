@@ -57,7 +57,7 @@ inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,'poolOption',1,
     'regClass',@nonParametricRegressor, 'XSpaceSwitch',bsSigma,'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0559,'lambda',0.1));
 sigmaPxRegBundle = pixelRegressorBundle(inputStruct);
 
-inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,'inputPoseTransf', p2ra, ...
+inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainPzArray,'inputPoseTransf', p2ra, ...
     'regClass',@nonParametricRegressor, 'XSpaceSwitch',bsSigma,'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0559,'lambda',0.1));
 pzPxRegBundle = pixelRegressorBundle(inputStruct);
 

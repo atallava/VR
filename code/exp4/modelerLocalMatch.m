@@ -51,14 +51,13 @@ inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainMuArray,'poolOption',0,'in
     'regClass',@locallyWeightedLinearRegressor,'XSpaceSwitch',bsMu,'kernelFn',@kernelR, 'kernelParams',struct('h',0.0025));
 scans = scansFromMuArray(squeeze(trainMuArray));
 matcher = localMatch(struct('localizer',localizer,'laser',dp.laser,'map',map));
-%%
 [muPxRegBundle,lphi] = localRBundle(inputStruct,scans,matcher);
 
 inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,'poolOption',1,'inputPoseTransf', p2ra, ...
     'regClass',@nonParametricRegressor, 'XSpaceSwitch',bsSigma,'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0559,'lambda',0.1));
 sigmaPxRegBundle = pixelRegressorBundle(inputStruct);
 
-inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,'inputPoseTransf', p2ra, ...
+inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainPzArray,'inputPoseTransf', p2ra, ...
     'regClass',@nonParametricRegressor, 'XSpaceSwitch',bsSigma,'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0559,'lambda',0.1));
 pzPxRegBundle = pixelRegressorBundle(inputStruct);
 
