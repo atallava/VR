@@ -3,10 +3,14 @@
 % real and all simulated data.
 
 nSims = 4;
-[poseErrMuDiffMarginalized,poseErrSDiffMarginalized] = deal(zeros(1,nSims));
+[poseErrMuDiffMgl,poseErrSDiffMgl] = deal(zeros(1,nSims));
 
 for i = 1:nSims
     [muDiff,sDiff] = getDiffBetweenRealAndSim(i+1);
-    poseErrMuDiffMarginalized(i) = mean(muDiff(:));
-    poseErrSDiffMarginalized(i) = mean(sDiff(:));
+    muDiff = abs(muDiff); sDiff = abs(sDiff);
+    muPatternMgl(i,:) = mean(muDiff,1); sPatternMgl(i,:) = mean(sDiff,1);
+    muPoseMgl(i,:) = mean(muDiff,2); sPoseMgl(i,:) = mean(sDiff,2);
+    poseErrMuDiffMgl(i) = mean(muDiff(:));
+    poseErrSDiffMgl(i) = mean(sDiff(:));
 end
+

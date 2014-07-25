@@ -17,6 +17,8 @@ figure; hold on;
 nPoses = size(meanScores,1);
 bar(1:nPoses,meanScores);
 legend(choiceNames); title('Mean of score at different poses');
+xlabel('pose'); ylabel('precision');
 figure;
 bar(1:nPoses,stdScores);
 legend(choiceNames); title('Variance of score at different poses');
+xlabel('pose'); ylabel('precision');

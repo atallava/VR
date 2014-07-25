@@ -63,7 +63,6 @@ for i = 1:enc.update_count
         hf = plotScan(poseOut,ptsLocal,hf);
         set(hf,'visible','off');
         title(sprintf('laser count %d',lzrCount));
-        saveTo = sprintf('%s/scan_match/
         print('-dpng','-r72',sprintf('images/pose_est/enc%d_lzr%d.png',i,lzrCount));
         close(hf);
     end

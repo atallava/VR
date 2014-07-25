@@ -21,7 +21,7 @@ switch choice
     otherwise
         error('INVALID CHOICE.');
 end
-        
+warning('off');        
 localizer = lineMapLocalizer(map.objects);
 laser = laserClass(struct());
 refiner = laserPoseRefiner(struct('localizer',localizer,'numIterations',30));
@@ -54,5 +54,6 @@ for i = 1:length(data)
     end
     statsByPose(i).errorStats = stats;
 end
+warning('on');
 fprintf('Total computation took %ds.\n',toc(t1));
 end

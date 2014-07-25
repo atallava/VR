@@ -31,7 +31,7 @@ scoresByPose = struct('mu',{},'s',{});
 robotPose = [0;0;0];
 
 warning('off');
-for i = 1:nPoses
+for i = 3%1:nPoses
     fprintf('pose %d\n',i);
     % Construct map with targets.
     lObjArray = lines2LineObjects(lineSet{i});

@@ -51,8 +51,6 @@ classdef errorOnKernelParams < handle
             errVec = abs(YPred-obj.YTest);
             errVec(isnan(errVec)) = [];
             outIds = errorStats.outlier1D(errVec(:));
-            fprintf('nOuts: %d\n',sum(outIds));
-            fprintf('outFrac: %d\n',sum(outIds)/numel(errVec));
             errVec(outIds) = [];
             err = mean(errVec);
         end

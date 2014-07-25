@@ -1,6 +1,6 @@
 clearAll;
-% statsByPose = testScanMatch('baseline'); 
-% save('baseline_stats','statsByPose');
+statsByPose = testScanMatch('baseline'); 
+save('baseline_stats','statsByPose');
 statsByPose = testScanMatch('sim'); 
 save('sim_stats','statsByPose');
 statsByPose = testScanMatch('sim_pooled'); 

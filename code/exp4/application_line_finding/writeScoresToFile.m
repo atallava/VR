@@ -1,8 +1,8 @@
 clearAll;
-% scoresByPose = testLineFinding('real');
-% save('real_scores','scoresByPose');
-% scoresByPose = testLineFinding('baseline'); 
-% save('baseline_scores','scoresByPose');
+scoresByPose = testLineFinding('real');
+save('real_scores','scoresByPose');
+scoresByPose = testLineFinding('baseline'); 
+save('baseline_scores','scoresByPose');
 scoresByPose = testLineFinding('sim'); 
 save('sim_scores','scoresByPose');
 scoresByPose = testLineFinding('sim_pooled'); 

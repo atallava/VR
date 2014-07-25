@@ -14,8 +14,8 @@ classdef localGeomObjective < handle
         x; y
         alpha = 0.1
         maxTweakFraction = 0.05;
-        tweakRadius = 0.02; % in m
-        tweakCostFlat = 10; 
+        tweakRadius = 0.05; % in m
+        tweakCostFlat = 100; 
         lambda
         localGeomExtent
         likelihoodScoreFlat
