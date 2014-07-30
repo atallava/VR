@@ -8,7 +8,7 @@ classdef lineMapLocalizer < handle
         eps = [0.001,0.001,deg2rad(0.5)];
         maxIters = 15;
         % step size in pose when optimizing
-        eta = 0.05;
+    
     end
     
     properties (SetAccess = private)
@@ -16,6 +16,8 @@ classdef lineMapLocalizer < handle
         lines_p2 = [];
         errThresh = 0.001;
         gradThresh = 0.0005;
+        dPoseThresh = 1e-6;
+        eta = 0.1;
     end
        
     methods
@@ -98,17 +100,11 @@ classdef lineMapLocalizer < handle
             
             % transform the points
             worldPts = pose.Tb2w()*ptsInModelFrame;
-            err = 0.0;
-            num = 0;
-            for i = 1:size(worldPts,2)
-                r2 = obj.closestSquaredDistanceToLines(worldPts(:,i)); 
-                %fprintf('i,err: %d,%f\n',i,r2);
-                if r2 == Inf
-                    continue;
-                end
-                err = err + r2;
-                num = num + 1;
-            end
+            
+            r2 = obj.closestSquaredDistanceToLines(worldPts);
+            r2(r2 == Inf) = [];
+            err = sum(r2);
+            num = length(r2);
             if(num >= lineMapLocalizer.minPts)
                 avgErr = sqrt(err)/num;
             else
@@ -129,7 +125,6 @@ classdef lineMapLocalizer < handle
                 errPlus = obj.fitError(posePlus,modelPts);
                 errMinus = obj.fitError(poseMinus,modelPts);
                 J(i) = (errPlus-errMinus);
-                %J(i) = (errPlus-errPlus0);
             end
             J = J./(2*obj.eps);
         end
@@ -146,9 +141,9 @@ classdef lineMapLocalizer < handle
             if nargin < 4
                 maxIters = obj.maxIters;
             end
+            [err,~] = obj.getJacobian(inPose,ptsInModelFrame); % For the case of 0 iterations.
             for i = 1:maxIters
                 [err, J] = obj.getJacobian(outPose, ptsInModelFrame);
-                %fprintf('iteration %d, err: %f\n',i,err);
                 if (err == inf) || any(J == inf)
                     break;
                 end
@@ -156,14 +151,12 @@ classdef lineMapLocalizer < handle
                     break;
                 end
                 dPose = -obj.eta*J';
-                count = 0;
-                % Reduce step size till error reduces or maximum counts are
-                % exceeded.
-                while true && count < 7
-                    count = count+1;
+                newErr = Inf;
+                % Reduce step size till error reduces or dPose is too
+                % small.
+                while norm(dPose) > obj.dPoseThresh
                     newPose = pose2D(outPose.getPose+dPose);
                     newErr = obj.fitError(newPose,ptsInModelFrame);
-                    %fprintf('count %d, newErr: %f\n',count,newErr);
                     if newErr < err
                         break;
                     else

@@ -18,6 +18,9 @@ classdef swingStraight < handle & abstractTrajectory
             vec = goal(1:2)-start(1:2);
             th = start(3); 
             obj.thFinal = atan2(vec(2),vec(1));
+            if obj.thFinal < 0
+                obj.thFinal = obj.thFinal+2*pi;
+            end
             obj.phi = atan2(sin(obj.thFinal-th),cos(obj.thFinal-th));
             obj.dist = norm(vec);
             obj.tSwing = abs(obj.phi)/obj.wMax;
@@ -64,15 +67,28 @@ classdef swingStraight < handle & abstractTrajectory
             bBox1 = robotModel.getTransformedBBox(pose);
             pose = obj.goal; pose(3) = obj.thFinal;
             bBox2 = robotModel.getTransformedBBox(pose);
-            pathBBox = [bBox1(3:4,:); bBox2(1:2,:); bBox1(3,:)]; obj.bBox = pathBBox;
-%             rotBBox = robotModel.bBox*sqrt(2);
-%             rotBBox = bsxfun(@plus,rotBBox,[obj.start(1) obj.start(2)]);
-%             warning('off','map:polygon:noExternalContours');
-%             [xi,yi] = polybool('union',pathBBox(:,1),pathBBox(:,2),rotBBox(:,1),rotBBox(:,2));
-%             obj.bBox = [xi,yi];
-%             warning('on','map:polygon:noExternalContours');
+            pathBBox = [bBox1(3:4,:); bBox2(1:2,:); bBox1(3,:)];
+            rotBBox = robotModel.bBox*sqrt(2);
+            rotBBox = bsxfun(@plus,rotBBox,[obj.start(1) obj.start(2)]);
+            warning('off','map:polygon:noExternalContours');
+            [xi,yi] = polybool('union',pathBBox(:,1),pathBBox(:,2),rotBBox(:,1),rotBBox(:,2));
+            obj.bBox = [xi,yi];
+            warning('on','map:polygon:noExternalContours');
         end
-        
+    end
+    
+    methods (Static = true)
+        function [phi,dist] = getPhiAndDist(start,goal)
+            start(3) = mod(start(3),2*pi);
+            vec = goal(1:2)-start(1:2);
+            th = start(3); 
+            thF = atan2(vec(2),vec(1));
+            if thF < 0
+                thF = thF+2*pi;
+            end
+            phi = atan2(sin(thF-th),cos(thF-th));
+            dist = norm(vec);
+        end
     end
 end
 

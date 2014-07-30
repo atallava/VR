@@ -1,5 +1,5 @@
 classdef controllerClass < handle
-    %controller proportional gains on distance and heading error
+    %controllerClass proportional gains on distance and heading error
 
     properties (Constant = true)
         MAX_SIZE = 1000;
@@ -15,11 +15,11 @@ classdef controllerClass < handle
     methods
         function obj = controllerClass(inputStruct)
             % inputStruct fields ('gainV','gainW')
-            % default (0.2,0.05)
+            % default (0.1,0.05)
             if isfield(inputStruct,'gainV')
                 obj.gainV = inputStruct.gainV;
             else
-                obj.gainV = 0.2;
+                obj.gainV = 0.1;
             end
             if isfield(inputStruct,'gainW')
                 obj.gainW = inputStruct.gainW;
@@ -36,8 +36,14 @@ classdef controllerClass < handle
                 currentPose = pose2D(currentPose);
             end
             [s_err,psi_err] = controllerClass.computePoseError(refPose,currentPose);
-            V = obj.gainV*s_err;
-            w = obj.gainW*psi_err;
+            if abs(psi_err) <= pi/2
+                V = obj.gainV*s_err;
+                w = obj.gainW*psi_err;
+            else
+                V = 0; 
+                w = 0;
+%                 w = obj.gainW*psi_err;
+            end
             obj.tArray(end+1) = t;
             obj.VArray(end+1) = V;
             obj.WArray(end+1) = w;

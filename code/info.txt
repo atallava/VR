@@ -63,3 +63,16 @@ triplets is a set of observed three consecutive (and non-nan) ranges from all tr
 
 code/misc/kde
 scores has scores1, hist similarity scores between real histograms and normWithDrops, scores2, hist similarity between kernel density estimate and normWithDrops
+
+code/playback
+data_july3 
+encoder and laser logs collected from continuously driving the robot around in a small map.
+
+data_july3_map
+the map for the above data
+
+playback_data_july3
+data_july3 contains data in classes that have since been modified. This file contains the data in the useful form: to be viewed in playback. Useful for sensor fusion offsets testing.
+
+sample_sensor_data_1
+Data to test playback.

@@ -33,6 +33,8 @@ classdef trajectoryFollower < handle
             logCount = 1;
             update_count_old = rstate.update_count;
             tClock = tic;
+            oldRState = rstate.pose;
+            currentTh = rstate.pose(3); 
             while(toc(tClock) < obj.trajectory.getTrajectoryDuration)
                 while update_count_old == rstate.update_count
                     pause(robotModel.tPause);
@@ -47,6 +49,10 @@ classdef trajectoryFollower < handle
                 
                 % feedback
                 currentState = rstate.pose;
+                dTh = atan2(sin(currentState(3)-oldRState(3)),cos(currentState(3)-oldRState(3)));
+                currentTh = currentTh+dTh;
+                currentState(3) = currentTh;
+                oldRState = rstate.pose;
                 refState = obj.trajectory.getPoseAtTime(tNew);
                 [VFb,wFb] = obj.controller.computeControl(tNew,refState,currentState);
                 V = V+VFb; w = w+wFb;
@@ -86,7 +92,8 @@ classdef trajectoryFollower < handle
             xlabel('x'); ylabel('y');
                         
             figure;
-            plot(obj.VFbLog(ids),'+r'); hold on; plot(obj.wFbLog(ids),'+b'); legend('VFb','wFb');
+            plot(obj.tLog(ids),obj.VFbLog(ids),'+r'); hold on; plot(obj.tLog(ids),obj.wFbLog(ids),'+b'); legend('VFb','wFb');
+            xlabel('t'); ylabel('Vfb,Wfb');
         end
         
         function resetLogs(obj)
