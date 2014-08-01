@@ -1,26 +1,20 @@
-function res = loadStatsByPose(choice)
+function res = loadStatsByPose(choice,algo)
 %LOADSTATSBYPOSE Helper function that returns data of choice.
 % 
 % res = LOADSTATSBYPOSE(choice)
 % 
 % choice - Integer, 1-5.
-% 
+% algo   - String of algorithm name. If omitted, results from own-developed code is% loaded.
 % res    - struct with field 'statsByPose'.
 
-switch choice
-    case 1
-        res = load('real_stats');
-    case 2
-        res = load('baseline_stats');
-    case 3
-        res = load('sim_stats');
-    case 4
-        res = load('sim_pooled_stats');
-    case 5
-        res = load('sim_local_match_stats');
-    otherwise
-        error('CHOICE NOT IN AVAILABLE.');
+str = choiceString(choice);
+if strcmp(algo,'lab8')
+  fname = sprintf('%s_stats',str);
+else
+  fname = sprintf('%s_stats_%s',str,algo);
 end
+
+res = load(fname);
 
 end
 

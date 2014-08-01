@@ -1,4 +1,6 @@
 clearAll;
+statsByPose = testScanMatch('real');
+save('real_stats','statsByPose');
 statsByPose = testScanMatch('baseline'); 
 save('baseline_stats','statsByPose');
 statsByPose = testScanMatch('sim'); 

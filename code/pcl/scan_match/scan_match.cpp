@@ -5,6 +5,8 @@
 #include <pcl/io/pcd_io.h>
 #include <pcl/visualization/cloud_viewer.h>
 #include <pcl/point_types.h>
+#include <pcl/registration/bfgs.h>
+#include <pcl/registration/gicp.h> 
 #include <pcl/registration/icp.h>
 #include <pcl/console/parse.h>
 #include <boost/make_shared.hpp>
@@ -69,10 +71,12 @@ int main(int argc, char** argv)
 
       icp.setInputTarget(cloud_map);
       pcl::PointCloud<pcl::PointXYZ> cloud_match;
-      icp.setInputCloud(cloud_scan);
+      icp.setInputSource(cloud_scan);
       icp.align(cloud_match);
+      //icp.setMaxCorrespondenceDistance(1);
 
-      std::cout << "has converged: " << icp.hasConverged() << " score: " << icp.getFitnessScore() << std::endl;
+      std::cout << "has converged: " << icp.hasConverged() << " score: " << icp.getFitnessScore() << " max corr dist: " << icp.getMaxCorrespondenceDistance() << std::endl;
+      std::cout << "tf epsilon: " << icp.getTransformationEpsilon() << " euc fitness eps: " << icp.getEuclideanFitnessEpsilon() << std::endl;
       if (pcl::console::find_argument(argc, argv, "-v") >= 0)
 	{
 	  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_match_ptr = boost::make_shared<pcl::PointCloud<pcl::PointXYZ> >(cloud_match);
@@ -99,15 +103,26 @@ int main(int argc, char** argv)
       for (int i = 0; i < num_files; i++) {
 	std::cout << "scan " << i+1 << std::endl;
 	// Load data
-	std::string scan_name = dir + "/cleaned_scan_" + std::to_string(i+1) + ".pcd";
-	//std::string scan_name = dir + "/scan_" + std::to_string(i+1) + ".pcd";
+	std::string scan_name = dir + "/scan_" + std::to_string(i+1) + ".pcd";
 	pcl::io::loadPCDFile<pcl::PointXYZ> (scan_name, *cloud_scan);
 	
 	// Match
-	icp.setInputCloud(cloud_scan);
-	icp.align(cloud_match);
-	std::cout << "has converged: " << icp.hasConverged() << " score: " << std::endl;
-	Eigen::Matrix4f matchTransform = icp.getFinalTransformation();
+	Eigen::Matrix4f matchTransform;
+	icp.setInputSource(cloud_scan);
+	try
+	  {
+	    icp.align(cloud_match);
+	    std::cout << "has converged: " << icp.hasConverged() << " score: " << std::endl;
+	    matchTransform = icp.getFinalTransformation();
+	  }
+	catch (const std::exception& ex) 
+	  {
+	    // Match failed for some reason. Return placeholder transform indicating this.
+	    matchTransform << 0, 0, 0, 0,
+	      0, 0, 0, 0,
+	      0, 0, 0, 0,
+	      0, 0, 0, 0;
+	  }
 	std::cout << matchTransform << std::endl;
 	fout << i+1 << " " << icp.hasConverged() << " " << icp.getFitnessScore() << " " << matchTransform.transpose().format(out_format) << std::endl;
       }

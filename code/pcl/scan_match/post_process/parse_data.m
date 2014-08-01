@@ -1,5 +1,5 @@
 % parse output of pcl icp
-lines = importdata('neato_data/data_jun24_1/icp_results.txt');
+lines = importdata('neato_data/application_scan_match/icp_results.txt');
 fields = lines{1};
 fields = strsplit(fields,' ');
 icp_results = struct('converged',{},'score',{},'correctionT',{});

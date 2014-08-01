@@ -7,9 +7,9 @@ load ../mats/processed_data_mar27.mat
 load ../mats/roomLineMap
 
 switch choice
-    case 'real'
+    case {'real','baseline'}
         % nothing to be done
-    case {'sim','baseline'}
+    case 'sim'
         load('../mats/full_predictor_mar27_1','rsim');
         rsim.setMap(map);
     case 'sim_pooled'
@@ -24,7 +24,7 @@ end
 warning('off');        
 localizer = lineMapLocalizer(map.objects);
 laser = laserClass(struct());
-refiner = laserPoseRefiner(struct('localizer',localizer,'numIterations',30));
+refiner = laserPoseRefiner(struct('localizer',localizer,'numIterations',500));
 %nObs = size(data(1).ranges,1);
 nObs = 10;
 t1 = tic();

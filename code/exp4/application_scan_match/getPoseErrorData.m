@@ -1,4 +1,4 @@
-function [muArray,sArray] = getPoseErrorData(choice)
+function [muArray,sArray] = getPoseErrorData(choice,algo)
 %GETPOSEERRORDATA Extract pose error data.
 % 
 % [muArray,sArray] = GETPOSEERRORDATA(choice)
@@ -8,7 +8,7 @@ function [muArray,sArray] = getPoseErrorData(choice)
 % muArray - nPoses x nPatterns array.
 % sArray  - nPoses x nPatterns array.
 
-data = loadStatsByPose(choice);
+data = loadStatsByPose(choice,algo);
 nPoses = length(data.statsByPose);
 nPatterns = length(data.statsByPose(1).errorStats);
 [muArray,sArray] = deal(zeros(nPoses,nPatterns));
@@ -21,4 +21,3 @@ for i = 1:nPoses
 end
 
 end
-

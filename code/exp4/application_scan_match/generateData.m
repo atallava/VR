@@ -51,3 +51,15 @@ for i = 1:length(poseIds)
     obsIds = randperm(length(obsArray{poseIds(i),1}),nObs);
     data(i).ranges = rangesFromObsArray(obsArray,poseIds(i),obsIds);
 end
+
+
+
+
+
+
+
+
+
+
+
+

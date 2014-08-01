@@ -13,7 +13,7 @@ clusterer = clusterPixels(struct('laser',laser));
 outClusters = clusterer.getOutClusters(outIds);
 inClusters = clusterer.getInClusters(outClusters,inIds);
 
-%%
+%% plot patches before and after local matching
 p2d = pose2D(pose);
 plot_option = 1;
 for i = 1:length(inClusters)
