@@ -1,5 +1,5 @@
 function res = compareModels(model1,model2,x1,y1,x2,y2)
-%COMPAREMODELS Compare two models (hypothesis).
+%COMPAREMODELS Compare two models (hypotheses).
 % 
 % res = COMPAREMODELS(model1,model2,x1,y1,x2,y2)
 % 
