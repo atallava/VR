@@ -43,11 +43,13 @@ classdef laserPoseRefiner < handle
             % Transforms pose laser frame, cleans up ranges, throws
             % outliers and matches scans.
             %
-            % [success,poseOut] = REFINE(obj,ranges,poseIn)
+            % [stats,poseOut] = REFINE(obj,ranges,poseIn)
             %
             % ranges  - Range array.
             % poseIn  - pose2D object or length 3 array. Reference pose.
-            % success - struct.
+            % success - struct of statistics. This function adds one field,
+            %           numOutliers to the struct. Others come from the
+            %           localizer.
             % poseOut - Refined pose of same format as poseIn.
             
             t1 = tic();
@@ -58,6 +60,11 @@ classdef laserPoseRefiner < handle
             laserPoseIn = obj.laser.refPoseToLaserPose(poseIn);
             ri = rangeImage(struct('ranges',ranges,'bearings',obj.laser.bearings,'cleanup',1));
             ptsLocal = ri.getPtsHomogeneous();
+            if isempty(ptsLocal)
+                stats.numOutliers = length(ranges);
+                poseOut = poseIn;
+                return;
+            end
             ptsLocal = ptsLocal(:,1:obj.skip:end);
             outIds = obj.localizer.throwOutliers(ptsLocal,laserPoseIn);
             ptsLocal(:,outIds) = [];

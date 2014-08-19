@@ -53,7 +53,6 @@ if any(flag2)
     rad2(flag2) = dx.*dx+dy.*dy;
     %rad2(flag2) = inf;
 end
-
 % Closest is second endpoint
 flag3 = ones(size(1,nPoints)) & ~flag1 & ~flag2;
 if any(flag3)

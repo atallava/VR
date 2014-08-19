@@ -6,8 +6,7 @@ classdef swingTraj < handle & abstractTrajectory
         tSwing; tStraight
         dTh; dist; thFinal
         bBox
-        wMax = 0.5; %robotModel.wMax;
-        VMax = 0.2; %robotModel.vMax;
+        wMax = 0.15;
     end
     
     methods

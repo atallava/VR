@@ -14,12 +14,13 @@ localizer = lineMapLocalizer(map.objects);
 vizer = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser,'rob',rob,'rstate',rstate)); 
 vizerOD = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser));
 refiner = laserPoseRefiner(struct('localizer',localizer,'laser',robotModel.laser,'skip',5,'numIterations',30));
-ctrlSw = swingController(struct('kp',0.4,'ki',0.05));
+ctrlSw = swingController(struct('kp',0.1,'ki',0.0));
 ctrlSt = controllerClass(struct('gainV',0.1,'gainW',0.05));
 
 encLog = encHistory(rob);
 lzrLog = laserHistory(rob);
 startLog = []; goalLog = []; goalEncLog = []; goalTLog = []; % start, commanded goal, goal reported by encoders and true goal logs
+tLog = []; % time (in encoder frame) after reaching a goal pose
 refLog = struct('stats',{});
 count = 1;
 play = 1;
@@ -47,12 +48,14 @@ while play
     if ~exist('trajFlrSt','var')
         trajFlrSt = trajectoryFollower(struct('trajectory',trajSt,'controller',ctrlSt));
     else
-        trajFlrSw.resetTrajectory(trajSt);
+        trajFlrSt.resetTrajectory(trajSt);
     end
     trajFlrSw.execute(rob,rstate);
     pause(1);
     trajFlrSt.execute(rob,rstate);
+    pause(1);
     
+    tLog(count) = encLog.tArray(end);
     % refine pose
     happy = false;
     while ~happy
@@ -79,6 +82,6 @@ end
 
 %% save stuff
 fname = sprintf('data_%s',datestr(now,'mmmdd')); fname = lower(fname);
-save('fname','startLog','goalLog','goalEncLog','goalTLog','refLog');
+save(fname,'startLog','goalLog','goalEncLog','goalTLog','refLog','encLog','lzrLog','tLog');
 
 

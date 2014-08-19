@@ -89,7 +89,6 @@ classdef lineMapLocalizer < handle
                 end
                 pts = pose2D.transformPoints(ptsLocal,pose.getPose);
             end
-                     
             r2 = obj.closestSquaredDistanceToLines(pts);
             ids = r2 > lineMapLocalizer.maxErr;
         end

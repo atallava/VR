@@ -64,10 +64,11 @@ classdef vizRangesOnMap < handle
             if  isempty(obj.hfig) || ~ishandle(obj.hfig)
                 obj.hfig = obj.localizer.drawLines();
             end
-            xl0 = xlim;
-            yl0 = ylim;
-            xlabel('x'); ylabel('y');
-            hold on;
+            ha = get(obj.hfig,'children');
+            xl0 = xlim(ha);
+            yl0 = ylim(ha);
+            xlabel(ha,'x'); ylabel(ha,'y');
+            hold(ha,'on');
             if isempty(obj.hquiver) || ~ishandle(obj.hquiver)
                 obj.hquiver = quiver(lPose(1),lPose(2),0.2*cos(lPose(3)),0.2*sin(lPose(3)),'k','LineWidth',2);
             else
@@ -82,10 +83,11 @@ classdef vizRangesOnMap < handle
                 yl0 = yl0+[-1 1];
             else
                 set(obj.hranges,'XData',x,'YData',y);
-                xlim(xl0);
-                ylim(yl0);
+                xlim(ha,xl0);
+                ylim(ha,yl0);
             end
-            title(sprintf('laser pose: (%f,%f,%f)',lPose(1),lPose(2),lPose(3)));
+            title(ha,sprintf('laser pose: (%f,%f,%f)',lPose(1),lPose(2),lPose(3)));
+            hold(ha,'off');
         end
         
         function togglePlot(obj)
