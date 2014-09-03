@@ -10,12 +10,11 @@ function obsArray = fillObsArray(laserHist,t_range_collection)
 % obsArray           - nPoses x nPix cell array
 
 nPoses = length(t_range_collection);
-nPix = length(laserHist.rangeArray{end});
+nPix = length(laserHist.log(1).ranges);
 obsArray = cell(nPoses,nPix);
 for i = 1:nPoses
     ids = laserHist.tArray >= t_range_collection(i).start & laserHist.tArray <= t_range_collection(i).end;
-    temp = laserHist.rangeArray(ids);
-    temp = cell2mat(temp');
+    temp = cat(1,laserHist.log(ids).ranges);
     for j = 1:nPix
         obsArray{i,j} = temp(:,j);
     end    
