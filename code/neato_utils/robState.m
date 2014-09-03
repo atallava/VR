@@ -4,6 +4,7 @@ classdef robState < handle
     properties (Constant = true)
         HISTORY_SIZE = 5000;
     end
+    
     properties
         rob
         pose
@@ -15,6 +16,8 @@ classdef robState < handle
         left_enc_old; right_enc_old
         t_start; t_old
         vl; vr
+        hfig; hplot
+        plot_flag
         first_time
     end
     
@@ -46,6 +49,9 @@ classdef robState < handle
             obj.t_history = zeros(1,obj.HISTORY_SIZE);
             obj.update_count = 0;
             obj.motion_count = 1;
+            obj.hfig = figure; obj.hplot = plot(obj.pose(1),obj.pose(2),'.');
+            axis equal; xlabel('x'); ylabel('y'); set(obj.hfig,'visible','off');
+            obj.plot_flag = 0;
             obj.first_time = true;
             if strcmp(obj.mode,'robot')
                 obj.listenerHandle = addlistener(rob.encoders,'OnMessageReceived',@(src,evt) robState.encoderEventResponse(src,evt,obj));
@@ -91,8 +97,12 @@ classdef robState < handle
             end
             
             dt = t_new-obj.t_old;
-            obj.vl = (obj.encoders.data.left-obj.left_enc_old)/1000/dt;
-            obj.vr = (obj.encoders.data.right-obj.right_enc_old)/1000/dt;
+            vlEst = (obj.encoders.data.left-obj.left_enc_old)/1000/dt;
+            vrEst = (obj.encoders.data.right-obj.right_enc_old)/1000/dt;
+            % outlier check, since not using a filter
+            if abs(vlEst) <= robotModel.VMax && abs(vrEst) <= robotModel.VMax
+                obj.vl = vlEst; obj.vr = vrEst;
+            end
             [V,w] = robotModel.vlvr2Vw(obj.vl,obj.vr);
             
             obj.pose(3) = obj.pose(3)+w*dt; obj.pose(3) = mod(obj.pose(3),2*pi);
@@ -106,6 +116,31 @@ classdef robState < handle
             obj.pose_history(:,obj.motion_count) = obj.pose;
             obj.t_history(obj.motion_count) = t_new-obj.t_start;
             obj.motion_count = obj.motion_count+1;
+        end
+        
+        function togglePlot(obj)
+            obj.plot_flag = ~obj.plot_flag;
+            if obj.plot_flag && ishandle(obj.hfig)
+                set(obj.hfig,'visible','on');
+            elseif ~obj.plot_flag && ishandle(obj.hfig)
+                set(obj.hfig,'visible','off');
+            elseif obj.plot_flag && ~ishandle(obj.hfig)
+                    obj.updatePlot();
+            end
+        end
+        
+        function updatePlot(obj)
+            if ~obj.plot_flag
+                return
+            else
+                if ishandle(obj.hfig)
+                    set(obj.hplot,'XData',[get(obj.hplot,'XData') obj.pose(1)], ...
+                        'YData',[get(obj.hplot,'YData') obj.pose(2)]);
+                else
+                    obj.hfig = figure; obj.hplot = plot(obj.pose(1),obj.pose(2),'.');
+                    axis equal; xlabel('x'); ylabel('y');
+                end
+            end
         end
         
         function reset(obj,pose)
@@ -124,6 +159,7 @@ classdef robState < handle
             else
                 obj.pose = [0;0;0];
             end
+            close(obj.hfig); obj.hfig = false; % a way to say it is not a handle anymore
             obj.pose_history = zeros(3,obj.HISTORY_SIZE);
             obj.t_history = zeros(1,obj.HISTORY_SIZE);
             obj.motion_count = 1;
@@ -161,6 +197,7 @@ classdef robState < handle
          else
              obj.updatePose(tstamp);
          end
+         obj.updatePlot();
      end
     end
 end

@@ -1,5 +1,4 @@
 %generate a synthetic dataset
-
 clear all; clc; 
 load processed_data_mar27
 load map

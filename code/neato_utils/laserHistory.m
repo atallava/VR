@@ -84,7 +84,9 @@ classdef laserHistory < handle
             if ishandle(obj.hfig)
                 set(obj.hplot,'XData',x,'YData',y);
             else
-                obj.hfig = hfig; obj.hplot = plot(x,y,'.');
+                obj.hfig = fig; obj.hplot = plot(x,y,'.');
+                axis equal; xlabel('x'); ylabel('y'); set(obj.hfig,'visible','off'); 
+                obj.plot_flag = 0;
             end
         end
         

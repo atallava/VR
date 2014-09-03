@@ -1,7 +1,6 @@
 classdef playbackTool < handle
     %playbackTool
     
-    
     properties (Constant = true)
         freq = 100;
         tEps = 0.5/playbackTool.freq;

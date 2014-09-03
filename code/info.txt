@@ -76,3 +76,15 @@ data_july3 contains data in classes that have since been modified. This file con
 
 sample_sensor_data_1
 Data to test playback.
+
+code/wanderer
+data_aug19_1
+from peta. ~1000 pieces of data from the laser, to definitively settle the question of how many data points to collect to 
+
+estimate mu, sigma, pz
+
+data_aug19_2
+from peta. data to demonstrate weird encoder jumps
+
+data_aug19_3
+from peta. more data to demonstrate weird encoder jumps

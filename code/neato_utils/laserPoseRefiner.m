@@ -72,7 +72,7 @@ classdef laserPoseRefiner < handle
                 warning('NO INLIERS LEFT.');
             end
             [stats, laserPoseOut] = obj.localizer.refinePose(laserPoseIn,ptsLocal,obj.numIterations);
-            stats.numOutliers = sum(outIds);
+            stats(1).numOutliers = sum(outIds);
             poseOut = pose2D.transformToPose(laserPoseOut.T/(obj.laser.Tsensor));
             if objInput
                 poseOut = pose2D(poseOut);
