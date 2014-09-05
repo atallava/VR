@@ -88,10 +88,11 @@ classdef lineMapLocalizer < handle
                     pose = pose2D(pose);
                 end
                 pts = pose2D.transformPoints(ptsLocal,pose.getPose);
-            end
+			end
+			
             r2 = obj.closestSquaredDistanceToLines(pts);
             ids = r2 > lineMapLocalizer.maxErr;
-        end
+		end
         
         function avgErr = fitError(obj,pose,ptsInModelFrame)
             % Find the standard deviation of perpendicular distances of

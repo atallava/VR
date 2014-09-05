@@ -45,13 +45,13 @@ while play
     else
         trajFlrSw.resetTrajectory(trajSw);
     end
+    trajFlrSw.execute(rob,rstate);
+    pause(1);
     if ~exist('trajFlrSt','var')
         trajFlrSt = trajectoryFollower(struct('trajectory',trajSt,'controller',ctrlSt));
     else
         trajFlrSt.resetTrajectory(trajSt);
     end
-    trajFlrSw.execute(rob,rstate);
-    pause(1);
     trajFlrSt.execute(rob,rstate);
     pause(1);
     

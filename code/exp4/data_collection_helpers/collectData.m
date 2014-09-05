@@ -20,17 +20,18 @@ v = struct('left',0,'right',0);
 T = [1 -0.5*robotModel.W; ...
     1 0.5*robotModel.W];
 data_count = 0;
-num_obs = 5;
+num_obs = 200;
 t_range_collection = struct('start',{},'end',{});
 
 t_sys_start = tic;
 enc = encHistory(rob);
 lzr = laserHistory(rob);
-lzr.togglePlot();
+%lzr.togglePlot();
 pause(0.1);
 
 localizer = lineMapLocalizer(map.objects);
 refiner = laserPoseRefiner(struct('localizer',localizer,'laser',robotModel.laser,'skip',5,'numIterations',100));
+vizer = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser,'rob',rob,'rstate',rstate));
 poseHistory = [];
 
 while true
@@ -102,12 +103,17 @@ while true
             t_range_collection(data_count).start = lzr.tArray(end);
             fprintf('Collecting data set %d \n', data_count);
             for i = 1:num_obs
-                pause(0.5);
+                pause(0.2);
             end
             t_range_collection(data_count).end = lzr.tArray(end);
             beep; beep; % alert grad student
             fprintf('Observations taken. Continue moving around. \n');
             pause(0.1);
+		case 'save'
+			% write data to file
+			fname = input('enter command: ', 's');
+			save(fname,'enc','lzr','t_range_collection');
+			fprintf('Saved to file. Continue moving around. \n');
         case 'x'
             pause(0.1);
             % exit

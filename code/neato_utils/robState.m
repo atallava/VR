@@ -154,12 +154,15 @@ classdef robState < handle
             if strcmp(obj.mode,'robot')
                 obj.listenerHandle.delete();
             end
-            if nargin > 0
+            if nargin > 1
                 obj.pose = pose;
             else
                 obj.pose = [0;0;0];
-            end
-            close(obj.hfig); obj.hfig = false; % a way to say it is not a handle anymore
+			end
+			if ishandle(obj.hfig)
+				close(obj.hfig); 
+			end
+			obj.hfig = false; % a way to say it is not a handle anymore
             obj.pose_history = zeros(3,obj.HISTORY_SIZE);
             obj.t_history = zeros(1,obj.HISTORY_SIZE);
             obj.motion_count = 1;
