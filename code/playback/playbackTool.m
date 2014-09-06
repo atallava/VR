@@ -19,11 +19,12 @@ classdef playbackTool < handle
     end
     
     methods
-        function obj = playbackTool(tEncArray,encArray,tLaserArray,laserArray)
+        function obj = playbackTool(inputStruct)
             %PLAYBACKTOOL Constructor.
             %
-            % obj = PLAYBACKTOOL(tEncArray,encArray,tLaserArray,laserArray)
+            % obj = PLAYBACKTOOL(inputStruct)
             %
+            % inputStruct fields:
             % tEncArray   - Vector of encoder timestamps. 
             % encArray    - struct array with fields 'left', 'right'.
             % tLaserArray - Vector of laser timestamps. Has to have the
@@ -32,12 +33,31 @@ classdef playbackTool < handle
             %
             % obj         - Instance.
             
+            if isfield(inputStruct,'tEncArray')
+                obj.tEncArray = inputStruct.tEncArray;
+            else
+                error('TENCARRAY NOT INPUT.');
+            end
+            if isfield(inputStruct,'encArray')
+                obj.encArray = inputStruct.encArray;
+            else
+                error('ENCARRAY NOT INPUT.');
+            end
+            if isfield(inputStruct,'tLaserArray')
+                obj.tLaserArray = inputStruct.tLaserArray;
+            else
+                error('TLASERARRAY NOT INPUT.');
+            end
+            if isfield(inputStruct,'laserArray')
+                obj.laserArray = inputStruct.laserArray;
+            else
+                error('LASERARRAY NOT INPUT.');
+            end
+            
             obj.tLocal = 0; obj.tLocalLog = [];
-            obj.tEncArray = tEncArray; obj.encArray = encArray; 
-            obj.tLaserArray = tLaserArray; obj.laserArray = laserArray;
             obj.encCount = 1; obj.laserCount = 1;
             
-            obj.tMax = max([tEncArray tLaserArray]);
+            obj.tMax = max([obj.tEncArray obj.tLaserArray]);
             obj.tPauseStart = 0; obj.tPauseEnd = 0;
             obj.playFlag = 0; obj.startedFlag = 0; obj.endedFlag = 0; obj.shutdownFlag = 0;
                         
