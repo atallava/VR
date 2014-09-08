@@ -24,7 +24,7 @@ classdef poses2R < handle & abstractInputTransformer
             rArray = zeros(nPoses,1,length(obj.laser.bearings));
             
             for i = 1:nPoses
-                [r,~] = obj.envLineMap.raycast(poses(i,:),obj.laser.maxRange,obj.laser.bearings);
+                [r,~] = obj.envLineMap.getRAlpha(poses(i,:),obj.laser.maxRange,obj.laser.bearings);
                 rArray(i,1,:) = r;                
             end
             obj.rArrayLast = rArray;

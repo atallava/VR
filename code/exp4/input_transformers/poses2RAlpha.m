@@ -19,11 +19,12 @@ classdef poses2RAlpha < handle & abstractInputTransformer
         
         function rAlphaArray = transform(obj,poses)
             % transform a given array of poses
+            % poses in nPoses x 3
             nPoses = size(poses,1);
             rAlphaArray = zeros(nPoses,1,length(obj.laser.bearings));
             
             for i = 1:nPoses
-                [r,alpha] = obj.envLineMap.raycast(poses(i,:),obj.laser.maxRange,obj.laser.bearings);
+                [r,alpha] = obj.envLineMap.getRAlpha(poses(i,:),obj.laser.maxRange,obj.laser.bearings);
                 rAlphaArray(i,1,:) = r;
                 rAlphaArray(i,2,:) = alpha;
             end

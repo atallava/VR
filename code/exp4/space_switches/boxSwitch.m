@@ -25,10 +25,13 @@ classdef boxSwitch < abstractSwitch & handle
         end
         
         function res = switchX(obj,X)
+            % X is numX x dimX
             nX = size(X,1);
             res = zeros(nX,1);
             for i = 1:nX
-                if any(X(i,:) < obj.XRanges(1,:)) || any(X(i,:) > obj.XRanges(2,:))
+                if all(X(i,:) >= obj.XRanges(1,:) & X(i,:) <= obj.XRanges(2,:))
+                    continue;
+                else
                     res(i) = 1;
                 end
             end
