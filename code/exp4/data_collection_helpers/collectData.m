@@ -32,6 +32,7 @@ pause(0.1);
 localizer = lineMapLocalizer(map.objects);
 refiner = laserPoseRefiner(struct('localizer',localizer,'laser',robotModel.laser,'skip',5,'numIterations',100));
 vizer = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser,'rob',rob,'rstate',rstate));
+pause(1);
 poseHistory = [];
 
 while true
@@ -111,7 +112,7 @@ while true
             pause(0.1);
 		case 'save'
 			% write data to file
-			fname = input('enter command: ', 's');
+			fname = input('file to write to: ', 's');
 			save(fname,'enc','lzr','t_range_collection');
 			fprintf('Saved to file. Continue moving around. \n');
         case 'x'

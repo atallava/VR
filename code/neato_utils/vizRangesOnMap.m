@@ -63,7 +63,7 @@ classdef vizRangesOnMap < handle
             lPose = obj.laser.refPoseToLaserPose(refPose);
             if  isempty(obj.hfig) || ~ishandle(obj.hfig)
                 obj.hfig = obj.localizer.drawLines();
-            end
+			end
             ha = get(obj.hfig,'children');
             xl0 = xlim(ha);
             yl0 = ylim(ha);
@@ -79,9 +79,9 @@ classdef vizRangesOnMap < handle
             y = lPose(2)+ranges.*sin(lPose(3)+obj.laser.bearings);
             if isempty(obj.hranges) || ~ishandle(obj.hranges)
                 obj.hranges = plot(x,y,'go');
-                xl0 = xl0+[-1 1];
-                yl0 = yl0+[-1 1];
-            else
+                xl0 = xl0+[-0.5 0.5]; xlim(ha,xl0);
+                yl0 = yl0+[-0.5 0.5]; ylim(ha,yl0);
+			else
                 set(obj.hranges,'XData',x,'YData',y);
                 xlim(ha,xl0);
                 ylim(ha,yl0);
