@@ -26,7 +26,7 @@ for i = 1:size(poses,2)
     ranges = rangesFromObsArray(obsArray,i,obsId);
     pose = poses(:,i);
     [~,pose] = refiner.refine(ranges,pose);
-    newPoses(:,end+1) = pose;
+    newPoses(:,end+1) = robotModel.laser.refPoseToLaserPose(pose);
 %     vizer.viz(ranges,pose);
 %     title(sprintf('%d',i));
 %     set(vizer.hfig,'visible','off');

@@ -19,6 +19,15 @@ Collected data to test maximum range of laser and unexplained large-range readin
 data_june6
 To test simulator on line-finding. Robot: peta.
 
+data_sep6_micro_train
+100 poses to train simulator on.
+
+data_sep6_micro_train
+50 poses to train simulator on.
+
+data_sep13_micro
+data from which to analyze localization-via-registration bounds.
+
 full_predictor_mar27_1
 canonical 29 training poses. individual models for each pixel.
 
@@ -88,3 +97,4 @@ from peta. data to demonstrate weird encoder jumps
 
 data_aug19_3
 from peta. more data to demonstrate weird encoder jumps
+
