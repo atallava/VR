@@ -2,19 +2,14 @@
 
 %% initialize
 clearAll;
-load processed_data_mar27
-load poses_after_icp_mar27
+load processed_data_sep6
 
 fprintf('Initializing...\n');
-skip = 1;
-pixelIds = 1:skip:360; bearings = deg2rad(pixelIds-1);
-laser = laserClass(struct('maxRange',4.5,'bearings',bearings,'nullReading',0));
-inputStruct = struct('poses',poses,'obsArray',{obsArray(:,pixelIds)},'laser',laser);
+inputStruct = struct('poses',poses,'obsArray',{obsArray(:,pixelIds)},'laser',robotModel.laser);
 totalPoses = length(inputStruct.poses);
-frac = 0.7;
-%inputStruct.trainPoseIds = randperm(totalPoses,floor(frac*totalPoses));
-inputStruct.trainPoseIds = [1 21 17 38 6 32 27 29 24 35 28 40 10 4 34 13 8 9 31 11 23 22 37 15 7 33 41 5 42]; 
-inputStruct.testPoseIds = setdiff(1:totalPoses,inputStruct.trainPoseIds);
+%frac = 0.7; inputStruct.trainPoseIds = randperm(totalPoses,floor(frac*totalPoses));
+inputStruct.trainPoseIds = trainPoseIds;
+inputStruct.testPoseIds = testPoseIds;
 dp = dataProcessor(inputStruct);
 
 %% fit pdf models to training data
@@ -35,12 +30,12 @@ trainMuArray = trainPdfs.paramArray(:,1,:);
 trainSigmaArray = trainPdfs.paramArray(:,2,:);
 trainPzArray = trainPdfs.paramArray(:,3,:);
 
-% hack hack hack. throwing outliers in regression stage
-thresh = 0.05;
-nominalRange = p2r.transform(dp.XTrain);
-flag = (trainMuArray > nominalRange+thresh) | (trainMuArray < nominalRange-thresh);
-trainMuArray(flag) = nan;
-trainSigmaArray(flag) = nan;
+% % hack hack hack. throwing outliers in regression stage
+% thresh = 0.05;
+% nominalRange = p2r.transform(dp.XTrain);
+% flag = (trainMuArray > nominalRange+thresh) | (trainMuArray < nominalRange-thresh);
+% trainMuArray(flag) = nan;
+% trainSigmaArray(flag) = nan;
 
 % switches to account for laser.maxRange
 bsMu = boxSwitch(struct('XRanges',[0; dp.laser.maxRange],'switchY',nan));
