@@ -74,7 +74,15 @@ classdef pose2D < handle
         end
         
         function ptsNew = transformPoints(pts,pose)
-            % x is of size 2 x num points or 3 x num points
+            %TRANSFORMPOINTS
+            %
+            % ptsNew = TRANSFORMPOINTS(pts,pose)
+            %
+            % pts    - Array of size 2 x num points or 3 x num points.
+            % pose   - Array of length 3.
+            %
+            % ptsNew - Array of size pts
+            
             isH = size(pts,1) == 3;
             if ~isH
                 pts = [pts; ones(1,size(pts,2))];
