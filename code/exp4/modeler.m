@@ -1,11 +1,11 @@
 %end-to-end model
 
 %% initialize
-clearAll;
 load processed_data_sep6
 
 fprintf('Initializing...\n');
-inputStruct = struct('poses',poses,'obsArray',{obsArray(:,pixelIds)},'laser',robotModel.laser);
+% poses must be laser pose, not robot pose!
+inputStruct = struct('poses',poses,'obsArray',{obsArray},'laser',robotModel.laser);
 totalPoses = length(inputStruct.poses);
 %frac = 0.7; inputStruct.trainPoseIds = randperm(totalPoses,floor(frac*totalPoses));
 inputStruct.trainPoseIds = trainPoseIds;
@@ -48,7 +48,7 @@ inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainMuArray,'poolOption',0,'in
 %h 0.0058, 0.0384 locallyWeightedLinear nonParametric
 muPxRegBundle = pixelRegressorBundle(inputStruct);
 
-inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,'poolOption',1,'inputPoseTransf', p2ra, ...
+inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,'poolOption',0,'inputPoseTransf', p2ra, ...
     'regClass',@nonParametricRegressor, 'XSpaceSwitch',bsSigma,'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.0559,'lambda',0.1));
 sigmaPxRegBundle = pixelRegressorBundle(inputStruct);
 

@@ -1,6 +1,12 @@
 function vizPredictions(dp,predParamArray,localizer)
+%VIZPREDICTIONS Visualize real versus predicted ranges.
+% 
+% VIZPREDICTIONS(dp,predParamArray,localizer)
+% 
+% dp             - dataProcessor object.
+% predParamArray - Array of size num test poses x params x num pixels.
+% localizer      - lineMapLocalizer object.
 %vizPredictions visualize real vs predicted data
-% dp is a dataProcessor object
 
 % pick some pixel for viewing histograms
 pmfPixel = randperm(dp.laser.nPixels,1);
