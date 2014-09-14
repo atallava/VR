@@ -20,7 +20,7 @@ v = struct('left',0,'right',0);
 T = [1 -0.5*robotModel.W; ...
     1 0.5*robotModel.W];
 data_count = 0;
-num_obs = 200;
+num_obs = 100;
 t_range_collection = struct('start',{},'end',{});
 
 t_sys_start = tic;
@@ -113,7 +113,7 @@ while true
 		case 'save'
 			% write data to file
 			fname = input('file to write to: ', 's');
-			save(fname,'enc','lzr','t_range_collection');
+			save(fname,'enc','lzr','t_range_collection','poseHistory','-v7.3');
 			fprintf('Saved to file. Continue moving around. \n');
         case 'x'
             pause(0.1);
@@ -124,5 +124,6 @@ while true
     end
 end
 
+vizer.delete;
 enc.stopListening();
 lzr.stopListening();
