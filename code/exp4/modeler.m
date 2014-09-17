@@ -31,13 +31,6 @@ trainMuArray = trainPdfs.paramArray(:,1,:);
 trainPzArray = trainPdfs.paramArray(:,3,:);
 trainSigmaArray = zeros(size(trainMuArray));
 
-% % hack hack hack. throwing outliers in regression stage
-% thresh = 0.05;
-% nominalRange = p2r.transform(dp.XTrain);
-% flag = (trainMuArray > nominalRange+thresh) | (trainMuArray < nominalRange-thresh);
-% trainMuArray(flag) = nan;
-% trainSigmaArray(flag) = nan;
-
 % switches to account for laser.maxRange
 bsMu = boxSwitch(struct('XRanges',[0; dp.laser.maxRange],'switchY',nan));
 bsSigma = boxSwitch(struct('XRanges',[0 0; dp.laser.maxRange 2*pi],'switchY',nan));
@@ -46,7 +39,6 @@ bsSigma = boxSwitch(struct('XRanges',[0 0; dp.laser.maxRange 2*pi],'switchY',nan
 % 'regClass',@locallyWeightedLinearRegressor,'XSpaceSwitch',bsMu,'kernelFn',@kernelRAlpha, 'kernelParams',struct('h',0.0025,'lambda',1e-4));
 inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainMuArray,'poolOption',0,'inputPoseTransf', p2r, ...
 'regClass',@locallyWeightedLinearRegressor,'XSpaceSwitch',bsMu,'kernelFn',@kernelR, 'kernelParams',struct('h',0.0025));
-
 %h = 0.055, lambda = 0.1, np
 %h = 0.0025 lwl
 %h 0.0058, 0.0384 locallyWeightedLinear nonParametric

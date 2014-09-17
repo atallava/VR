@@ -7,7 +7,7 @@ classdef playbackTool < handle
     end
     
     properties (SetAccess = public)
-        ticRef; tLocal; tMax
+        ticRef; tLocal; tMax; tRef = 0;
         tLocalLog;
         tPauseStart; tPauseEnd;
         playFlag; startedFlag; endedFlag; shutdownFlag
@@ -105,7 +105,7 @@ classdef playbackTool < handle
             if obj.playFlag
                 fprintf('PAUSE TIMER BEFORE ATTEMPTING TO SET LOCAL TIME.\n');
             else
-                obj.tLocal = t;
+                obj.tRef = t;
             end
         end
         
@@ -118,7 +118,7 @@ classdef playbackTool < handle
         
         function timerUpdate(obj,src,evt)
             if obj.playFlag
-                obj.tLocal = toc(obj.ticRef)-(obj.tPauseEnd-obj.tPauseStart);
+                obj.tLocal = toc(obj.ticRef)-(obj.tPauseEnd-obj.tPauseStart)+obj.tRef;
                 
                 % publish encoder data
                 if obj.encCount <= length(obj.encArray)
