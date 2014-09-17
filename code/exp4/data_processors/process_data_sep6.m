@@ -1,6 +1,12 @@
 load data_sep6_micro_train
 
 threshRanges(lzr);
+
+% this happens very rarely, but screws up prediction
+% the lesson is vanilla np regression is prone to outliers, how are
+% conditions of smoothness enforced?
+flag = allCrazy(lzr);
+lzr.log(logical(flag)) = []; 
 obsArrayTrain = fillObsArray(lzr,t_range_collection);
 poses = poseHistory;
 trainPoseIds = 1:length(poseHistory);
@@ -8,13 +14,16 @@ trainPoseIds = 1:length(poseHistory);
 load data_sep6_micro_test
 
 threshRanges(lzr);
+flag = allCrazy(lzr);
+lzr.log(logical(flag)) = []; 
 obsArrayTest = fillObsArray(lzr,t_range_collection);
 
 obsArray = [obsArrayTrain; obsArrayTest];
 poses = [poses poseHistory];
 testPoseIds = [1:length(poseHistory)]+trainPoseIds(end);
 
-%%
+%% correct poses
+% poseHistory is robot's pose. simulator takes sensor pose.
 load roomLineMap;
 load processed_data_sep6
 localizer = lineMapLocalizer(map.objects);
@@ -48,7 +57,6 @@ end
 %% conclusion: poses [28,29,31,42] have jumps
 % of these, the jump in 42 seems like noise, a jump of one value.
 % the rest of the poses are being culled from processed_data
-load processed_data_sep6
 badIds = [28 29 31];
 obsArray(badIds,:) = [];
 poses(:,badIds) = [];
