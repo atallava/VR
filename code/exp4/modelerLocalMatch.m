@@ -4,6 +4,7 @@
 load processed_data_sep6
 
 fprintf('Initializing...\n');
+% poses must be laser pose, not robot pose!
 inputStruct = struct('poses',poses,'obsArray',{obsArray},'laser',robotModel.laser);
 totalPoses = length(inputStruct.poses);
 %frac = 0.7; inputStruct.trainPoseIds = randperm(totalPoses,floor(frac*totalPoses));
@@ -25,9 +26,10 @@ p2ra = poses2RAlpha(inputStruct);
 p2r = poses2R(inputStruct);
 localizer = lineMapLocalizer(map.objects);
 
-trainMuArray = trainPdfs.paramArray(:,1,:); 
-trainSigmaArray = trainPdfs.paramArray(:,2,:);
+trainMuArray = trainPdfs.paramArray(:,1,:);
+% trainSigmaArray = trainPdfs.paramArray(:,2,:);
 trainPzArray = trainPdfs.paramArray(:,3,:);
+trainSigmaArray = zeros(size(trainMuArray));
 
 % % hack hack hack. throwing outliers in regression stage
 % thresh = 0.05;

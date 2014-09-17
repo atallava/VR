@@ -7,6 +7,8 @@ classdef locallyWeightedLinearRegressor < handle & abstractRegressor
         dimY
         kernelFn
         kernelParams
+        hasScale = false
+        scaleVec = []
     end
     
     methods
@@ -24,6 +26,14 @@ classdef locallyWeightedLinearRegressor < handle & abstractRegressor
                 end
                 obj.kernelFn = inputStruct.kernelFn;
                 obj.kernelParams = inputStruct.kernelParams;
+                if isfield(obj.kernelParams,'lambda')
+                    obj.hasScale = true;
+                    obj.scaleVec = sqrt(obj.kernelParams.lambda);
+                    if iscolumn(obj.scaleVec)
+                        obj.scaleVec = obj.scaleVec';
+                    end
+                    obj.scaleVec = [1 obj.scaleVec];
+                end
                 obj.dimY = size(obj.YTrain,2);
             end
         end
@@ -34,6 +44,11 @@ classdef locallyWeightedLinearRegressor < handle & abstractRegressor
             Y = zeros(nQueries,obj.dimY);
 
             tempX = [obj.XTrain ones(size(obj.XTrain,1),1)];
+            if obj.hasScale
+                X = obj.scaleXByLambda(X);
+                tempX = bsxfun(@times,tempX,[obj.scaleVec 1]);
+            end
+            
             for i = 1:nQueries
                 weights = K(:,i);
                 for j = 1:obj.dimY
@@ -48,7 +63,7 @@ classdef locallyWeightedLinearRegressor < handle & abstractRegressor
                         validX = tempX(validIds,:);
                         W = diag(validWts);
                         tempPoly = (validX'*W*validX)\(validX'*W*validY);
-                        tempPoly = flipud(tempPoly)';
+                        %tempPoly = flipud(tempPoly)'
                         Y(i,j) = firstOrderPoly(tempPoly,X(i,:));
                     end
                 end
@@ -61,6 +76,11 @@ classdef locallyWeightedLinearRegressor < handle & abstractRegressor
             
             obj.XLast = X;
             obj.YLast = Y;
+        end
+        
+        function X = scaleXByLambda(obj,X)
+            % X is numX x dimX
+            X = bsxfun(@times,X,obj.scaleVec);
         end
     end
     

@@ -1,4 +1,4 @@
-%end-to-end model
+%end-to-end modeler
 
 %% initialize
 load processed_data_sep6
@@ -27,8 +27,9 @@ p2r = poses2R(inputStruct);
 localizer = lineMapLocalizer(map.objects);
 
 trainMuArray = trainPdfs.paramArray(:,1,:);
-trainSigmaArray = trainPdfs.paramArray(:,2,:);
+% trainSigmaArray = trainPdfs.paramArray(:,2,:);
 trainPzArray = trainPdfs.paramArray(:,3,:);
+trainSigmaArray = zeros(size(trainMuArray));
 
 % % hack hack hack. throwing outliers in regression stage
 % thresh = 0.05;
@@ -41,8 +42,11 @@ trainPzArray = trainPdfs.paramArray(:,3,:);
 bsMu = boxSwitch(struct('XRanges',[0; dp.laser.maxRange],'switchY',nan));
 bsSigma = boxSwitch(struct('XRanges',[0 0; dp.laser.maxRange 2*pi],'switchY',nan));
 
-inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainMuArray,'poolOption',0,'inputPoseTransf', p2ra, ...
-    'regClass',@locallyWeightedLinearRegressor,'XSpaceSwitch',bsMu,'kernelFn',@kernelRAlpha, 'kernelParams',struct('h',0.0025,'lambda',0));
+% inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainMuArray,'poolOption',0,'inputPoseTransf', p2ra, ...
+% 'regClass',@locallyWeightedLinearRegressor,'XSpaceSwitch',bsMu,'kernelFn',@kernelRAlpha, 'kernelParams',struct('h',0.0025,'lambda',1e-4));
+inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainMuArray,'poolOption',0,'inputPoseTransf', p2r, ...
+'regClass',@locallyWeightedLinearRegressor,'XSpaceSwitch',bsMu,'kernelFn',@kernelR, 'kernelParams',struct('h',0.0025));
+
 %h = 0.055, lambda = 0.1, np
 %h = 0.0025 lwl
 %h 0.0058, 0.0384 locallyWeightedLinear nonParametric
