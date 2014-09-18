@@ -42,8 +42,15 @@ classdef locallyWeightedLinearRegressor < handle & abstractRegressor
             K = pdist2(obj.XTrain,X,@(x,y) obj.kernelFn(x,y,obj.kernelParams));
             nQueries = size(X,1);
             Y = zeros(nQueries,obj.dimY);
-
-            tempX = [obj.XTrain ones(size(obj.XTrain,1),1)];
+			
+			if ~isempty(obj.XSpaceSwitch)
+                switchFlag = obj.XSpaceSwitch.switchX(X);
+			else
+				switchFlag = [];
+			end
+            obj.XLast = X;
+			
+			tempX = [obj.XTrain ones(size(obj.XTrain,1),1)];
             if obj.hasScale
                 X = obj.scaleXByLambda(X);
                 tempX = bsxfun(@times,tempX,[obj.scaleVec 1]);
@@ -70,14 +77,8 @@ classdef locallyWeightedLinearRegressor < handle & abstractRegressor
                 end
             end
             warning('on');
-            
-            if ~isempty(obj.XSpaceSwitch)
-                flag = obj.XSpaceSwitch.switchX(X);
-                Y(flag,:) = repmat(obj.XSpaceSwitch.switchY,sum(flag),1);
-            end
-            
-            obj.XLast = X;
-            obj.YLast = Y;
+			Y(switchFlag,:) = repmat(obj.XSpaceSwitch.switchY,sum(switchFlag),1);
+			obj.YLast = Y;
         end
         
         function X = scaleXByLambda(obj,X)
