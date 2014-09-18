@@ -49,6 +49,7 @@ classdef locallyWeightedLinearRegressor < handle & abstractRegressor
                 tempX = bsxfun(@times,tempX,[obj.scaleVec 1]);
             end
             
+            warning('off');
             for i = 1:nQueries
                 weights = K(:,i);
                 for j = 1:obj.dimY
@@ -68,6 +69,7 @@ classdef locallyWeightedLinearRegressor < handle & abstractRegressor
                     end
                 end
             end
+            warning('on');
             
             if ~isempty(obj.XSpaceSwitch)
                 flag = obj.XSpaceSwitch.switchX(X);

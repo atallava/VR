@@ -34,9 +34,7 @@ classdef errorStats < handle
                mat = squeeze(obj.validMat(:,i,:));
                validIds = squeeze(obj.validMask(:,i,:));
                % throwing outliers
-               uq = quantile(mat(validIds),0.75);
-               qrange = iqr(mat(validIds));
-               outlierIds = mat > uq+2*qrange;
+               outlierIds = errorStats.outlier1D(mat(validIds));
                mat(outlierIds) = 0;
                res(i) = sum(mat(:))/(sum(validIds(:))-sum(outlierIds(:)));
                nOut = nOut+sum(outlierIds(:));
@@ -94,7 +92,7 @@ classdef errorStats < handle
             %outlier1D return ids which could be outliers in 1D array vec
             % vec is an error vector, so only large errors are outliers
             f = 2;
-            uq = quantile(vec,0.75);
+            uq = quantile(vec,0.8);
             qrange = iqr(vec);
             ids = vec > uq+f*qrange;
          end

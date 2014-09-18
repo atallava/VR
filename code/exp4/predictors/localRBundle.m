@@ -5,7 +5,7 @@ function [pxRegBundle,localPhiArray] = localRBundle(inputStruct,scans,matcher)
 pxRegBundle = pixelRegressorBundle(inputStruct);
 nPoses = size(inputStruct.XTrain,1);
 nPixels = size(inputStruct.YTrain,3);
-localPhiArray = zeros(nPoses,1,nPixels);
+localPhiArray = zeros(nPoses,2,nPixels);
 for i = 1:nPoses
     ranges = scans{i};
     pose = inputStruct.XTrain(i,:);
@@ -13,7 +13,7 @@ for i = 1:nPoses
     inClusters = matcher.getInClusters(outIds);
     localPoses = matcher.getLocalPoses(ranges,inClusters,pose);
     temp = matcher.getLocalPhi(inClusters,localPoses);
-    localPhiArray(i,:,:) = temp(:,1)';
+    localPhiArray(i,:,:) = temp';
 end
 
 for i = 1:nPixels

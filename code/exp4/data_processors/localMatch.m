@@ -66,6 +66,7 @@ classdef localMatch < handle
         
         function phiArray = getLocalPhi(obj,clusters,localPoses)
             % right now phi is r,alpha. could extend this to local geometry
+            % phi is num pixels x 2
             phiArray = nan(obj.laser.nPixels,2);
             for i = 1:length(clusters)
                 section = clusters(i).members;
