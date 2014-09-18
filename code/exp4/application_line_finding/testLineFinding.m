@@ -14,11 +14,11 @@ switch choice
     case 'baseline'
         % nothing to be done
     case 'sim'
-        load('../mats/full_predictor_mar27_1','rsim');
+        load('../mats/full_predictor_sep6_1','rsim');
     case 'sim_pooled'
         load('../mats/full_predictor_mar27_4','rsim');
     case 'sim_local_match'
-        load('../mats/full_predictor_mar27_5','rsim');
+        load('../mats/full_predictor_sep6_2','rsim');
     otherwise 
         error('INVALID CHOICE.')
 end
