@@ -92,7 +92,7 @@ classdef errorStats < handle
             %outlier1D return ids which could be outliers in 1D array vec
             % vec is an error vector, so only large errors are outliers
             f = 2;
-            uq = quantile(vec,0.8);
+            uq = quantile(vec,0.9);
             qrange = iqr(vec);
             ids = vec > uq+f*qrange;
          end
