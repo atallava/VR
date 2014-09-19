@@ -8,9 +8,9 @@ switch choice
     case 3
         res = 'sim';
     case 4
-        res = 'sim_pooled';
-    case 5
         res = 'sim_local_match';
+    case 5
+        res = 'sim_pooled';
     otherwise
         error('CHOICE NOT IN AVAILABLE.');
 end

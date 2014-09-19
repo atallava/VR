@@ -1,12 +1,13 @@
-for i = 1:5
+n = 4;
+for i = 1:n
     temp = loadScoresByPose(i);
     meanScores(:,i) = [temp.scoresByPose.mu];
     stdScores(:,i) =  [temp.scoresByPose.s];
     choiceNames{i} = choiceString(i);
     choiceNames{i} = strrep(choiceNames{i},'_','\_');
 end
-[meanScoreDiff,stdScoreDiff] = deal(zeros(1,4));
-for i = 1:4
+[meanScoreDiff,stdScoreDiff] = deal(zeros(1,n-1));
+for i = 1:(n-1)
     meanScoreDiff(i) = mean(abs(meanScores(:,1)-meanScores(:,i+1)));
     stdScoreDiff(i) = mean(abs(stdScores(:,1)-stdScores(:,i+1)));
 end

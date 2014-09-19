@@ -58,8 +58,9 @@ classdef errorOnKernelParams < handle
                 
                 vec1 = abs(YPred-YTest);
                 vec1(isnan(vec1)) = [];
-                outIds = errorStats.outlier1D(vec1(:));
-                vec1(outIds) = [];
+                vec1 = vec1(:)';
+                %outIds = errorStats.outlier1D(vec1(:));
+                %vec1(outIds) = []
                 vec2 = [vec2 vec1];
             end
             err = mean(vec2);
