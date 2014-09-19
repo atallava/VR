@@ -5,11 +5,11 @@ if nargin < 4
     plot_option = 0;
 
 end
-
 if nargin < 4 || nargin < 5
 	showMsgs = 0;
 end
 
+length_pad = 0.1;
 linesInfo = {};
 lines = struct('p1',{},'p2',{});
 nLines = 0;
@@ -22,22 +22,29 @@ for i = 1:ri.nPix
     linesInfo{nLines} = res;
 end
 
-if nLines == 0
-    return;
-end
-    
-for i = 1:nLines
-    p1id = linesInfo{i}.left; 
-    p2id = linesInfo{i}.right;
-    lines(i).p1 = [ri.xArray(p1id); ri.yArray(p1id)]; 
-    lines(i).p2 = [ri.xArray(p2id); ri.yArray(p2id)];
+longLinesInfo = {};
+for i = 1:ri.nPix
+    res = lineCandidateAlgo(ri,i,target_length+length_pad);
+    if isempty(res)
+        continue;
+    end
+    longLinesInfo{end+1} = res;
 end
 
+%linesInfo = removeLongerLines(linesInfo,longLinesInfo,ri);
+
+nLines = length(linesInfo);
+if nLines == 0
+    lines = struct('p1',{},'p2',{});
+    return;
+end
+
+lines = lineInfo2lineStruct(ri,linesInfo);
 if plot_option
     ri.plotXvsY; 
     hold on;
     for line = lines
-        plot([line.p1(1) line.p2(1)],[line.p1(2) line.p2(2)],'g','LineWidth',3);
+        plot([line.p1(1) line.p2(1)],[line.p1(2) line.p2(2)],'g','LineWidth',2);
     end
 end
 

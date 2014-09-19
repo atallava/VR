@@ -77,7 +77,9 @@ classdef locallyWeightedLinearRegressor < handle & abstractRegressor
                 end
             end
             warning('on');
-			Y(switchFlag,:) = repmat(obj.XSpaceSwitch.switchY,sum(switchFlag),1);
+            if ~isempty(obj.XSpaceSwitch)
+                Y(switchFlag,:) = repmat(obj.XSpaceSwitch.switchY,sum(switchFlag),1);
+            end
 			obj.YLast = Y;
         end
         

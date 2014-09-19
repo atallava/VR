@@ -12,7 +12,7 @@ numLines = 2;
 targetLen = 0.61;
 
 robotPose = [0;0;0];
-poseId = [7 2 10 8 2 4 5 6];
+poseId = [7 3 10 8 2 4 5 6];
 nScans = 5;
 for i = 1:length(poseId)
     scans(i).poseId = poseId(i);

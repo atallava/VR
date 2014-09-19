@@ -13,7 +13,7 @@ classdef errorOnKernelParams < handle
     end
     
     properties
-        k = 10;
+        k = 5;
         kIds
         XTrain
         YTrain

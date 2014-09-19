@@ -1,6 +1,10 @@
 function res = lineCandBaseline(ri,middle,maxLen,showMsgs)
 % Copy of algo for baseline development.
 
+if nargin < 4
+    showMsgs = false;
+end
+
 res = [];
 % minimum points that should be participating
 nmin = 10;
@@ -18,6 +22,8 @@ error = 0;
 
 left = middle;
 right = middle;
+
+% Admit candidates.
 
 % Step 1: grow line till maxLength is exceeded.
 while true
@@ -42,8 +48,7 @@ if showMsgs
     fprintf('length: % f, number of points: % f\n',line_length,num);
 end
 
-% Step 3: check if length is a close enough match. Against false
-% positives.
+% Check if length is a close enough match.
 if ~toleranceCheck(line_length,maxLen,length_tolerance)
     % length not close enough
     if showMsgs
@@ -51,6 +56,8 @@ if ~toleranceCheck(line_length,maxLen,length_tolerance)
     end
     return;
 end
+
+% Checks to filter false negatives
 
 % Step 2: check number of participating points. Against false positives.
 % if num < nmin
@@ -60,10 +67,6 @@ end
 %     end
 %     return;
 % end
-
-p1 = [ri.xArray(left); ri.yArray(left)];
-p2 = [ri.xArray(right); ri.yArray(right)];
-line = ParametrizePts2ABC(p1,p2);
 
 % Step 4: remove outliers and check if many points are outliers. Check
 % against points whose end-points form lines but which are not lines.
@@ -114,6 +117,11 @@ line = ParametrizePts2ABC(p1,p2);
 %     end
 %     return;
 % end
+
+
+p1 = [ri.xArray(left); ri.yArray(left)];
+p2 = [ri.xArray(right); ri.yArray(right)];
+line = ParametrizePts2ABC(p1,p2);
 
 th = atanLine2D(line(1),line(2));
 if showMsgs

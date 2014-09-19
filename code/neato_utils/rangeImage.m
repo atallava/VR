@@ -83,7 +83,9 @@ classdef rangeImage < handle
             ids = find(obj.rArray <= maxRange);
             hf = figure;
             
-            scatter(x(ids), y(ids), 10);
+            plot(x(ids),y(ids),'.'); hold on;
+            hq = quiver(0,0,0.4,0,'k','LineWidth',2); hold off;
+            adjust_quiver_arrowhead_size(hq,4);
             axis equal; 
             xlabel('x');
             ylabel('y');
