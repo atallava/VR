@@ -30,22 +30,29 @@ trainMuArray = trainPdfs.paramArray(:,1,:);
 trainSigmaArray = trainPdfs.paramArray(:,2,:);
 trainPzArray = trainPdfs.paramArray(:,3,:);
 
+% hack hack hack. throwing outliers in regression stage
+thresh = 0.1;
+nominalRange = p2r.transform(dp.XTrain);
+flag = (trainMuArray > nominalRange+thresh) | (trainMuArray < nominalRange-thresh);
+trainMuArray(flag) = nan;
+trainSigmaArray(flag) = nan;
+
 % switches to account for laser.maxRange
 bsMu = boxSwitch(struct('XRanges',[0; dp.laser.maxRange],'switchY',nan));
 bsSigma = boxSwitch(struct('XRanges',[0 0; dp.laser.maxRange 2*pi],'switchY',nan));
 
 inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainMuArray,'poolOption',0,'inputPoseTransf', p2ra, ...
-'regClass',@locallyWeightedLinearRegressor,'XSpaceSwitch',bsMu,'kernelFn',@kernelRAlpha, 'kernelParams',struct('h',0.0497,'lambda',0.4919));
+'regClass',@locallyWeightedLinearRegressor,'XSpaceSwitch',bsMu,'kernelFn',@kernelRAlpha, 'kernelParams',struct('h',0.1908,'lambda',3.0921));
 scans = scansFromMuArray(squeeze(trainMuArray));
 matcher = localMatch(struct('localizer',localizer,'laser',dp.laser,'map',map));
 [muPxRegBundle,lphi] = localRBundle(inputStruct,scans,matcher);
 
 inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,'poolOption',0,'inputPoseTransf', p2ra, ...
-    'regClass',@locallyWeightedLinearRegressor, 'XSpaceSwitch',bsSigma,'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',2.459e-5,'lambda',1.567e-6));
+    'regClass',@locallyWeightedLinearRegressor, 'XSpaceSwitch',bsSigma,'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',0.1908,'lambda',3.0921));
 sigmaPxRegBundle = pixelRegressorBundle(inputStruct);
 
 inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainPzArray,'inputPoseTransf', p2ra, ...
-    'regClass',@locallyWeightedLinearRegressor, 'XSpaceSwitch',bsSigma,'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',2.518e-5,'lambda',6.479e-7));
+    'regClass',@locallyWeightedLinearRegressor, 'XSpaceSwitch',bsSigma,'kernelFn', @kernelRAlpha, 'kernelParams',struct('h',4.1611e-6,'lambda',0.0289));
 pzPxRegBundle = pixelRegressorBundle(inputStruct);
 
 %% predict at test poses
