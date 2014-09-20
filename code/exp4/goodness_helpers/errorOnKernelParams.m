@@ -57,7 +57,7 @@ classdef errorOnKernelParams < handle
                 YPred = squeeze(YPred);
                 
                 vec1 = abs(YPred-YTest);
-                vec1(isnan(vec1)) = [];
+                vec1(isnan(YTest)) = [];
                 vec1 = vec1(:)';
                 %outIds = errorStats.outlier1D(vec1(:));
                 %vec1(outIds) = []

@@ -43,15 +43,15 @@ bsSigma = boxSwitch(struct('XRanges',[0 0; dp.laser.maxRange 2*pi],'switchY',nan
 bsPz = boxSwitch(struct('XRanges',[0 0; dp.laser.maxRange 2*pi],'switchY',1));
 
 inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainMuArray,'poolOption',0,'inputPoseTransf', p2ra, ...
-'regClass',@locallyWeightedLinearRegressor,'XSpaceSwitch',bsMu,'kernelFn',@kernelRBF, 'kernelParams',struct('h',0.6483,'lambda',3.918));
+'regClass',@locallyWeightedLinearRegressor,'XSpaceSwitch',bsMu,'kernelFn',@kernelRBF, 'kernelParams',struct('h',0.5304,'lambda',1.1198));
 muPxRegBundle = pixelRegressorBundle(inputStruct);
 
 inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,'poolOption',0,'inputPoseTransf', p2ra, ...
-    'regClass',@locallyWeightedLinearRegressor, 'XSpaceSwitch',bsSigma,'kernelFn', @kernelRBF, 'kernelParams',struct('h',0.0019,'lambda',2.8148));
+    'regClass',@locallyWeightedLinearRegressor, 'XSpaceSwitch',bsSigma,'kernelFn', @kernelRBF, 'kernelParams',struct('h',0.2110,'lambda',0.1650));
 sigmaPxRegBundle = pixelRegressorBundle(inputStruct);
 
 inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainPzArray,'inputPoseTransf', p2ra, ...
-    'regClass',@locallyWeightedLinearRegressor, 'XSpaceSwitch',bsSigma,'kernelFn', @kernelRBF, 'kernelParams',struct('h',0.0011,'lambda',8.9726));
+    'regClass',@locallyWeightedLinearRegressor, 'XSpaceSwitch',bsSigma,'kernelFn', @kernelRBF, 'kernelParams',struct('h',0.1946,'lambda',0.5740));
 pzPxRegBundle = pixelRegressorBundle(inputStruct);
 
 %{

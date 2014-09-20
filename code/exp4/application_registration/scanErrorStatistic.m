@@ -1,13 +1,17 @@
-function error = scanErrorStatistic(scans,refPose)
+function [poseError,tComputation] = scanErrorStatistic(refPose,scans,dPose)
 %SCANERRORSTATISTIC 
 % 
-% error = SCANERRORSTATISTIC(scans,refPose)
+% [poseError,tComputation] = SCANERRORSTATISTIC(refPose,scans)
 % 
-% scans   - Array of size num scans x num pixels.
-% refPose - Array of length 3.
+% scans        - Array of size num scans x num pixels.
+% refPose      - Array of length 3.
+% dPose        - Perturbations. Array of size num perturbations x 3
 % 
-% error   - Pose estimate error (poseNorm) wrt refPose, averaged over
-%           perturbations and scans.
+% poseError    - Pose estimate error (poseNorm) wrt refPose, averaged over
+%                perturbations and scans.
+% tComputation - Average time to complete scan.
+
+
 
 end
 
