@@ -31,6 +31,9 @@ data from which to analyze localization-via-registration bounds.
 data_sep14_micro
 data to test pose sensitivity when registering in nsh3_corridor
 
+data_sep19_micro
+data to test prediction of pz and sigma at > 3m
+
 full_predictor_mar27_1
 canonical 29 training poses. individual models for each pixel.
 
