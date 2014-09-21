@@ -1,7 +1,7 @@
-classdef rangeSimulator < handle
+classdef rangeSimulator < handle & abstractSimulator
     %rangeSimulator raycast in a lineMap using learned simulator
         
-    properties (SetAccess = private)
+    properties
         % fitClass is a handle
         % pxRegBundleArray is a cell array of regressorBundle objects
         % laser is a laserClass object, must be the same laser trained on
@@ -63,9 +63,6 @@ classdef rangeSimulator < handle
             end
         end
         
-        function setMap(obj,map)
-           obj.map = map; 
-        end
     end
     
     methods (Static = true)

@@ -206,24 +206,19 @@ classdef lineMap < handle
             ranges(isnan(ranges)) = 0;
         end
         
-        function [ranges,angles] = raycastNoisy(lm, pose, max_range, ang_range,choice)
+        function [ranges,angles] = raycastNoisy(lm, pose, max_range, ang_range)
             % wrapper around raycast to introduce noise
-            if nargin < 5
-                choice = 1;
-            end
-            if choice == 1
-                % add gaussian noise with stddev based on range and angle of
-                % incidence
-                [ranges,angles] = raycast(lm, pose, max_range, ang_range);
-                
-                K = 1e-3;
-                for i = 1:length(ranges);
-                    sigma = K*ranges(i)^2/cos(angles(i));
-                    ranges(i) = ranges(i)+sigma*randn;
-                end
+            % add gaussian noise with stddev based on range and angle of
+            % incidence
+            [ranges,angles] = raycast(lm, pose, max_range, ang_range);
+            
+            K = 1e-3;
+            for i = 1:length(ranges);
+                sigma = K*ranges(i)^2/cos(angles(i));
+                ranges(i) = ranges(i)+sigma*randn;
             end
         end
-                
+        
 		function [dist, ob_num, line_num] = closestObject(lm, pos)
 
             lc = cell2mat({lm.objects(:).line_coords}');

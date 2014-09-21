@@ -73,6 +73,11 @@ classdef pose2D < handle
             end
         end
         
+        function p3 = addPoses(p1,p2)
+            p3 = p1+p2;
+            p3(3) = mod(p3(3),2*pi);
+        end
+        
         function ptsNew = transformPoints(pts,pose)
             %TRANSFORMPOINTS
             %
