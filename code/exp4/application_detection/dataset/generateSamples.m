@@ -2,12 +2,12 @@
 
 n = 2.5e4;
 t1 = tic();
-count = 1;
+count = 0;
 while count < n
     try
+		count = count+1;
         sampleVec(count) = sampleConfiguration();
-        count = count+1;
-    catch
+	catch
         continue
     end
 end
