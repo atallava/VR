@@ -10,7 +10,7 @@ classdef sampleConfiguration < handle
         lineLength1 = 0.61;
         lineLength2 = 1.22;
         lineLength3 = 1.81;
-        gridUnit = 0.35;
+        gridUnit = 0.305;
         nObjects;
         nPlaceAttempts = 20;
         map
