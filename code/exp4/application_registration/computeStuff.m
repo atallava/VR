@@ -1,5 +1,5 @@
 clearAll
-load processed_data_sep6
+load processed_data_sep14
 load('nsh3_corridor','map')
 load('params','numScans')
 
