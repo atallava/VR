@@ -34,10 +34,12 @@ while true
     end
     left = ri.indexAdd(left,-1); right = ri.indexAdd(right,1);
 end
-left = ri.indexAdd(left,1);
-right = ri.indexAdd(right,-1);
-line_length = norm([ri.xArray(left)-ri.xArray(right) ...
-    ri.yArray(left)-ri.yArray(right)]);
+if (line_length-maxLen) > length_tolerance
+    left = rangeImage_obj.indexAdd(left,1);
+    right = rangeImage_obj.indexAdd(right,-1);
+    line_length = norm([rangeImage_obj.xArray(left)-rangeImage_obj.xArray(right) ...
+        rangeImage_obj.yArray(left)-rangeImage_obj.yArray(right)]);
+end
 if right > left
     num = (right-left)+1;
 else

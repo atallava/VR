@@ -1,4 +1,4 @@
-function [lines,linesInfo] = getLinesAnecdote(ri,target_length,lineCandidateAlgo,plot_option,showMsgs)
+function [lines,linesInfo] = getLinesAnecdote(ri,targetLength,lineCandidateAlgo,plot_option,showMsgs)
 % ri is a rangeImage object
 
 if nargin < 4
@@ -14,7 +14,7 @@ linesInfo = {};
 lines = struct('p1',{},'p2',{});
 nLines = 0;
 for i = 1:ri.nPix
-    res = lineCandidateAlgo(ri,i,target_length,showMsgs);
+    res = lineCandidateAlgo(ri,i,targetLength,showMsgs);
     if isempty(res)
         continue;
     end
@@ -24,14 +24,14 @@ end
 
 longLinesInfo = {};
 for i = 1:ri.nPix
-    res = lineCandidateAlgo(ri,i,target_length+length_pad);
+    res = lineCandidateAlgo(ri,i,targetLength+length_pad);
     if isempty(res)
         continue;
     end
     longLinesInfo{end+1} = res;
 end
 
-%linesInfo = removeLongerLines(linesInfo,longLinesInfo,ri);
+linesInfo = removeLongerLines(linesInfo,longLinesInfo,ri);
 
 nLines = length(linesInfo);
 if nLines == 0

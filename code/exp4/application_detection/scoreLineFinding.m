@@ -44,8 +44,8 @@ end
 
 function res = checkSegment(targetSegment,candidateSegment)
 
-toleranceTh = deg2rad(5);
-toleranceLength = 0.06;
+toleranceTh = deg2rad(3);
+toleranceLength = 0.05;
 
 targetLen = norm(targetSegment);
 candidateLen = norm(candidateSegment);
