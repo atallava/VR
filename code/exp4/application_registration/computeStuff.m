@@ -5,7 +5,7 @@ load('params','numScans')
 
 %% Our sim
 poseIds = [1 6];
-load('sim_sep6_2','rsim');
+load('sim_sep6_1','rsim');
 fprintf('Gathering results for sim...\n');
 t1 = tic();
 for i = 1:length(poseIds)

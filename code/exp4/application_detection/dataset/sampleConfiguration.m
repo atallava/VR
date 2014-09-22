@@ -34,7 +34,7 @@ classdef sampleConfiguration < handle
             obj.sampleWorld();
             obj.createMap();
             obj.maskLim = [-obj.maskResn obj.boxLength+obj.maskResn];
-            obj.fillMask();
+            %obj.fillMask();
         end
         
         function sampleWorld(obj)

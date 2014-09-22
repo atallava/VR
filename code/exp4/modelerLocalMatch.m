@@ -38,8 +38,9 @@ trainMuArray(flag) = nan;
 trainSigmaArray(flag) = nan;
 
 % switches to account for laser.maxRange
-bsMu = boxSwitch(struct('XRanges',[0; dp.laser.maxRange],'switchY',nan));
+bsMu = boxSwitch(struct('XRanges',[0; dp.laser.maxRange],'switchY',0));
 bsSigma = boxSwitch(struct('XRanges',[0 0; dp.laser.maxRange 2*pi],'switchY',nan));
+bsPz = boxSwitch(struct('XRanges',[0 0; dp.laser.maxRange 2*pi],'switchY',1));
 
 inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainMuArray,'poolOption',0,'inputPoseTransf', p2ra, ...
 'regClass',@locallyWeightedLinearRegressor,'XSpaceSwitch',bsMu,'kernelFn',@kernelRBF, 'kernelParams',struct('h',0.5304,'lambda',1.1198));

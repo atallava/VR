@@ -2,10 +2,6 @@ load data_sep6_micro_train
 
 threshRanges(lzr);
 
-% this happens very rarely, but screws up prediction
-% the lesson is vanilla np regression is prone to outliers, how are
-% conditions of smoothness enforced?
-flag = allCrazy(lzr);
 lzr.log(logical(flag)) = []; 
 obsArrayTrain = fillObsArray(lzr,t_range_collection);
 poses = poseHistory;
@@ -14,7 +10,6 @@ trainPoseIds = 1:length(poseHistory);
 load data_sep6_micro_test
 
 threshRanges(lzr);
-flag = allCrazy(lzr);
 lzr.log(logical(flag)) = []; 
 obsArrayTest = fillObsArray(lzr,t_range_collection);
 

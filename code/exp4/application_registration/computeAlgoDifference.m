@@ -11,8 +11,10 @@ res.TSim = outSim.poseError;
 res.dTMeasured = abs(res.TSim-res.TReal);
 
 % Sim sensitivity
-res.dTSimSensivity = computeSimSensitivity(rsim,poseRef,map);
+sty = computeSimSensitivity(rsim,poseRef,map);
+res.dTSimSensitivity = sty;
 
 % Upper bound
-res.dTUpper = res.dTMeasured+res.dTSimSensitivity;
+dTUpper = res.dTMeasured+res.dTSimSensitivity;
+res.dTUpper = dTUpper;
 end

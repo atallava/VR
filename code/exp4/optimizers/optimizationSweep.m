@@ -23,7 +23,7 @@ inputStruct.regClassInput.kernelFn = @kernelRBF;
 resPz = fn2(inputStruct);
 
 %% Save to file
-save('optimization_sweep_results_5.mat','resMu','resS','resPz');
+save('optimization_sweep_results_6.mat','resMu','resS','resPz');
 
 
 
