@@ -109,6 +109,8 @@ classdef sampleConfiguration < handle
                 loArray(i) = lineObject();
                 loArray(i).lines = obj.objectList{i};                
             end
+            % This is the robot bounding box.
+            loArray(2) = []; 
             obj.map = lineMap(loArray);
         end
         

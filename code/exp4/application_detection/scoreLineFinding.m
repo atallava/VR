@@ -6,7 +6,7 @@ function score = scoreLineFinding(targetLines,candidateLines)
 % targetLines    - Struct array with fields ('p1','p2').
 % candidateLines - Struct array with fields ('p1','p2').
 %
-% score          - Fraction of targets in candidates.
+% score          - Number of targets in candidates.
 
 score = 0;
 for i = 1:length(targetLines)
@@ -18,7 +18,6 @@ for i = 1:length(targetLines)
         end
     end
 end
-score = score/length(targetLines);
 end
 
 function res = checkLinePair(target,candidate)

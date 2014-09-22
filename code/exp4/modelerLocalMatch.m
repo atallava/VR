@@ -41,7 +41,7 @@ trainSigmaArray(flag) = nan;
 bsMu = boxSwitch(struct('XRanges',[0; dp.laser.maxRange],'switchY',0));
 bsSigma = boxSwitch(struct('XRanges',[0 0; dp.laser.maxRange 2*pi],'switchY',nan));
 bsPz = boxSwitch(struct('XRanges',[0 0; dp.laser.maxRange 2*pi],'switchY',1));
-
+%%
 inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainMuArray,'poolOption',0,'inputPoseTransf', p2ra, ...
 'regClass',@locallyWeightedLinearRegressor,'XSpaceSwitch',bsMu,'kernelFn',@kernelRBF, 'kernelParams',struct('h',0.5053,'lambda',1.5539));
 scans = scansFromMuArray(squeeze(trainMuArray));
@@ -51,9 +51,9 @@ matcher = localMatch(struct('localizer',localizer,'laser',dp.laser,'map',map));
 inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,'poolOption',0,'inputPoseTransf', p2ra, ...
     'regClass',@locallyWeightedLinearRegressor, 'XSpaceSwitch',bsSigma,'kernelFn', @kernelRBF, 'kernelParams',struct('h',0.2639,'lambda',0.7509));
 sigmaPxRegBundle = pixelRegressorBundle(inputStruct);
-
+%%
 inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainPzArray,'inputPoseTransf', p2ra, ...
-    'regClass',@locallyWeightedLinearRegressor, 'XSpaceSwitch',bsSigma,'kernelFn', @kernelRBF, 'kernelParams',struct('h',0.1711,'lambda',0.6069));
+    'regClass',@locallyWeightedLinearRegressor, 'XSpaceSwitch',bsPz,'kernelFn', @kernelRBF, 'kernelParams',struct('h',0.2255,'lambda',0.5757));
 pzPxRegBundle = pixelRegressorBundle(inputStruct);
 
 %% predict at test poses

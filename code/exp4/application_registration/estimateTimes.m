@@ -1,5 +1,5 @@
-nScans = 1;
-nPert = 1;
+nScans = 5;
+nPert = 10;
 nGrid = 27;
 t1 = 4.5;
 t2 = 2;
