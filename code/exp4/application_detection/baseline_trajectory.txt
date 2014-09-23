@@ -1,0 +1,27 @@
+
+
+check score line finding. this is a subtle issue warranting deeper
+thinking. 
+
+plot the trajectory, and then discuss not more than 3 points on the trajectory.
+
+1. start state
+rangeImages not cleaned before being passed for line finding. thrown out
+getLinesAnecdote does not throw longer lines. Only recall code is active.
+lengthTolerance = 5e-3
+
+2. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
