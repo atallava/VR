@@ -26,13 +26,14 @@ end
 if iscolumn(x1)
     x1 = x1';
 end
-n = size(x2,1);
-res = zeros(1,n);
-for i = 1:n
-    temp = [1 lambda].*(x1-x2(i,:));
-    d = norm(temp);
-    arg = -d^2/(2*h^2);
-    res(i) = exp(arg);
+
+temp = bsxfun(@minus,x2,x1);
+temp = bsxfun(@times,temp,[1 lambda]);
+temp = sqrt(sum(temp.^2,2));
+if iscolumn(temp) 
+    temp = temp';
 end
+temp = -temp.^2/(2*h^2);
+res = exp(temp);
 end
 

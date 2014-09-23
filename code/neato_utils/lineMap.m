@@ -215,6 +215,9 @@ classdef lineMap < handle
             K = 1e-3;
             for i = 1:length(ranges);
                 sigma = K*ranges(i)^2/cos(angles(i));
+                if isnan(sigma)
+                    continue;
+                end
                 ranges(i) = ranges(i)+sigma*randn;
             end
         end

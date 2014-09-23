@@ -31,7 +31,7 @@ for i = 1:ri.nPix
     longLinesInfo{end+1} = res;
 end
 
-linesInfo = removeLongerLines(linesInfo,longLinesInfo,ri);
+%linesInfo = removeLongerLines(linesInfo,longLinesInfo,ri);
 
 nLines = length(linesInfo);
 if nLines == 0

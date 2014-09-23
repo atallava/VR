@@ -35,10 +35,10 @@ while true
     left = ri.indexAdd(left,-1); right = ri.indexAdd(right,1);
 end
 if (line_length-maxLen) > length_tolerance
-    left = rangeImage_obj.indexAdd(left,1);
-    right = rangeImage_obj.indexAdd(right,-1);
-    line_length = norm([rangeImage_obj.xArray(left)-rangeImage_obj.xArray(right) ...
-        rangeImage_obj.yArray(left)-rangeImage_obj.yArray(right)]);
+    left = ri.indexAdd(left,1);
+    right = ri.indexAdd(right,-1);
+    line_length = norm([ri.xArray(left)-ri.xArray(right) ...
+        ri.yArray(left)-ri.yArray(right)]);
 end
 if right > left
     num = (right-left)+1;
@@ -51,13 +51,13 @@ if showMsgs
 end
 
 % Check if length is a close enough match.
-if ~toleranceCheck(line_length,maxLen,length_tolerance)
-    % length not close enough
-    if showMsgs
-        fprintf('length not close enough to % f\n',maxLen);
-    end
-    return;
-end
+% if ~toleranceCheck(line_length,maxLen,length_tolerance)
+%     % length not close enough
+%     if showMsgs
+%         fprintf('length not close enough to % f\n',maxLen);
+%     end
+%     return;
+% end
 
 % Checks to filter false negatives
 

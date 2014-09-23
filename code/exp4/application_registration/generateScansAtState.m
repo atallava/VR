@@ -4,7 +4,7 @@ function scans = generateScansAtState(rsim,poseRef,map,numScans)
 % scans = GENERATESCANSATSTATE(rsim,poseRef,map,numScans)
 % 
 % rsim     - rangeSimulator object.
-% poseRef  - Array of length 3.
+% poseRef  - Array of length 3. Robot pose.
 % map      - lineMap object.
 % numScans - Scalar.
 % 
@@ -12,6 +12,7 @@ function scans = generateScansAtState(rsim,poseRef,map,numScans)
 
 rsim.setMap(map);
 scans = zeros(numScans,rsim.laser.nPixels);
+poseRef = rsim.laser.refPoseToLaserPose(poseRef);
 for i = 1:numScans
 	scans(i,:) = rsim.simulate(poseRef);
 end

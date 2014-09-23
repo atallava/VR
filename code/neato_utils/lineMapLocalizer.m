@@ -53,10 +53,12 @@ classdef lineMapLocalizer < handle
             %
             % ro2 - Array of closest distances of size 1 x n.
             
+            p = p(1:2,:);
             r2Array = zeros(size(obj.lines_p1,2),size(p,2));
             for i = 1:size(obj.lines_p1,2)
-                [r2Array(i,:) , ~] = closestPointOnLineSegment(p,...
-                    obj.lines_p1(:,i),obj.lines_p2(:,i));                
+                %[r2Array(i,:) , ~] = closestPointOnLineSegment(p,...
+                 %   obj.lines_p1(:,i),obj.lines_p2(:,i));
+                 r2Array(i,:) = myDist(p,obj.lines_p1(:,i),obj.lines_p2(:,i));
             end
             ro2 = min(r2Array,[],1);
         end
