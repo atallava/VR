@@ -1,16 +1,91 @@
-
-
 check score line finding. this is a subtle issue warranting deeper
 thinking. 
 
-plot the trajectory, and then discuss not more than 3 points on the trajectory.
-
 1. start state
-rangeImages not cleaned before being passed for line finding. thrown out
+rangeImages not cleaned before being passed for line finding.
 getLinesAnecdote does not throw longer lines. Only recall code is active.
 lengthTolerance = 5e-3
 
 2. 
+lengthTolerance = 0.01
+t = 18s.
+
+3. 
+lengthTolerance = 0.05
+
+4.
+lengthTolerance = 0.1
+At this point the BB recall begins to decrease. Which means we will
+continue with the previous setting and move on to increasing
+precision. This means maximum recall is at previous step.
+
+5. 
+lengthTolerance = 0.05
+lengthPad = 0.1
+Throwing longer lines from getLinesAnecdote has been turned on.
+Recall takes a hit, as expected.
+t = 170s
+
+6.
+lengthTolerance = 0.05
+lengthPad = 0.05
+Results are worse. Include to demonstrate noise. Further layer of
+complexity is to decide ordering of decisions, at which point might
+as well start automating programs. Of course results are worse, this
+is logical.
+
+7.
+lengthTolerance = 0.05
+lengthPad = 0.1
+errorThresh = 0.001
+High precision, but recall has taken a hit.
+
+8.
+lengthTolerance = 0.05
+lengthPad = 0.1
+errorThresh = 0.005
+Better trade-off.
+
+9.
+lengthTolerance = 0.05
+lengthPad = 0.1
+errorThresh = 0.01
+Better r,p
+
+10.
+lengthTolerance = 0.05
+lengthPad = 0.1
+errorThresh = 0.005
+memberThresh = 0.01
+Doesn't help baseline.
+
+11.
+lengthTolerance = 0.05
+lengthPad = 0.1
+errorThresh = 0.01
+nMin = 20
+Pushed up precision, lowers recall.
+Really helps real though.
+
+12.
+lengthTolerance = 0.05
+lengthPad = 0.1
+errorThresh = 0.01
+nMin = 10
+
+13.
+lengthTolerance = 0.05
+lengthPad = 0.1
+errorThresh = 0.01
+nMin = 5
+Even very few nMin is ok.
+
+
+
+
+
+
+
 
 
 

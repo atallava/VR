@@ -1,0 +1,81 @@
+1. start state
+rangeImages not cleaned before being passed for line finding.
+getLinesAnecdote does not throw longer lines. Only recall code is active.
+lengthTolerance = 5e-3
+Both have crappy performance. 
+
+2. 
+lengthTolerance = 0.05
+Both still have crappy performance but exact performance.
+
+3. 
+lengthToTolerance = 0.01
+r.cleanup = 1
+Sim is actually doing worse than real here.
+
+4.
+lengthToTolerance = 0.05
+r.cleanup = 1
+
+5.
+lengthToTolerance = 0.1
+r.cleanup = 1
+Recall does not increase. Time to shift to increasing precision.
+
+6.
+lengthToTolerance = 0.05
+r.cleanup = 1
+lengthPad = 0.1
+
+7.
+lengthToTolerance = 0.05
+r.cleanup = 1
+lengthPad = 0.1
+errorThresh = 0.005
+
+8.
+lengthToTolerance = 0.05
+r.cleanup = 1
+lengthPad = 0.1
+errorThresh = 0.02
+
+9. 
+lengthToTolerance = 0.05
+r.cleanup = 1
+lengthPad = 0.1
+errorThresh = 0.02
+memberThresh = 0.03
+I seem to have hit a PR-threshold here.
+
+10.
+lengthToTolerance = 0.05
+r.cleanup = 1
+lengthPad = 0.1
+errorThresh = 0.02
+memberThresh = 0.03
+nMin = 5
+
+11.
+lengthToTolerance = 0.05
+r.cleanup = 1
+lengthPad = 0.1
+errorThresh = 0.02
+memberThresh = 0.03
+nMin = 8
+outlierFraction = 0.1
+
+12
+lengthToTolerance = 0.05
+r.cleanup = 1
+lengthPad = 0.1
+errorThresh = 0.02
+memberThresh = 0.03
+nMin = 8
+outlierFraction = 0.2
+
+
+
+
+
+
+

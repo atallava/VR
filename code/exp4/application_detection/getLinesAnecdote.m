@@ -9,7 +9,6 @@ if nargin < 4 || nargin < 5
 	showMsgs = 0;
 end
 
-length_pad = 0.1;
 linesInfo = {};
 lines = struct('p1',{},'p2',{});
 nLines = 0;
@@ -22,6 +21,7 @@ for i = 1:ri.nPix
     linesInfo{nLines} = res;
 end
 
+length_pad = 0.1;
 longLinesInfo = {};
 for i = 1:ri.nPix
     res = lineCandidateAlgo(ri,i,targetLength+length_pad);
@@ -30,16 +30,15 @@ for i = 1:ri.nPix
     end
     longLinesInfo{end+1} = res;
 end
-
-%linesInfo = removeLongerLines(linesInfo,longLinesInfo,ri);
+linesInfo = removeLongerLines(linesInfo,longLinesInfo,ri);
 
 nLines = length(linesInfo);
 if nLines == 0
     lines = struct('p1',{},'p2',{});
     return;
 end
-
 lines = lineInfo2lineStruct(ri,linesInfo);
+
 if plot_option
     ri.plotXvsY; 
     hold on;

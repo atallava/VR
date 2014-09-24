@@ -10,5 +10,5 @@ function addToLogs(fname,resXX,resXR)
 load(fname);
 perf{end+1} = resXX;
 perfReal{end+1} = resXR;
-save(fname,'perfSim','perfReal');
+save(fname,'perf','perfReal');
 end

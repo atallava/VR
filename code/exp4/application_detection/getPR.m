@@ -10,7 +10,7 @@ for i = 1:nConfs
     vec1 = []; vec2 = [];
     for j = 1%:nScans
         % Cleanup or not is also a step in algorithm design.
-        ri = rangeImage(struct('ranges',scans{i}(j,:),'cleanup',0));
+        ri = rangeImage(struct('ranges',scans{i}(j,:),'cleanup',1));
         [detectedLines,~] = getLinesAnecdote(ri,targetLength,lineCandidateAlgo);
         vec1 = [vec1 length(detectedLines)];
         temp = scoreLineFinding(targetLines,detectedLines);
