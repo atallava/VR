@@ -1,7 +1,7 @@
 function sty = computeSimSensitivity(rsim,poseRef,map)
-%COMPUTESIMSENSITIVITY 
+%COMPUTESENSITIVITY 
 % 
-% sty = COMPUTESIMSENSITIVITY(rsim,poseRef,map)
+% sty = COMPUTESENSITIVITY(rsim,poseRef,map)
 % 
 % rsim        - rangeSimulator object.
 % poseRef     - Array of length 3.
