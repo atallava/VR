@@ -1,10 +1,10 @@
 clearAll
-load processed_data_sep14
+load processed_data_sep25_registration
 load('nsh3_corridor','map')
 load('params','numScans')
 
 %% Our sim
-poseIds = [1 6];
+poseIds = [1 2];
 load('sim_sep6_1','rsim');
 fprintf('Gathering results for sim...\n');
 t1 = tic();
@@ -18,7 +18,7 @@ end
 fprintf('Computation took %.2fs.\n',toc(t1));
 
 %% Baseline
-poseIds = [1 6];
+poseIds = [1 2];
 load('sim_baseline','rsim');
 fprintf('Gathering results for baseline...\n');
 t1 = tic();
@@ -32,5 +32,5 @@ end
 fprintf('Computation took %.2fs.\n',toc(t1));
 
 %%
-save('res_sim','resSim');
-save('res_baseline','resBaseline');
+save('res_sim_sep25','resSim');
+save('res_baseline_sep25','resBaseline');
