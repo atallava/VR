@@ -4,7 +4,8 @@ classdef controllerClass < handle
     properties (Constant = true)
         MAX_SIZE = 1000;
     end
-    properties (SetAccess = private)
+    
+    properties
         gainV
         gainW
         tArray
@@ -42,7 +43,6 @@ classdef controllerClass < handle
             else
                 V = 0; 
                 w = 0;
-%                 w = obj.gainW*psi_err;
             end
             obj.tArray(end+1) = t;
             obj.VArray(end+1) = V;
@@ -56,10 +56,10 @@ classdef controllerClass < handle
             err = pose.Tb2w\[refPose.x; refPose.y; 1];
             s_err = norm(err(1:2));
             psi_err = atan2(err(2),err(1));
-            if abs(psi_err) > pi/2
-                s_err = -s_err;
-                psi_err = -sign(psi_err)*pi+psi_err;
-            end
+%             if abs(psi_err) > pi/2
+%                 s_err = -s_err;
+%                 psi_err = -sign(psi_err)*pi+psi_err;
+%             end
         end
     end
 

@@ -1,5 +1,6 @@
 classdef trajectoryFollower < handle
     %trajectoryFollower
+    % carrot follower
 
     properties (Constant)
         LOG_SIZE = 10000;
@@ -49,7 +50,7 @@ classdef trajectoryFollower < handle
                 
                 % feedback
                 currentState = rstate.pose;
-                dTh = atan2(sin(currentState(3)-oldRState(3)),cos(currentState(3)-oldRState(3)));
+                dTh = thDiff(oldRState(3),currentState(3));
                 currentTh = currentTh+dTh;
                 currentState(3) = currentTh;
                 oldRState = rstate.pose;
@@ -104,6 +105,10 @@ classdef trajectoryFollower < handle
         function resetTrajectory(obj,trajectory)
             obj.trajectory = trajectory;
             obj.resetLogs;
+        end
+        
+        function setController(obj,ctrl)
+            obj.controller = ctrl;
         end
     end
 

@@ -12,9 +12,9 @@ function scans = generateScansAtState(rsim,poseRef,map,numScans)
 
 rsim.setMap(map);
 scans = zeros(numScans,rsim.laser.nPixels);
-poseRef = rsim.laser.refPoseToLaserPose(poseRef);
+laserPose = rsim.laser.refPoseToLaserPose(poseRef);
 for i = 1:numScans
-	scans(i,:) = rsim.simulate(poseRef);
+	scans(i,:) = rsim.simulate(laserPose);
 end
 
 end

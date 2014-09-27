@@ -36,6 +36,7 @@ end
 function err = modelErrorOnData(model,x,y)
 % Find model error on some data. Throw out nans and outliers.
 
+largeCost = margin*nParams; % ensure that will not be accepted as a match
 yThreshold = 0.1; 
 badY = abs(y-x) > yThreshold; % outliers
 yPred = model.predict(x);

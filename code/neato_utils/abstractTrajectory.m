@@ -2,7 +2,7 @@ classdef (Abstract) abstractTrajectory < handle
     %abstractTrajectory base class for trajectories
     
     properties
-        tIdle = 1;
+        tIdle = 0.5;
     end
     
     methods (Abstract)
