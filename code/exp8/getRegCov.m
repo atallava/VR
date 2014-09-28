@@ -5,15 +5,19 @@ load reg_cov_perturbations
 
 numScans = 50;
 nPoses = size(poses,2);
+localizer = lineMapLocalizer(map.objects);
+vizer = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser));
 
 %% Compute covariance
 load reg_cov_real_scans
 S = cell(1,nPoses);
-fprintf('Stats for real...\n');
+Q = zeros(3);
 t1 = tic();
-for i = 1
-    wgl = getWiggliness(scans{i},poses(:,i),map,perturbations);
-    S{i} = getPoseCovariance([wgl.pEst]);
+for i = 1:1%nPoses
+    [bias{i},S{i}] = computeRegCov(poses(:,i),{scans{i}},map);
+    if norm(S{i}) > norm(Q)
+        Q = S{i};
+    end
 end
 fprintf('Computation took %.2fs.\n',toc(t1));
 

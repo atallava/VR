@@ -18,8 +18,7 @@ classdef motionFilter < handle
             end
             obj.RLinear = RLinear;
             obj.RAngular = RAngular;
-            %obj.Rpd = Rpd;
-            obj.Rpd = eye(3)*1e-10;
+            obj.Rpd = Rpd;
         end
         
         function filter(obj,pose0,S0,vlArray,vrArray,tArray)
@@ -52,6 +51,29 @@ classdef motionFilter < handle
                     0 1 V*cos(th)*dt; ...
                     0 0 1];
                 obj.SArray{i+1} = G*obj.SArray{i}*G'+R;
+            end
+        end
+        
+        function [poseArray,tArray] = sampleTrajectory(obj)
+            poseArray = zeros(size(obj.poseArray));
+            tArray = [0 obj.tArray];
+            poseArray(:,1) = mvnrnd(obj.poseArray(:,1),obj.SArray{1})';
+                        
+            for i = 1:length(obj.tArray)
+                if i == 1
+                    dt = obj.tArray(1);
+                else
+                    dt = obj.tArray(i)-obj.tArray(i-1);
+                end
+                [V,w] = robotModel.vlvr2Vw(obj.vlArray(i),obj.vrArray(i));
+                th = poseArray(3,i);
+                poseArray(1,i+1) = poseArray(1,i)+V*cos(th)*dt;
+                poseArray(2,i+1) = poseArray(2,i)+V*sin(th)*dt;
+                poseArray(3,i+1) = poseArray(3,i)+w*dt;
+                
+                R = obj.RLinear*dt*abs(V)+obj.RAngular*dt*abs(w)+obj.Rpd;
+                eps = mvnrnd(zeros(3,1),R)';
+                poseArray(:,i+1) = poseArray(:,i+1)+eps;
             end
         end
         
