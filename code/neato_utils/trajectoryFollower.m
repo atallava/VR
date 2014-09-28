@@ -3,12 +3,14 @@ classdef trajectoryFollower < handle
     % carrot follower
 
     properties (Constant)
-        LOG_SIZE = 10000;
+        LOG_SIZE = 100000;
     end
     properties (SetAccess = private)
         trajectory
         controller
         VFfLog; wFfLog; VFbLog; wFbLog
+        vlLog; vrLog;
+        tEncStart
         tLog; refStateLog; currentStateLog;
     end
 
@@ -33,6 +35,8 @@ classdef trajectoryFollower < handle
             obj.resetLogs;
             logCount = 1;
             update_count_old = rstate.update_count;
+            % Zero in encoder clock.
+            obj.tEncStart = rob.encoders.data.header.stamp.secs + rob.encoders.data.header.stamp.nsecs*1e-9;
             tClock = tic;
             oldRState = rstate.pose;
             currentTh = rstate.pose(3); 
@@ -63,9 +67,10 @@ classdef trajectoryFollower < handle
                 
                 % logging
                 obj.tLog(logCount) = tNew;
-                obj.VFfLog(logCount) = VFf; obj.wFfLog(logCount) = wFf;
-                obj.VFbLog(logCount) = VFb; obj.wFbLog(logCount) = wFb;
-                obj.refStateLog(:,logCount) = refState; obj.currentStateLog(:,logCount) = currentState;
+%                 obj.VFfLog(logCount) = VFf; obj.wFfLog(logCount) = wFf;
+%                 obj.VFbLog(logCount) = VFb; obj.wFbLog(logCount) = wFb;
+                obj.vlLog(logCount) = vl; obj.vrLog(logCount) = vr;
+%                 obj.refStateLog(:,logCount) = refState; obj.currentStateLog(:,logCount) = currentState;
                 logCount = logCount+1;
                 
                 pause(robotModel.tPause);
@@ -99,6 +104,7 @@ classdef trajectoryFollower < handle
         
         function resetLogs(obj)
             [obj.tLog,obj.VFfLog,obj.wFfLog,obj.VFbLog,obj.wFbLog] = deal(zeros(1,trajectoryFollower.LOG_SIZE));
+            [obj.vlLog,obj.vrLog] = deal(zeros(1,trajectoryFollower.LOG_SIZE));
             [obj.refStateLog,obj.currentStateLog] = deal(zeros(3,trajectoryFollower.LOG_SIZE));
         end
 

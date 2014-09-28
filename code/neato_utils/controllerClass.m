@@ -16,16 +16,16 @@ classdef controllerClass < handle
     methods
         function obj = controllerClass(inputStruct)
             % inputStruct fields ('gainV','gainW')
-            % default (0.1,0.05)
+            % default (0.01,0.01)
             if isfield(inputStruct,'gainV')
                 obj.gainV = inputStruct.gainV;
             else
-                obj.gainV = 0.1;
+                obj.gainV = 0.01;
             end
             if isfield(inputStruct,'gainW')
                 obj.gainW = inputStruct.gainW;
             else
-                obj.gainW = 0.05;
+                obj.gainW = 0.01;
             end
         end
         
