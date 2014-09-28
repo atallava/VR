@@ -1,4 +1,14 @@
 function res = getWiggliness(scans,pose0,map,perturbations)
+%GETWIGGLINESS 
+% 
+% res = GETWIGGLINESS(scans,pose0,map,perturbations)
+% 
+% scans         - num scans x num pixels array.
+% pose0         - 
+% map           - 
+% perturbations - 
+% 
+% res           - 
 
 localizer = lineMapLocalizer(map.objects);
 refiner = laserPoseRefiner(struct('localizer',localizer,'laser',robotModel.laser,'skip',5,'numIterations',500));
