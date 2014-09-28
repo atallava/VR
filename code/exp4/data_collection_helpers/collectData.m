@@ -20,7 +20,7 @@ v = struct('left',0,'right',0);
 T = [1 -0.5*robotModel.W; ...
     1 0.5*robotModel.W];
 data_count = 0;
-num_obs = 30;
+num_obs = 50;
 t_range_collection = struct('start',{},'end',{});
 
 t_sys_start = tic;
