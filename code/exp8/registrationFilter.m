@@ -24,7 +24,7 @@ classdef registrationFilter < handle
             obj.R = R;
             obj.Q = Q;
             obj.refinerParams.skip = 5;
-            obj.refinerParams.numIterations = 300;
+            obj.refinerParams.numIterations = 100;
         end
         
         function filter(obj,pose0,S0,scanArray,tArray,map)
@@ -60,8 +60,10 @@ classdef registrationFilter < handle
                 obj.SArray{i+1} = G*obj.SArray{i}*G'+obj.R;
                 
                 K = obj.SArray{i+1}/(obj.SArray{i+1}+obj.Q);
+                
                 [~,pEst] = refiner.refine(obj.scanArray{i},obj.poseArray(:,i+1));
                 obj.poseArray(:,i+1) = obj.poseArray(:,i+1)+K*(pEst-obj.poseArray(:,i+1));
+                
                 obj.SArray{i+1} = (eye(3)-K)*obj.SArray{i+1};
                 [V,w] = velocityFromPoses(obj.poseArray(:,i),obj.poseArray(:,i+1),dt);
             end

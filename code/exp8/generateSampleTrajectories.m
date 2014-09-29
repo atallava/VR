@@ -18,4 +18,5 @@ while count <= 40
 	count = count+1;
 end
 
+save('sample_trajectories','sampleTrajectories');
 

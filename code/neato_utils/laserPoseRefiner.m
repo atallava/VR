@@ -62,7 +62,11 @@ classdef laserPoseRefiner < handle
             ptsLocal = ri.getPtsHomogeneous();
             if isempty(ptsLocal)
                 stats.numOutliers = length(ranges);
-                poseOut = poseIn;
+                if objInput
+                    poseOut = poseIn;
+                else
+                    poseOut = poseIn.getPose();
+                end
                 return;
             end
             ptsLocal = ptsLocal(:,1:obj.skip:end);

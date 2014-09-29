@@ -6,6 +6,7 @@ classdef motionFilter < handle
         RLinear; RAngular; Rpd
         vlArray; vrArray; tArray
         poseArray; SArray        
+        magicFactor = 0.01;
     end
     
     methods
@@ -46,7 +47,9 @@ classdef motionFilter < handle
                 obj.poseArray(2,i+1) = obj.poseArray(2,i)+V*sin(th)*dt;
                 obj.poseArray(3,i+1) = obj.poseArray(3,i)+w*dt;
                 
-                R = obj.RLinear*dt*abs(V)+obj.RAngular*dt*abs(w)+obj.Rpd;
+                R = obj.RLinear*dt*abs(V)+obj.RAngular*dt*abs(w)+obj.Rpd; 
+                R = R*obj.magicFactor;
+                
                 G = [1 0 -V*sin(th)*dt; ...
                     0 1 V*cos(th)*dt; ...
                     0 0 1];
@@ -72,6 +75,8 @@ classdef motionFilter < handle
                 poseArray(3,i+1) = poseArray(3,i)+w*dt;
                 
                 R = obj.RLinear*dt*abs(V)+obj.RAngular*dt*abs(w)+obj.Rpd;
+                R = R*obj.magicFactor;
+                
                 eps = mvnrnd(zeros(3,1),R)';
                 poseArray(:,i+1) = poseArray(:,i+1)+eps;
             end
