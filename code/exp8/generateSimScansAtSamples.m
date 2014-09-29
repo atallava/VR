@@ -1,5 +1,5 @@
 load sample_trajectories
-load nsh3_corridor
+load b100_padded_corridor
 numTrajectories = 20;
 
 %% Sim
@@ -18,7 +18,7 @@ for i = 1:numTrajectories
     sensorData(end).tArray = tArray;
 end
 fprintf('%.2fs\n',toc(t1));
-save('sim_traj_samples_data','sensorData');
+save('sim_sensor_data','sensorData');
 
 %% Baseline
 load sim_baseline
@@ -36,4 +36,4 @@ for i = numTrajectories+1:2*numTrajectories
     sensorData(end).tArray = tArray;
 end
 fprintf('%.2fs\n',toc(t1));
-save('baseline_traj_samples_data','sensorData');
+save('baseline_sensor_data','sensorData');
