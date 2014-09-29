@@ -37,8 +37,7 @@ classdef trajectoryFollower < handle
             update_count_old = rstate.update_count;
             % Zero in encoder clock.
             obj.tEncStart = rob.encoders.data.header.stamp.secs + rob.encoders.data.header.stamp.nsecs*1e-9;
-            obj.tLaserStart = rob.laser.data.header.stamp.secs + rob.laser.data.header.stamp.nsecs*1e-9;
-            tClock = tic;
+			tClock = tic;
             oldRState = rstate.pose;
             currentTh = rstate.pose(3); 
             while(toc(tClock) < obj.trajectory.getTrajectoryDuration)
