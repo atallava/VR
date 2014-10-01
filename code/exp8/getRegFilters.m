@@ -1,19 +1,22 @@
 % Real data
 clearAll
 load motion_vars
+load('motion_filter_object','mfl')
 load('b100_padded_corridor','map');
+localizer = lineMapLocalizer(map.objects);
+vizer = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser));
 
 %% Real
-load data_sep28_micro
+load real_sensor_data
 
 clear rflArray
 t1 = tic();
 for i = 1:length(sensorData)
     rflArray(i) = registrationFilter('real');
-    [scanArray,tArray] = laserHist2scanArray(sensorData(i).lzr,sensorData(i).tfl);
-    rflArray(i).filter(ssp.startPose,S0,scanArray,tArray,map);
+    rflArray(i).filter(ssp.startPose,S0,sensorData(i).scanArray,sensorData(i).tArray,map);
 end
 fprintf('Computation took %.2fs\n',toc(t1));
+save('real_reg_filters','rflArray');
 
 %% Sim
 load sim_sensor_data
@@ -25,6 +28,7 @@ for i = 1:length(sensorData)
     rflArray(i).filter(ssp.startPose,S0,sensorData(i).scanArray,sensorData(i).tArray,map);
 end
 fprintf('Computation took %.2fs\n',toc(t1));
+save('sim_reg_filters','rflArray');
 
 %% Baseline
 load baseline_sensor_data
@@ -36,4 +40,4 @@ for i = 1:length(sensorData)
     rflArray(i).filter(ssp.startPose,S0,sensorData(i).scanArray,sensorData(i).tArray,map);
 end
 fprintf('Computation took %.2fs\n',toc(t1));
-
+save('baseline_reg_filters','rflArray');

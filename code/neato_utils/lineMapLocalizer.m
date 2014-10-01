@@ -2,7 +2,6 @@ classdef lineMapLocalizer < handle
     %lineMapLocalizer localize by matching range points to line map
         
     properties(Constant)        
-        maxErr = 0.1;
         minPts = 5;
         % step increment when computing jacobian
         eps = [0.001,0.001,deg2rad(0.5)];
@@ -12,12 +11,13 @@ classdef lineMapLocalizer < handle
     end
     
     properties (SetAccess = private)
+        maxErr = 0.3;
         lines_p1 = [];
         lines_p2 = [];
         errThresh = 0.001;
         gradThresh = 0.0005;
         dPoseThresh = 1e-6;
-        eta = 0.1;
+        eta = 0.1;        
     end
        
     methods
@@ -57,8 +57,8 @@ classdef lineMapLocalizer < handle
             r2Array = zeros(size(obj.lines_p1,2),size(p,2));
             for i = 1:size(obj.lines_p1,2)
                 %[r2Array(i,:) , ~] = closestPointOnLineSegment(p,...
-                 %   obj.lines_p1(:,i),obj.lines_p2(:,i));
-                 r2Array(i,:) = myDist(p,obj.lines_p1(:,i),obj.lines_p2(:,i));
+                    %obj.lines_p1(:,i),obj.lines_p2(:,i));
+                    r2Array(i,:) = myDist(p,obj.lines_p1(:,i),obj.lines_p2(:,i));
             end
             ro2 = min(r2Array,[],1);
         end
@@ -93,7 +93,7 @@ classdef lineMapLocalizer < handle
 			end
 			
             r2 = obj.closestSquaredDistanceToLines(pts);
-            ids = r2 > lineMapLocalizer.maxErr;
+            ids = sqrt(r2) > obj.maxErr;
 		end
         
         function avgErr = fitError(obj,pose,ptsInModelFrame)

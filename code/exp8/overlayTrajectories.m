@@ -17,6 +17,7 @@ for i = 1:length(rflArray)
     plot(rflArray(i).poseArray(1,:),rflArray(i).poseArray(2,:),'g--');
 end
 hold off;
+xlabel('x (m'); ylabel('y (m)');
 
 end
 
