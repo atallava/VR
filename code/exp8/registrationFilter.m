@@ -7,6 +7,7 @@ classdef registrationFilter < handle
         poseArray; SArray
         scanArray; tArray
         refinerParams
+        avgTimeToMatch = 0;
     end
     
     methods
@@ -24,7 +25,7 @@ classdef registrationFilter < handle
             obj.R = R;
             obj.Q = Q;
             obj.refinerParams.skip = 5;
-            obj.refinerParams.numIterations = 50;
+            obj.refinerParams.numIterations = 100;
         end
         
         function filter(obj,pose0,S0,scanArray,tArray,map)
@@ -32,7 +33,7 @@ classdef registrationFilter < handle
             refiner = laserPoseRefiner(struct('localizer',localizer,'laser',robotModel.laser, ...
                 'skip',obj.refinerParams.skip,'numIterations',obj.refinerParams.numIterations));
             
-            
+            obj.avgTimeToMatch = 0;
             obj.scanArray = scanArray;
             obj.tArray = tArray;
             obj.poseArray = zeros(3,length(obj.tArray)+1);
@@ -63,12 +64,15 @@ classdef registrationFilter < handle
                 
                 K = obj.SArray{i+1}/(obj.SArray{i+1}+obj.Q);
                 
-                [~,pEst] = refiner.refine(obj.scanArray{i},obj.poseArray(:,i+1));
+                [stats,pEst] = refiner.refine(obj.scanArray{i},obj.poseArray(:,i+1));
                 obj.poseArray(:,i+1) = obj.poseArray(:,i+1)+K*(pEst-obj.poseArray(:,i+1));
                 
                 obj.SArray{i+1} = (eye(3)-K)*obj.SArray{i+1};
                 [V,w] = velocityFromPoses(obj.poseArray(:,i),obj.poseArray(:,i+1),dt);
+                
+                obj.avgTimeToMatch = obj.avgTimeToMatch+stats.duration;
             end
+            obj.avgTimeToMatch = obj.avgTimeToMatch/length(tArray);
         end
         
         function hf = plot(obj,map)

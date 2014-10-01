@@ -4,7 +4,7 @@ function hf = overlayTrajectories(rflArray,mfl,map)
 % hf = OVERLAYTRAJECTORIES(rflArray,mfl,map)
 % 
 % rflArray - registrationFilter array.
-% mfl      - motionFilter object. Nomnial trajectory is here.
+% mfl      - motionFilter object. Nominal trajectory is here.
 % map      - lineMap object.n
 % 
 % hf       - Figure handle.
