@@ -2,7 +2,7 @@ classdef lineObject < handle
     %lineObject A layer over a column vector that provides access methods
     
     properties(Constant)
-		plot_props = {'-', 'LineWidth', 2};
+		plot_props = {'-', 'LineWidth',2};
     end
     
     properties(Access = public)
@@ -50,7 +50,7 @@ classdef lineObject < handle
                 else
                     hold on
 					obj.h = plot(obj.line_coords(:,1), obj.line_coords(:,2),...
-						obj.plot_props{:}, 'Color', obj.color);
+						obj.plot_props{:}, 'Color', obj.color,'linewidth',3);
                     hold off
 				end
 			end

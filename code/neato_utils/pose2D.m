@@ -60,6 +60,20 @@ classdef pose2D < handle
             p = [T(1,3); T(2,3); theta];
         end
         
+        function dp = poseDiff(p1,p2)
+            %POSEDIFF
+            %
+            % dp = POSEDIFF(p1,p2)
+            %
+            % p1 - Pose 1.
+            % p2 - Pose 2.
+            %
+            % dp - Takes p1 to p2.
+            
+            dp = p2-p1;
+            dp(3) = thDiff(p1(3),p2(3));
+        end
+        
         function p2 = pose1ToPose2(p1,Tp2_p1)
             % Tp2_p1 takes p2 to p1
             objInput = isa(p1,'pose2D');

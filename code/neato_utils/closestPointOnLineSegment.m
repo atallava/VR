@@ -1,8 +1,7 @@
 function [rad2 , po] = closestPointOnLineSegment(pi,p1,p2)
 %CLOSESTPOINTONLINESEGMENT 
-% Find point on a line segment closest to a given
-% point. and return the closest point and the square of
-% the distance to it.
+% Find points on a line segment closest to given
+% points and and return the square distance.
 % 
 % [rad2 , po] = CLOSESTPOINTONLINESEGMENT(pi,p1,p2)
 % 
@@ -54,9 +53,9 @@ if any(flag2)
     %temp = repmat([p1(1); p1(2)],1,sum(flag2));
     temp = bsxfun(@times,ones(2,sum(flag2)),[p1(1); p1(2)]);
     po(:,flag2) = temp;
-    dx = pi(1,flag2)-po(1,flag2);
-    dy = pi(2,flag2)-po(2,flag2);
-    %rad2(flag2) = dx.*dx+dy.*dy;
+%     dx = pi(1,flag2)-po(1,flag2);
+%     dy = pi(2,flag2)-po(2,flag2);
+%     rad2(flag2) = dx.*dx+dy.*dy;
     rad2(flag2) = inf;
 end
 % Closest is second endpoint
@@ -65,9 +64,9 @@ if any(flag3)
     %temp = repmat([p2(1) ; p2(2)],1,sum(flag3));
     temp = bsxfun(@times,ones(2,sum(flag3)),[p2(1); p2(2)]);
     po(:,flag3) = temp;
-    dx = pi(1,flag3)-po(1,flag3);
-    dy = pi(2,flag3)-po(2,flag3);
-    %rad2(flag3) = dx.*dx+dy.*dy;
+%     dx = pi(1,flag3)-po(1,flag3);
+%     dy = pi(2,flag3)-po(2,flag3);
+%     rad2(flag3) = dx.*dx+dy.*dy;
     rad2(flag3) = inf;
 end
 end

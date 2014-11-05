@@ -58,7 +58,7 @@ classdef lineMapLocalizer < handle
             for i = 1:size(obj.lines_p1,2)
                 %[r2Array(i,:) , ~] = closestPointOnLineSegment(p,...
                     %obj.lines_p1(:,i),obj.lines_p2(:,i));
-                    r2Array(i,:) = myDist(p,obj.lines_p1(:,i),obj.lines_p2(:,i));
+                r2Array(i,:) = myDist(p,obj.lines_p1(:,i),obj.lines_p2(:,i));
             end
             ro2 = min(r2Array,[],1);
         end
@@ -183,7 +183,7 @@ classdef lineMapLocalizer < handle
             hf = figure;
             hold on;
             for i = 1:size(obj.lines_p1,2)
-               plot([obj.lines_p1(1,i) obj.lines_p2(1,i)],[obj.lines_p1(2,i) obj.lines_p2(2,i)],'LineWidth',2); 
+               plot([obj.lines_p1(1,i) obj.lines_p2(1,i)],[obj.lines_p1(2,i) obj.lines_p2(2,i)],'LineWidth',1); 
             end
             axis equal;
             hold off;
