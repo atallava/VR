@@ -32,6 +32,13 @@ classdef trajectoryFollower < handle
         end
         
         function execute(obj,rob,rstate)
+			%EXECUTE
+			%
+			% EXECUTE(obj,rob,rstate)
+			%
+			% rob    - Neato object.
+			% rstate - robState object attached to rob. 
+			
             obj.resetLogs;
             logCount = 1;
             update_count_old = rstate.update_count;
@@ -100,7 +107,16 @@ classdef trajectoryFollower < handle
             figure;
             plot(obj.tLog(ids),obj.VFbLog(ids),'+r'); hold on; plot(obj.tLog(ids),obj.wFbLog(ids),'+b'); legend('VFb','wFb');
             xlabel('t'); ylabel('Vfb,Wfb');
-        end
+		end
+		
+		function last = lastIdLogs(obj)
+		    last = find(obj.tLog == 0);
+            if isempty(last)
+                last = length(trajectoryFollower.LOG_SIZE);
+            else
+                last = last(1)-1;
+			end
+		end
         
         function resetLogs(obj)
             [obj.tLog,obj.VFfLog,obj.wFfLog,obj.VFbLog,obj.wFbLog] = deal(zeros(1,trajectoryFollower.LOG_SIZE));

@@ -1,4 +1,4 @@
-classdef optimizeParamsToIntegratedPose < hand
+classdef optimizeParamsToIntegratedPose < handle
     %optimizeParamsToIntegratedPose
 
     properties (SetAccess = private)
@@ -13,8 +13,10 @@ classdef optimizeParamsToIntegratedPose < hand
     methods
         function obj = optimizeParamsToIntegratedPose(inputStruct)
             % inputStruct fields ('data','wheelToBodyVel','params0','delParams')
-            % default (,,,)
-            if isfield(inputStruct,'data')
+			% data is a struct array with fields
+			% ('startPose','finalPose','vlArray','vrArray','tArray')
+			
+			if isfield(inputStruct,'data')
                 obj.data = inputStruct.data;
             else
                 error('DATA NOT INPUT.');
