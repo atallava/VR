@@ -31,7 +31,7 @@ classdef optimizeParamsToIntegratedPose < handle
             else
                 error('PARAMS0 NOT INPUT.');
             end
-            nParams = length(params0);
+            obj.nParams = length(obj.params0);
             if isfield(inputStruct,'delParams')
                 obj.delParams = inputStruct.delParams;
             else
@@ -55,7 +55,7 @@ classdef optimizeParamsToIntegratedPose < handle
                     J = getJacobianParamsToIntegratedPose(obj.data(i).startPose,obj.data(i).vlArray,obj.data(i).vrArray,obj.data(i).tArray,obj.wheelToBodyVel,params,obj.delParams);
                     stackJ(ids,:) = J;
                 end
-                dParams = (J'*J)\(J'*stackDelPose);
+                dParams = (stackJ'*stackJ)\(stackJ'*stackDelPose);
                 params = params+dParams;
             end
         end

@@ -8,14 +8,14 @@ function dataEncVel = getDataEncVel(dataCommVel,encLogs)
 % 
 % dataEncVel  - 
 
-dataEncVel = struct('startPoses',{},'finalPoses',{},'vlArray',{},'tArray',{});
+dataEncVel = struct('startPose',{},'finalPose',{},'vlArray',{},'tArray',{});
 [vl,vr] = encLogsToEncVel(encLogs);
 for i = 1:length(dataCommVel)
 	dataEncVel(i).startPose = dataCommVel(i).startPose;
 	dataEncVel(i).finalPose = dataCommVel(i).finalPose;
-	dataCommVel(i).vlArray = vl{i};
-	dataCommVel(i).vrArray = vr{i};
-	dataCommVel(i).tArray = encLogs(i).tArray(2:end);
+	dataEncVel(i).vlArray = vl{i};
+	dataEncVel(i).vrArray = vr{i};
+	dataEncVel(i).tArray = encLogs(i).tArray(2:end);
 end
 
 end

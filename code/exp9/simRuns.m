@@ -3,10 +3,10 @@ ctrl = controllerClass(struct('gainV',0,'gainW',0));
 tfl = trajectoryFollower(struct('trajectory',[],'controller',ctrl));
 
 %%
-% needs rob, enc, rstate to exist in workspace
+% needs rob, rstate to exist in workspace
 
 nPoses = 2;
-dataCommVel = struct('startPoses',{},'finalPoses',{},'vlArray',{},'tArray',{});
+dataCommVel = struct('startPose',{},'finalPose',{},'vlArray',{},'tArray',{});
 encLogs = struct('log',{},'tArray',{});
 
 enc = encHistory(rob);
