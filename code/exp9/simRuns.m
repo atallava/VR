@@ -11,6 +11,7 @@ encLogs = struct('log',{},'tArray',{});
 
 enc = encHistory(rob);
 for i = 1:nPoses
+	fprintf('Trajectory %d...\n',i);
 	enc.reset();
 	rob.sim_robot.pose = [0 0 pi/2]';
 	pause(0.5);
