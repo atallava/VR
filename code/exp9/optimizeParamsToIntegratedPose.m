@@ -8,7 +8,8 @@ classdef optimizeParamsToIntegratedPose < handle
         nParams
         delParams
         dParamsThresh = 1e-6;
-    end
+		maxIter = 2;
+	end
 
     methods
         function obj = optimizeParamsToIntegratedPose(inputStruct)
@@ -45,20 +46,24 @@ classdef optimizeParamsToIntegratedPose < handle
             stackJ = zeros(3*nData,obj.nParams);
             params = obj.params0;
             dParams = Inf;
-            while dParams > obj.dParamsThresh
-                for i = 1:nData
-                    [VArray,wArray] = obj.wheelToBodyVel(obj.data(i).vlArray,obj.data(i).vrArray,params);
-                    predictedFinalPose = integrateVelocities(obj.data(i).startPose,VArray,wArray,obj.data(i).tArray);
-                    delPose = pose2D.poseDiff(predictedFinalPose,obj.data(i).finalPose);
-                    ids = 3*(i-1)+1:3*i;
-                    stackDelPose(ids) = delPose;
-                    J = getJacobianParamsToIntegratedPose(obj.data(i).startPose,obj.data(i).vlArray,obj.data(i).vrArray,obj.data(i).tArray,obj.wheelToBodyVel,params,obj.delParams);
-                    stackJ(ids,:) = J;
-                end
-                dParams = (stackJ'*stackJ)\(stackJ'*stackDelPose);
-                params = params+dParams;
-            end
-        end
+			numIter = 0;
+			while (numIter < obj.maxIter) && (norm(dParams) > obj.dParamsThresh)
+				numIter = numIter+1;
+				for i = 1:nData
+					[VArray,wArray] = obj.wheelToBodyVel(obj.data(i).vlArray,obj.data(i).vrArray,params);
+					predictedFinalPose = integrateVelocities(obj.data(i).startPose,VArray,wArray,obj.data(i).tArray);
+					delPose = pose2D.poseDiff(predictedFinalPose,obj.data(i).finalPose);
+					ids = 3*(i-1)+1:3*i;
+					stackDelPose(ids) = delPose;
+					J = getJacobianParamsToIntegratedPose(obj.data(i).startPose,obj.data(i).vlArray,obj.data(i).vrArray,obj.data(i).tArray,obj.wheelToBodyVel,params,obj.delParams);
+					stackJ(ids,:) = J;
+				end
+				dParams = (stackJ'*stackJ)\(stackJ'*stackDelPose);
+				params = params+dParams;
+				fprintf('numIter: %d\n',numIter);
+				disp(params);
+			end
+		end
     end
 
     methods (Static = true)

@@ -28,9 +28,7 @@ for i = 1:nParams
     finalMinus = integrateVelocities(startPose,VArray,wArray,tArray);
     
     delPose = pose2D.poseDiff(finalMinus,finalPlus);
-    delPose = delPose./2*delParams(i);
-    
-    J(:,i) = delPose;
+    J(:,i) = delPose./(2*delParams(i));
 end
 
 end

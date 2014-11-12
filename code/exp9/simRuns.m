@@ -5,7 +5,7 @@ tfl = trajectoryFollower(struct('trajectory',[],'controller',ctrl));
 %%
 % needs rob, rstate to exist in workspace
 
-nPoses = 2;
+nPoses = 5;
 dataCommVel = struct('startPose',{},'finalPose',{},'vlArray',{},'tArray',{});
 encLogs = struct('log',{},'tArray',{});
 
