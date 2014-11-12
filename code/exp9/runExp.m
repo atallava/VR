@@ -22,10 +22,11 @@ refiner = laserPoseRefiner(struct('localizer',localizer,'laser',robotModel.laser
 %% collect data
 nominalStartPose = [0.5; 0.5; pi/2];
 enc = encHistory(rob);
-for i = 1:2%length(trajectories)
+for i = 1:length(trajectories)
 	% position robot
 	input('Press any key when ready. ');
-	rob.sim_robot.pose = nominalStartPose();
+	% when in sim...
+% 	rob.sim_robot.pose = nominalStartPose(); 
 	rstate.reset(nominalStartPose);
 	pause(0.5);
 
