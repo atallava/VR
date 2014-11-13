@@ -8,7 +8,7 @@ classdef optimizeParamsToIntegratedPose < handle
         nParams
         delParams
         dParamsThresh = 1e-6;
-		maxIter = 2;
+		maxIter = 10;
 	end
 
     methods
@@ -60,8 +60,6 @@ classdef optimizeParamsToIntegratedPose < handle
 				end
 				dParams = (stackJ'*stackJ)\(stackJ'*stackDelPose);
 				params = params+dParams;
-				fprintf('numIter: %d\n',numIter);
-				disp(params);
 			end
 		end
     end

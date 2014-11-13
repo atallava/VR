@@ -23,6 +23,8 @@ refiner = laserPoseRefiner(struct('localizer',localizer,'laser',robotModel.laser
 nominalStartPose = [0.5; 0.5; pi/2];
 enc = encHistory(rob);
 for i = 1:length(trajectories)
+	rstate.reset(nominalStartPose);
+	pause(0.5);
 	% position robot
 	input('Press any key when ready. ');
 	% when in sim...
@@ -51,7 +53,7 @@ for i = 1:length(trajectories)
 	tfl.resetTrajectory(trajectories(i));
 	tfl.execute(rob,rstate);
 	pause(0.5);
-	
+	rstate.update_count
 	% log data
 	encLogs(i).log = enc.log;
 	encLogs(i).tArray = enc.tArray;
