@@ -3,8 +3,12 @@ classdef encHistory < handle
     % timestamped based on robot returns
     
     properties
+		% log is a struct array with fields ('left','right')
+		% tArray is timestamps from robot
+		% tLocalArray is system timestamps
         log
         tArray
+		ticLocal; tLocalArray
         update_count
         listenerHandle
         rob
@@ -15,15 +19,17 @@ classdef encHistory < handle
             obj.rob = rob;
             obj.log = struct('left',{},'right',{});
             obj.tArray = [];
-            obj.update_count = 0;
-            obj.listenerHandle = addlistener(rob.encoders,'OnMessageReceived',@(src,evt) encHistory.encoderEventResponse(src,evt,obj));
-        end
+			obj.ticLocal = tic(); obj.tLocalArray = [];
+			obj.update_count = 0;
+			obj.listenerHandle = addlistener(rob.encoders,'OnMessageReceived',@(src,evt) encHistory.encoderEventResponse(src,evt,obj));
+		end
         
         function reset(obj)
             obj.listenerHandle.delete;
             pause(0.01);
             obj.log = struct('left',{},'right',{});
             obj.tArray = [];
+			obj.ticLocal = tic(); obj.tLocalArray = [];
             obj.update_count = 0;
             obj.listenerHandle = addlistener(obj.rob.encoders,'OnMessageReceived',@(src,evt) encHistory.encoderEventResponse(src,evt,obj));
         end
@@ -43,6 +49,7 @@ classdef encHistory < handle
         function encoderEventResponse(src,evt,obj)
             obj.update_count = obj.update_count+1;
             obj.tArray(obj.update_count) = evt.data.header.stamp.secs + (evt.data.header.stamp.nsecs*1e-9);
+			obj.tLocalArray(obj.update_count) = toc(obj.ticLocal);
             obj.log(obj.update_count).left = evt.data.left;
             obj.log(obj.update_count).right = evt.data.right;
         end

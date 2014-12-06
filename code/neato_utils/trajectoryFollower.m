@@ -48,10 +48,11 @@ classdef trajectoryFollower < handle
             oldRState = rstate.pose;
             currentTh = rstate.pose(3); 
             while(toc(tClock) < obj.trajectory.getTrajectoryDuration)
-                while update_count_old == rstate.update_count
-                    pause(robotModel.tPause);
-                    continue;
-                end
+%                 while update_count_old == rstate.update_count
+%                     %pause(robotModel.tPause);
+% 					pause(0.01);
+%                     continue;
+%                 end
                 update_count_old = rstate.update_count;
                 tNew = toc(tClock); 
                 

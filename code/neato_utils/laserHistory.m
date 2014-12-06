@@ -23,8 +23,9 @@ classdef laserHistory < handle
     properties
         log
         tArray
-        update_count
-        listenerHandle
+		ticLocal; tLocalArray
+		update_count
+		listenerHandle
         rob
         bearings
         hfig; hplot
@@ -45,7 +46,8 @@ classdef laserHistory < handle
             obj.rob = rob;
             obj.log = struct('ranges',{},'intensities',{});
             obj.tArray = [];
-            obj.update_count = 0;
+            obj.ticLocal = tic(); obj.tLocalArray = [];
+			obj.update_count = 0;
             obj.bearings = deg2rad(0:359);
             obj.hfig = figure; obj.hplot = plot(0,0,'.'); 
             axis equal; xlabel('x'); ylabel('y'); set(obj.hfig,'visible','off'); 
@@ -58,7 +60,8 @@ classdef laserHistory < handle
             pause(0.01);
             obj.log = struct('ranges',{},'intensities',{});
             obj.tArray = [];
-            obj.update_count = 0;
+            obj.ticLocal = tic(); obj.tLocalArray = [];
+			obj.update_count = 0;
             obj.listenerHandle = addlistener(obj.rob.laser,'OnMessageReceived',@(src,evt) encHistory.laserEventResponse(src,evt,obj));
         end
         
@@ -104,8 +107,9 @@ classdef laserHistory < handle
     methods (Static)
         function laserEventResponse(src,evt,obj)
             obj.update_count = obj.update_count+1;
-            obj.tArray(obj.update_count) = evt.data.header.stamp.secs + (evt.data.header.stamp.nsecs*1e-9);
-            obj.log(obj.update_count).ranges = evt.data.ranges;
+			obj.tArray(obj.update_count) = evt.data.header.stamp.secs + (evt.data.header.stamp.nsecs*1e-9);
+			obj.tLocalArray(obj.update_count) = toc(obj.ticLocal);
+			obj.log(obj.update_count).ranges = evt.data.ranges;
             if isfield(evt.data,'intensities')
                 % Currently not all laser interfaces broadcast intensities.
                 obj.log(obj.update_count).intensities = evt.data.ranges;

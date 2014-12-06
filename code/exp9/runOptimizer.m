@@ -1,5 +1,5 @@
 clearAll
-load data_milli_12nov
+load data_nov12_milli
 
 %% commanded velocities
 inputStruct.data = dataCommVel;
