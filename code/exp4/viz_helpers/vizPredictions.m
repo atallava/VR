@@ -6,7 +6,6 @@ function vizPredictions(dp,predParamArray,localizer)
 % dp             - dataProcessor object.
 % predParamArray - Array of size num test poses x params x num pixels.
 % localizer      - lineMapLocalizer object.
-%vizPredictions visualize real vs predicted data
 
 % pick some pixel for viewing histograms
 pmfPixel = randperm(dp.laser.nPixels,1);

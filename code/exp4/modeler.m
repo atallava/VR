@@ -31,11 +31,16 @@ trainSigmaArray = trainPdfs.paramArray(:,2,:);
 trainPzArray = trainPdfs.paramArray(:,3,:);
 
 % hack hack hack. throwing outliers in regression stage
-thresh = 0.1;
-nominalRange = p2r.transform(dp.XTrain);
-flag = (trainMuArray > nominalRange+thresh) | (trainMuArray < nominalRange-thresh);
-trainMuArray(flag) = nan;
-trainSigmaArray(flag) = nan;
+% thresh = 0.1;
+% nominalRange = p2r.transform(dp.XTrain);
+% flag = (trainMuArray > nominalRange+thresh) | (trainMuArray < nominalRange-thresh);
+% trainMuArray(flag) = nan;
+% trainSigmaArray(flag) = nan;
+
+% use result from a robust np
+load outlier_flags_sep6
+trainMuArray(outlierFlag) = nan;
+trainSigmaArray(outlierFlag) = nan;
 
 % switches to account for laser.maxRange
 bsMu = boxSwitch(struct('XRanges',[0; dp.laser.maxRange],'switchY',0));
@@ -43,7 +48,7 @@ bsSigma = boxSwitch(struct('XRanges',[0 0; dp.laser.maxRange 2*pi],'switchY',nan
 bsPz = boxSwitch(struct('XRanges',[0 0; dp.laser.maxRange 2*pi],'switchY',1));
 
 inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainMuArray,'poolOption',0,'inputPoseTransf', p2ra, ...
-'regClass',@locallyWeightedLinearRegressor,'XSpaceSwitch',bsMu,'kernelFn',@kernelRBF, 'kernelParams',struct('h',0.5053,'lambda',1.5539));
+    'regClass',@locallyWeightedLinearRegressor,'XSpaceSwitch',bsMu,'kernelFn',@kernelRBF, 'kernelParams',struct('h',0.5053,'lambda',1.5539));
 muPxRegBundle = pixelRegressorBundle(inputStruct);
 
 inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,'poolOption',0,'inputPoseTransf', p2ra, ...
@@ -51,7 +56,7 @@ inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainSigmaArray,'poolOption',0,
 sigmaPxRegBundle = pixelRegressorBundle(inputStruct);
 
 inputStruct = struct('XTrain',dp.XTrain,'YTrain',trainPzArray,'inputPoseTransf', p2ra, ...
-    'regClass',@locallyWeightedLinearRegressor, 'XSpaceSwitch',bsPz,'kernelFn', @kernelRBF, 'kernelParams',struct('h',0.2255,'lambda',0.5757));
+    'regClass',@locallyWeightedLinearRegressor,'XSpaceSwitch',bsPz,'kernelFn', @kernelRBF, 'kernelParams',struct('h',0.2255,'lambda',0.5757));
 pzPxRegBundle = pixelRegressorBundle(inputStruct);
 
 %{
