@@ -1,23 +1,24 @@
 classdef gridCarver < handle
         
     properties
-        gm
+        gridMade
         elements
         nElements
+        perm % permeabilities
     end
     
     methods
         function obj = gridCarver(pts)
-            obj.gm = gridMaker(pts);
+            obj.gridMade = gridMaker(pts);
             obj.fitElements();
         end
         
         function fitElements(obj)
             obj.elements = struct('mu',{},'sigma',{});
             obj.nElements = 0;
-            for i = 1:obj.gm.nElements
-                if obj.gm.filledFlag(i)
-                    ptsElement = obj.gm.ptsInElement(i);
+            for i = 1:obj.gridMade.nElements
+                if obj.gridMade.filledFlag(i)
+                    ptsElement = obj.gridMade.ptsInElement(i);
                     obj.nElements = obj.nElements+1;
                     obj.elements(obj.nElements).mu = mean(ptsElement,2);
                     obj.elements(obj.nElements).sigma = cov(ptsElement');
@@ -27,7 +28,7 @@ classdef gridCarver < handle
         
         function hf = plotElements(obj)
             hf = figure;
-            plot(obj.gm.pts(1,:),obj.gm.pts(2,:),'r.')
+            plot(obj.gridMade.pts(1,:),obj.gridMade.pts(2,:),'r.')
             axis equal;
             hold on;
             for i = 1:obj.nElements

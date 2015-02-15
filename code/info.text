@@ -1,0 +1,101 @@
+## code/ ##
+Information about contents of files. Mostly data files,
+
+### exp3/ ###
+* data\_22Jan  
+  moved robot in straight line. at 20 poses, took 500 readings of world.
+* processed\_data  
+derived from above file. contains a struct array called datax-position in world, and range readings of bearing ids 1-10, 351-360. assuming that these readings are from a static world. 
+
+### exp4/ ###
+#### mats/ ####
+* data\_Feb7  
+Range readings in artificial environment for building simulator. Robot: mega.
+Made a mistake: no time logs of encoder returns.
+
+* data\_mar27  
+Range readings in artificial environment for building simulator. Robot: peta.
+
+* data\_may5\_peta  
+Collected data to test maximum range of laser and unexplained large-range readings. Robot: peta.
+
+* data_june6  
+To test simulator on line-finding. Robot: peta.
+
+* data\_sep6\_micro\_train  
+100 poses to train simulator on.
+
+* data\_sep6\_micro\_test  
+30 poses to train simulator on.
+
+* data\_sep13\_micro  
+data from which to analyze localization-via-registration bounds.
+
+* data\_sep14\_micro  
+data to test pose sensitivity when registering in nsh3\_corridor
+
+* data\_sep19\_micro  
+data to test prediction of pz and sigma at > 3m
+
+* full\_predictor\_mar27\_1  
+canonical 29 training poses. individual models for each pixel.
+
+* full\_predictor\_mar27\_2  
+same as above, but with all (42) poses as training poses.
+
+* full\_predictor\_mar27\_3  
+29 training poses. single model for all pixels (collated and compressed data), using nullFraction for pz.
+
+* full\_predictor\_mar27\_4  
+same as above but performing no-pool predictions for pz.
+
+* full\_predictor\_mar27\_5  
+used local matching to create the muPxRegBundle, other regressors as in \_4. trained with canonical 29 poses.
+
+* full\_predictor\_mar27\_6  
+used local matching + indiscriminate pooling to create the muPxRegBundle. trained with canonical 29 poses. 
+
+* full\_predictor\_sep6\_1  
+threw outliers hackily. 
+
+* sim\_sep6\_1  
+rsim derived from full\_predictor\_sep6\_1.
+Most usable version of simulator.
+
+* full\_predictor\_sep6\_2  
+same as full\_predictor\_sep6\_1 except used local matching.
+
+* sim\_sep6\_2  
+rsim derived from full\_predictor\_sep6\_2
+
+* smoothness\_tester  
+all 42 poses, \emph{but mu and sigma are the same for all pixels	. 
+
+### exp6/ ###
+* full\_predictor\_means\_only\_mar27\_1  
+trained on all poses. sigma and pz are zero in all predictions.
+
+* full\_predictor\_means\_only\_mar27\_2  
+trained on 29 poses. sigma and pz are zero in all predictions.
+
+* simulated\_means\_mar27  
+robot placed in poses of mar27 and ranges generated from map.raycast()
+
+* local\_geom\_regressor\_instance  
+localGeomRegressor instance, with muArray from full\_predictor\_means\_only\_mar27\_1
+
+* density\_data  
+triplets is a set of observed three consecutive (and non-nan) ranges from all training poses.
+
+### misc/ ###
+#### kde/ ####
+* scores  
+scores1: hist similarity scores between real histograms and normWithDrops. scores2: hist similarity between kernel density estimate and normWithDrops
+
+#### mle_nsamples/ ####
+* data\_aug19\_1  
+from peta. ~1000 pieces of data from the laser, to definitively settle the question of how many data points to collect to estimate mu, sigma, pz
+
+### playback/ ###
+* sample\_sensor\_data\_1  
+Data to test playback.
