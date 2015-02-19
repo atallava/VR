@@ -16,7 +16,7 @@ classdef vaneSimulator < handle
             ranges = zeros(1,laser.nPixels);
             p0 = pose(1:2);
             for i = 1:laser.nPixels
-                th = laser.bearings(i);
+                th = laser.bearings(i)+pose(3);
                 r = [cos(th); sin(th)];
                 tArray = zeros(1,obj.scRep.gridCarving.nElements);
                 dArray = zeros(size(tArray));

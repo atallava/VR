@@ -72,20 +72,27 @@ classdef rangeImage < handle
             %            Pose is a length 3 array or [].
             %
             % hf       - Figure handle.
-            x = obj.xArray; y = obj.yArray;
-            if nargin < 3
-                maxRange = obj.maxUsefulRange;
-            end
-            if nargin > 1 && ~isempty(pose)
-                pts = pose2D.transformPoints([x; y],pose);
-                x = pts(1,:); y = pts(2,:);
-            end
+
+			x = obj.xArray; y = obj.yArray;
+			if nargin == 1
+				pose = zeros(3,1);
+				maxRange = obj.maxUsefulRange;
+			elseif nargin == 2
+				maxRange = obj.maxUsefulRange;
+			else
+				if isempty(pose)
+					pose = zeros(3,1);
+				end
+			end
+			pts = pose2D.transformPoints([x; y],pose);
+			x = pts(1,:); y = pts(2,:);
+
             ids = find(obj.rArray <= maxRange);
             hf = figure;
-            
+
             plot(x(ids),y(ids),'r.','markersize',10); hold on;
-            hq = quiver(0,0,0.4,0,'k','LineWidth',2); hold off;
-            adjust_quiver_arrowhead_size(hq,4);
+			hq = quiver(pose(1),pose(2),0.4*cos(pose(3)),0.4*sin(pose(3)),'k','LineWidth',2); hold off;
+			adjust_quiver_arrowhead_size(hq,4);
             axis equal; 
             xlabel('x');
             ylabel('y');
