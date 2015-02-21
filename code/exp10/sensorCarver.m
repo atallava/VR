@@ -1,40 +1,45 @@
-classdef sensorCentricRep < handle
-    %sensorCentricRep
+classdef sensorCarver < handle
+    %sensorCarver Carve points into elements.
 
+	properties (Constant = true)
+		hitThreshold = 2;
+	end
+	
     properties %(SetAccess = private)
         obsArray; obsIds
         poses
         laser
         rayStart; rayEnd; rayDirn; nRays
         gridCarving
-        hitArray; missArray; permArray;
-        hitThreshold = 2;
-    end
+        hitArray; missArray; 
+		elements;
+	end
     
     methods
-        function obj = sensorCentricRep(inputStruct)
+        function obj = sensorCarver(inputStruct)
             % inputStruct fields ('obsArray','obsIds','poses','laser')
             % default (,,,)
-            if isfield(inputStruct,'obsArray')
-                obj.obsArray = inputStruct.obsArray;
-            else
-            end
-            if isfield(inputStruct,'obsIds')
-                obj.obsIds = inputStruct.obsIds;
-            else
-            end
-            if isfield(inputStruct,'poses')
-                obj.poses = inputStruct.poses;
-            else
-            end
-            if isfield(inputStruct,'laser')
-                obj.laser = inputStruct.laser;
-            else
-            end
-                    
-            obj.fillRays();
-            obj.gridCarving = gridCarver(obj.rayEnd);
-            obj.calcPermeabilities();
+			if isfield(inputStruct,'obsArray')
+				obj.obsArray = inputStruct.obsArray;
+			else
+			end
+			if isfield(inputStruct,'obsIds')
+				obj.obsIds = inputStruct.obsIds;
+			else
+			end
+			if isfield(inputStruct,'poses')
+				obj.poses = inputStruct.poses;
+			else
+			end
+			if isfield(inputStruct,'laser')
+				obj.laser = inputStruct.laser;
+			else
+			end
+			
+			obj.fillRays();
+			obj.gridCarving = gridCarver(obj.rayEnd);
+			obj.elements = obj.gridCarving.elements();
+			obj.calcPermeabilities();
         end
         
         function fillRays(obj)
@@ -59,7 +64,7 @@ classdef sensorCentricRep < handle
         function calcPermeabilities(obj)
             % to avoid singular matrix messages
             warning('off'); 
-            [obj.hitArray,obj.missArray,obj.permArray] = deal(zeros(1,obj.gridCarving.nElements));
+            [obj.hitArray,obj.missArray] = deal(zeros(1,obj.gridCarving.nElements));
             % naive nested loop will slow things down
             t1 = tic();
             for i = 1:obj.nRays
@@ -82,13 +87,15 @@ classdef sensorCentricRep < handle
                     end
 %                     waitforbuttonpress
                 end
-            end
+			end
+			
+			for i = 1:length(obj.elements)
+				obj.elements(i).perm = obj.missArray(i)/(obj.hitArray(i)+obj.missArray(i));
+			end
             fprintf('Calculation took %.2fs\n',toc(t1));
-            obj.permArray = obj.missArray./(obj.hitArray+obj.missArray);
             warning('on');
-        end
-        
-    end
+		end
+   end
 
     methods (Static = true)
     end

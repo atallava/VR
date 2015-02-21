@@ -1,5 +1,5 @@
 classdef carvedObject < handle
-	% associate elements with an object
+	%carvedObject Associate elements with an object.
 		
 	properties
 		bBox
@@ -40,6 +40,7 @@ classdef carvedObject < handle
 		end
 		
 		function interpolateElements(obj)
+			% simple interpolation: copy elements on sides
 			assert(~isempty(obj.bBox),'BBOX CANNOT NOT BE EMPTY.')
 			mus = [obj.elements(:).mu];
 			flag = mus(1,:) <= 0;
@@ -47,47 +48,30 @@ classdef carvedObject < handle
 			flag = mus(2,:) <= 0;
 			countY = max(sum(flag),length(flag)-sum(flag));
 			if countX > countY
-				obj.flipHorizontal();
+				obj.flipElements(1);
 			else
-				obj.flipVertical();
+				obj.flipElements(2);
 			end
 		end
 		
-		function flipHorizontal(obj)
+		function flipElements(obj,d)
+			% d = 1 for x-flip, 2 for y-flip
 			mus = [obj.elements(:).mu];
-			x = mus(1,:);
-			flag = x <= 0;
+			coords = mus(d,:);
+			flag = coords <= 0;
 			if sum(flag) > length(flag)-sum(flag)
 				s = 1;
 			else
 				s = -1;
 			end
-			u = s*max(s*x);
-			ids = find(s*x <= -s*u);
-			R = [-1 0; 0 1];
+			u = s*max(s*coords);
+			ids = find(s*coords <= -s*u);
+			R = eye(2);
+			R(d,d) = -1;
 			for i = ids
-				elem.mu = R*obj.elements(i).mu;
-				elem.sigma = R\obj.elements(i).sigma*R;
-				obj.elements(end+1) = elem;
-				obj.nElements = obj.nElements+1;
-			end
-		end
-		
-		function flipVertical(obj)
-			mus = [obj.elements(:).mu];
-			y = mus(2,:);
-			flag = y <= 0;
-			if sum(flag) > length(flag)-sum(flag)
-				s = 1;
-			else
-				s = -1;
-			end
-			u = s*max(s*y);
-			ids = find(s*y <= -s*u);
-			R = [1 0; 0 -1];
-			for i = ids
-				elem.mu = R*obj.elements(i).mu;
-				elem.sigma = R\obj.elements(i).sigma*R;
+				elem = obj.elements(i);
+				elem.mu = R*elem.mu;
+				elem.sigma = R\elem.sigma*R;
 				obj.elements(end+1) = elem;
 				obj.nElements = obj.nElements+1;
 			end
@@ -97,15 +81,8 @@ classdef carvedObject < handle
 			if nargin < 2
 				T = eye(3);
 			end
-			hf = figure;
-			axis equal;
-			hold on;
 			els = obj.transformObject(T);
-			for i = 1:length(els)
-				[x,y] = getEllipsePoints(els(i).sigma);
-				plot(x+els(i).mu(1),y+els(i).mu(2),'g','linewidth',2);
-				plot(els(i).mu(1),els(i).mu(2),'bo');
-			end
+			hf = plotCarvedElements(els);
 		end
 	end
 	

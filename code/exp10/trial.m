@@ -1,10 +1,11 @@
 clearAll;
-load processed_data_sep6
+load processed_data_milli_160215
 
 %% plot like, a whole lot of data.
 
 figure; hold on; axis equal;
-poseIds = randperm(length(trainPoseIds),10);
+%poseIds = randperm(length(trainPoseIds),10);
+poseIds = setdiff(1:10,3);
 obsId = 2;
 ptsBig = [];
 for i = 1:length(poseIds)
@@ -17,14 +18,6 @@ for i = 1:length(poseIds)
     plot(pts(1,:),pts(2,:),'r.');
 end
 
-%% distance between ray and a gaussian
-mu = [0; 0];
-S = [40 1; 1 0]*1e-1;
-p0 = [10; 10];
-r = -[1.5; 1]; 
-r = r/norm(r);
-tmin = (r'/S)*(mu-p0);
-tmin = tmin/(r'/S*r);
 
 %%
 clearAll

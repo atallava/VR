@@ -1,37 +1,44 @@
 classdef vaneSimulator < handle
-        
+	%vaneSimulator 
+	
     properties
-        scRep
+        laser
+		elements
+		nElements
     end
     
     methods
-        function obj = vaneSimulator(scRep)
-            obj.scRep = scRep;
-        end
+        function obj = vaneSimulator(laser)
+            obj.laser = laser;
+		end
+		
+		function setScene(obj,elements)
+			obj.elements = elements;
+			obj.nElements = length(elements);
+		end
         
         function ranges = simulate(obj,pose)
             % pose is laser pose
             if isrow(pose) pose = pose'; end            
-            laser = obj.scRep.laser;
-            ranges = zeros(1,laser.nPixels);
+			ranges = zeros(1,obj.laser.nPixels);
             p0 = pose(1:2);
-            for i = 1:laser.nPixels
-                th = laser.bearings(i)+pose(3);
+            for i = 1:obj.laser.nPixels
+				th = obj.laser.bearings(i)+pose(3);
                 r = [cos(th); sin(th)];
-                tArray = zeros(1,obj.scRep.gridCarving.nElements);
+                tArray = zeros(1,obj.nElements);
                 dArray = zeros(size(tArray));
-                for j = 1:obj.scRep.gridCarving.nElements
-                    elem = obj.scRep.gridCarving.elements(j);
+                for j = 1:obj.nElements
+                    elem = obj.elements(j);
                     [d,t] = mahalanobisDistanceRay(p0,r,elem.mu,elem.sigma);
                     tArray(j) = t;
                     dArray(j) = d;
                 end
-                elemIds = 1:obj.scRep.gridCarving.nElements;
+                elemIds = 1:obj.nElements;
                 % discard negative rays
                 flag = tArray < 0;
                 tArray(flag) = []; dArray(flag) = []; elemIds(flag) = [];
                 % discard rays that are far
-                flag = dArray > obj.scRep.hitThreshold;
+                flag = dArray > sensorCarver.hitThreshold;
                 tArray(flag) = []; dArray(flag) = []; elemIds(flag) = [];
                 
                 [tArray,sortedIds] = sort(tArray);
@@ -41,9 +48,9 @@ classdef vaneSimulator < handle
                 noHit = true;
                 for j = 1:length(tArray)
                     toss = rand;
-                    if toss > obj.scRep.permArray(elemIds(j))
+                    if toss > obj.elements(elemIds(j)).perm
                         % sample from this element
-                        elem = obj.scRep.gridCarving.elements(elemIds(j));
+                        elem = obj.elements(elemIds(j));
                         rayEnd = mvnrnd(elem.mu,elem.sigma);
                         if isrow(rayEnd) rayEnd = rayEnd'; end
                         ranges(i) = norm(rayEnd-pose(1:2));
@@ -54,7 +61,7 @@ classdef vaneSimulator < handle
                     end
                 end
                 if noHit
-                    ranges(i) = laser.nullReading;
+                    ranges(i) = obj.laser.nullReading;
                 end
             end
         end

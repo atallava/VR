@@ -3,7 +3,7 @@ classdef rangeSimulator < handle & abstractSimulator
         
     properties
         % fitClass is a handle
-        % pxRegBundleArray is a cell array of regressorBundle objects
+        % pxRegBundleArray is a cell array of pixelRegressorBundle objects
         % laser is a laserClass object, must be the same laser trained on
         % map is a lineMap object
         fitClass

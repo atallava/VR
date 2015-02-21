@@ -1,5 +1,6 @@
 clearAll
 load data_milli_160215_train
+threshRanges(lzr);
 obsArrayTrain = fillObsArray(lzr,t_range_collection);
 poses = [];
 for i = 1:size(poseHistory,2)
