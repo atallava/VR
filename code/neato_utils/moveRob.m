@@ -7,4 +7,5 @@ while toc(t1) < T
     pause(0.001);
 end
 rob.sendVelocity(0, 0);
+pause(0.1);
 end
