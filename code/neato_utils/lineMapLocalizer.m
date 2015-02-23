@@ -11,7 +11,7 @@ classdef lineMapLocalizer < handle
     end
     
     properties (SetAccess = private)
-        maxErr = 0.03;
+        maxErr = 0.05;
         lines_p1 = [];
         lines_p2 = [];
         errThresh = 0.001;
