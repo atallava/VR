@@ -34,6 +34,6 @@ if iscolumn(temp)
     temp = temp';
 end
 temp = -temp.^2/(2*h^2);
-res = exp(temp);
+res = exp(temp)/(h*sqrt(2*pi));
 end
 

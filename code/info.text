@@ -87,6 +87,11 @@ localGeomRegressor instance, with muArray from full\_predictor\_means\_only\_mar
 * density\_data  
 triplets is a set of observed three consecutive (and non-nan) ranges from all training poses.
 
+### exp11/ ###
+#### mats/ ####
+* processed_data_peta_240215
+combines data from 230215 and 240215. data collected in 5720 for distribution regression.
+
 ### misc/ ###
 #### kde/ ####
 * scores  
