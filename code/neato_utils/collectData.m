@@ -20,7 +20,7 @@ v = struct('left',0,'right',0);
 T = [1 -0.5*robotModel.W; ...
     1 0.5*robotModel.W];
 data_count = 0;
-num_obs = 50;
+num_obs = 30;
 t_range_collection = struct('start',{},'end',{});
 
 t_sys_start = tic;
@@ -35,58 +35,60 @@ vizer = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser,'ro
 pause(1);
 poseHistory = [];
 
+timeScale = 0.5; % in s
+velScale = 0.5;
 while true
     comm = input('enter command: ', 's');
     switch comm
         % all motions open-loop but don't care
         case 'f'
             % move forward
-            v.left = 0.2; v.right = 0.2;
-            moveRob(rob, v, 2);
+            v.left = 0.2*velScale; v.right = 0.2*velScale;
+            moveRob(rob, v, 2*timeScale);
         case 'sf'
             % short move forward
-            v.left = 0.2; v.right = 0.2;
-            moveRob(rob, v, 1);
+            v.left = 0.2*velScale; v.right = 0.2*velScale;
+            moveRob(rob, v, 1*timeScale);
         case 'ff'
             % longer move forward
-            v.left = 0.2; v.right = 0.2;
-            moveRob(rob, v, 4);
+            v.left = 0.2*velScale; v.right = 0.2*velScale;
+            moveRob(rob, v, 4*timeScale);
         case 'b'
             % move bwd
-            v.left = -0.2; v.right = -0.2;
-            moveRob(rob, v, 2);
+            v.left = -0.2*velScale; v.right = -0.2*velScale;
+            moveRob(rob, v, 2*timeScale);
         case 'cw'
             % rotate cw
-            v.left = 0.05; v.right = -0.05;
-            moveRob(rob, v, 2);
+            v.left = 0.05*velScale; v.right = -0.05*velScale;
+            moveRob(rob, v, 2*timeScale);
         case 'ccw'
             % rotate ccw
-            v.left = -0.05; v.right = 0.05;
-            moveRob(rob, v, 2);
+            v.left = -0.05*velScale; v.right = 0.05*velScale;
+            moveRob(rob, v, 2*timeScale);
         case 'lf'
             % move along left arc
             V = 0.2; w = deg2rad(20);
             vel = T*[V; w];
             v.left = vel(1); v.right = vel(2);
-            moveRob(rob, v, 2);
+            moveRob(rob, v, 2*timeScale);
         case 'llf'
             % sharper turn along left arc
             V = 0.1; w = deg2rad(20);
             vel = T*[V; w];
             v.left = vel(1); v.right = vel(2);
-            moveRob(rob, v, 4);
+            moveRob(rob, v, 4*timeScale);
         case 'rf'
             % move along right arc
             V = 0.2; w = -deg2rad(20);
             vel = T*[V; w];
             v.left = vel(1); v.right = vel(2);
-            moveRob(rob, v, 2);
+            moveRob(rob, v, 2*timeScale);
         case 'rrf'
             % sharper turn along right arc
             V = 0.1; w = -deg2rad(20);
             vel = T*[V; w];
             v.left = vel(1); v.right = vel(2);
-            moveRob(rob, v, 4);
+            moveRob(rob, v, 4*timeScale);
         case 'pose'
             % refine pose
             happy = false;

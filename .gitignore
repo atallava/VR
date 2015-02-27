@@ -27,3 +27,6 @@ initLocal.m
 *.png
 
 *.pdf
+
+#compressed files
+*.zip
