@@ -14,18 +14,18 @@ function res = compareModels(model1,model2,x1,y1,x2,y2)
 %          draw
 
 % how much lower error than other model is needed
-margin  = 0; 
+M  = 1e-2; 
 
 e11 = modelErrorOnData(model1,x1,y1);
 e12 = modelErrorOnData(model1,x2,y2);
 e22 = modelErrorOnData(model2,x2,y2);
 e21 = modelErrorOnData(model2,x1,y1);
 
-if e11 < e21-margin && e12 < e22-margin
+if e11 < e21-M && e12 < e22-M
     res = 1;
-elseif e22 < e12-margin && e21 < e11-margin
+elseif e22 < e12-M && e21 < e11-M
     res = -1;
-elseif abs(e11-e21) < margin && abs(e22-e12) < margin
+elseif abs(e11-e21) < M && abs(e22-e12) < M
     res = 2;
 else
     res = 0;
@@ -36,7 +36,8 @@ end
 function err = modelErrorOnData(model,x,y)
 % Find model error on some data. Throw out nans and outliers.
 
-largeCost = margin*nParams; % ensure that will not be accepted as a match
+M = 1e-2;
+largeCost = M*nParams; % ensure that will not be accepted as a match
 yThreshold = 0.1; 
 badY = abs(y-x) > yThreshold; % outliers
 yPred = model.predict(x);
