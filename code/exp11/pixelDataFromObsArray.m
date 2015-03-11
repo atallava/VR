@@ -7,24 +7,19 @@ function data = pixelDataFromObsArray(obsArray,pixelId,poseIds)
 % pixelId  - 
 % poseIds  - 
 % 
-% data     - 2d Array of size numPoses x numObs
+% data     - length(poseIds) cell array.
 
 if nargin < 3
     poseIds = 1:size(obsArray,1);
 end
 
-M = length(obsArray{1,1});
-data = zeros(length(poseIds),M);
+data = cell(1,length(poseIds));
 
 for i = 1:length(poseIds)
     vec = obsArray{poseIds(i),pixelId};
-    if length(vec) > M
-        vec(M+1:end) = [];
-    elseif length(vec) < M
-        M = length(vec);
-        data(:,M+1:end) = [];
-    end
-    data(i,:) = vec;
+    % can process vec further
+    vec(vec == 0) = []; % throw away zeros
+    data{i} = vec;
 end
 
 end

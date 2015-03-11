@@ -15,9 +15,14 @@ end
 %%
 obsArray = [obsArray1; obsArray2];
 poses = [poses1 poses2];
+%%
 nTrain = ceil(0.6*size(poses,2));
-trainPoseIds = randperm(size(poses,2),nTrain);
-testPoseIds = setdiff(1:size(poses,2),trainPoseIds);
+nHold = ceil(0.2*size(poses,2));
+trainPoseIds = randsample(1:size(poses,2),nTrain);
+remaining = setdiff(1:size(poses,2),trainPoseIds);
+holdPoseIds = randsample(remaining,nHold);
+testPoseIds = setdiff(remaining,holdPoseIds);
+%%
 save('processed_data_peta_240215','obsArray','poses','trainPoseIds','testPoseIds');
 
 %%
@@ -36,6 +41,6 @@ for i = 1:size(poses,2)
     hf = ri.plotXvsY(pose);
     set(hf,'visible','off');
     ylim([0 5]); xlim([-3 3]);
-    fname = sprintf('figs/pose_%d.png',i);
+    fname = sprintf('figs/loclzn/pose_%d.png',i);
     print('-dpng','-r72',fname);
 end
