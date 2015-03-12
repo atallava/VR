@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 project(floating_laser)
 
+# Use C ++11
+add_definitions( -std=c++0x )
+
 # Find packages
 
 find_package(Boost REQUIRED COMPONENTS system)
