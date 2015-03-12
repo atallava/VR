@@ -1,20 +1,12 @@
 #include <stdio.h>
 #include <iostream>
 #include <fstream> 
-#include <vector>
-#include <string>
 
-#include <boost/bind.hpp>
-#include <gazebo/gazebo.hh>
-#include <gazebo/physics/physics.hh>
-#include <gazebo/common/common.hh>
-
+#include <floating_laser.h>
 
 namespace gazebo
 {
-    class FloatingLaser : public ModelPlugin
-    {
-    public: void Load(physics::ModelPtr _parent, sdf::ElementPtr)
+    void FloatingLaser::Load(physics::ModelPtr _parent, sdf::ElementPtr)
 	{
 	    this->model_ = _parent;
 	    
@@ -23,12 +15,12 @@ namespace gazebo
 	    animate();
 	}
 
-    public: void parsePath(std::string file_name)
+    void FloatingLaser::parsePath(std::string file_name)
 	{
 	    std::ifstream file(file_name);
 	    double tmp;
 	    while (file) {
-		// timestampp
+		// timestamp
 		file >> tmp;
 		if(!file)
 		    break;
@@ -45,7 +37,7 @@ namespace gazebo
 	    duration_ = timestamps_.back();
 	}
 
-    public: void animate()
+    void FloatingLaser::animate()
 	{
 	    gazebo::common::PoseAnimationPtr anim(new gazebo::common::PoseAnimation("traj_anim", duration_, false));
 	    gazebo::common::PoseKeyFrame *key;
@@ -53,25 +45,16 @@ namespace gazebo
 	    for (size_t i = 0; i < timestamps_.size(); ++i) {
 		key = anim->CreateKeyFrame(timestamps_[i]);
 		key->SetTranslation(math::Vector3(poses_[i][0],poses_[i][1],0));
-		key->SetRotation(math::Quaternion(0,0,0));
+		key->SetRotation(math::Quaternion(0,0,poses_[i][2]*0.5));
 	    }
 
 	    model_->SetAnimation(anim);
 	}
 
-    public: void printInfo()
+    void FloatingLaser::printInfo()
 	{
 	    std::cout << "n timestamps: " << timestamps_.size() << "\n";
 	    std::cout << "n poses: " << poses_.size() << "\n";
 	    std::cout << "traj duration: " << duration_ << "\n";
 	}
-
-    private: physics::ModelPtr model_;
-    private: std::vector<double> timestamps_;
-    private: double duration_;
-    private: std::vector<std::vector<double> > poses_;
-    private: event::ConnectionPtr updateConnection_;
-    };
-
-    GZ_REGISTER_MODEL_PLUGIN(FloatingLaser);
 }

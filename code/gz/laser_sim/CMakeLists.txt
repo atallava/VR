@@ -24,7 +24,10 @@ endif()
 include_directories(${GAZEBO_INCLUDE_DIRS})
 link_directories(${GAZEBO_LIBRARY_DIRS})
 
+set( FL_INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/include" )
+include_directories(${FL_INCLUDE_DIRECTORIES})
+
 # Create libraries and executables
 
-add_library(floating_laser SHARED floating_laser.cc)
+add_library(floating_laser SHARED src/floating_laser.cc)
 target_link_libraries(floating_laser ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES})
