@@ -1,0 +1,24 @@
+<?xml version='1.0'?>
+<sdf version="1.4">
+  <world name="floating_laser_world">
+
+    <!-- Ground Plane -->
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <model name="floating_sensor">
+      <pose>0 0 0.0 0 0 0</pose>
+      <include>
+	<uri>model://hokuyo</uri>
+	<pose>0.0 0 0.0 0 0 0</pose>
+      </include>
+      <plugin name="push_animate" filename="libfloating_laser.so"/>
+    </model>
+
+  </world>
+</sdf>

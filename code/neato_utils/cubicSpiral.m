@@ -120,6 +120,24 @@ classdef cubicSpiral < handle & abstractTrajectory
             plot(obj.poseArray(1,:),obj.poseArray(2,:));
             axis equal; xlabel('x'); ylabel('y');
         end
+        
+        function saveWaypoints(obj,fname)
+            %SAVEWAYPOINTS Write timestamped poses to file.
+            %
+            % SAVEWAYPOINTS(obj,fname)
+            %
+            % fname - File to save to. Extension .txt by default.
+            
+            if isempty(strfind(fname,'.'))
+                fname = [fname '.txt'];
+            end
+            fout = fopen(fname,'w');
+            for i = 1:length(obj.tArray)
+                fprintf(fout,'%.6f %.6f %.6f %.6f\n',obj.tArray(i),obj.poseArray(1,i),obj.poseArray(2,i),...
+                    obj.poseArray(3,i));
+            end
+            fclose(fout);
+        end
     
     end
     

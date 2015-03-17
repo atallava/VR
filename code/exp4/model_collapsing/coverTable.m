@@ -1,11 +1,11 @@
-%% form model graph edges
+%% form cover table
 
-load full_predictor_mar27_5
+load full_predictor_sep6_1
 load roomLineMap
 p2r = poses2R(struct('envLineMap',map,'laser',dp.laser));
 XTest = dp.poses(:,dp.testPoseIds)';
 muTest = testPdfs.paramArray(:,1,:); muTest = squeeze(muTest);
-rArray = p2r.transform(XTest); 
+rArray = p2r.transform(XTest);
 rArray = squeeze(rArray);
 
 modelGraph = zeros(dp.laser.nPixels,dp.laser.nPixels);
