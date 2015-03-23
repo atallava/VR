@@ -1,8 +1,8 @@
 classdef gridMaker < handle
         
     properties
-        scale = 0.1
-        minPtsInElement = 2;
+        scale = 0.03
+        minPtsInElement = 5;
         pts
         nX; nY
         nElements

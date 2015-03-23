@@ -2,7 +2,7 @@
 #include <iostream>
 #include <fstream> 
 
-#include <floating_laser.h>
+#include <move_model.h>
 
 namespace gazebo
 {

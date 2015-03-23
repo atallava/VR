@@ -19,13 +19,21 @@ if isrow(X)
 end
 
 p = zeros(R,N);
+throwCols = [];
 for i = 1:N
     % density estimates at Z|XTrain(i)
-    p(:,i) = ksdensity(ZTrain{i},Z,'bandwidth',bwZ);
+    if isempty(ZTrain{i})
+        throwCols = [throwCols i];
+    else
+        p(:,i) = ksdensity(ZTrain{i},Z,'bandwidth',bwZ);
+    end
 end
+% at some XTrain there is no data
+p(:,throwCols) = [];
+assert(~isempty(p),'ZTRAIN IS EMPTY.');
 
 kernelParams.h = bwX;
-K = pdist2(XTrain,X,@(x,y) kernelRBF(x,y,kernelParams));
+K = pdist2(XTrain(setdiff(1:N,throwCols)),X,@(x,y) kernelRBF(x,y,kernelParams));
 % normalize each column of K
 colSum = sum(K,1);
 % K is N x S

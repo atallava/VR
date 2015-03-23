@@ -12,10 +12,7 @@ exp2/
 exp3/
 metrics/
 images/
-code/pcl/examples/
-code/pcl/scan_match/build/
-code/pcl/scan_match/files/
-code/pcl/scan_match/post_process/neato_data
+figs/
 *build/
 
 #initialization scripts

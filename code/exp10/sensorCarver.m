@@ -46,17 +46,19 @@ classdef sensorCarver < handle
             [obj.rayStart,obj.rayEnd,obj.rayDirn] = deal([]);
             
             for i = 1:size(obj.poses,2)
-                ranges = rangesFromObsArray(obj.obsArray,i,obj.obsIds);
-                ri = rangeImage(struct('ranges',ranges,'bearings',obj.laser.bearings,'cleanup',1));
-                pts = [ri.xArray; ri.yArray];
-                pts = pose2D.transformPoints(pts,obj.poses(:,i));
-                obj.rayEnd = [obj.rayEnd pts];
-                p0 = repmat(obj.poses(1:2,i),1,size(pts,2));
-                obj.rayStart = [obj.rayStart p0];
-                r = pts-p0;
-                rNorm = sqrt(sum(r.^2,1));
-                r = bsxfun(@rdivide,r,rNorm);
-                obj.rayDirn = [obj.rayDirn r];
+                for obsId = obj.obsIds
+                    ranges = rangesFromObsArray(obj.obsArray,i,obsId);
+                    ri = rangeImage(struct('ranges',ranges,'bearings',obj.laser.bearings,'cleanup',1));
+                    pts = [ri.xArray; ri.yArray];
+                    pts = pose2D.transformPoints(pts,obj.poses(:,i));
+                    obj.rayEnd = [obj.rayEnd pts];
+                    p0 = repmat(obj.poses(1:2,i),1,size(pts,2));
+                    obj.rayStart = [obj.rayStart p0];
+                    r = pts-p0;
+                    rNorm = sqrt(sum(r.^2,1));
+                    r = bsxfun(@rdivide,r,rNorm);
+                    obj.rayDirn = [obj.rayDirn r];
+                end
             end
             obj.nRays = size(obj.rayStart,2);
         end

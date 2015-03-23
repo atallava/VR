@@ -1,7 +1,7 @@
 load processed_data_peta_240215
 
 %%
-pxId = 1;
+pxId = 275;
 data = pixelDataFromObsArray(obsArray,pxId);
 ZTrain = data(trainPoseIds);
 ZHold = data(holdPoseIds);
