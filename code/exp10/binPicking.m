@@ -1,5 +1,5 @@
 clearAll;
-load processed_data_milli_160215
+load processed_data_bsim_160215
 
 %%
 inputStruct = struct('obsArray',{obsArray(trainPoseIds,:)},'obsIds',2,'poses',poses(:,trainPoseIds),'laser',robotModel.laser);

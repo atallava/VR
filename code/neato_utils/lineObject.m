@@ -19,11 +19,11 @@ classdef lineObject < handle
     end
             
     methods(Access = public)
-		function obj = startTimer(obj)
+		function startTimer(obj)
 			obj.timer = tic;
 		end
 		
-		function obj = update(obj)
+		function update(obj)
 			if(obj.has_path)
 				if(obj.cyclic)
 					t = mod(toc(obj.timer), obj.path(end,4));
@@ -40,9 +40,9 @@ classdef lineObject < handle
 				- sin(obj.pose(3))*obj.lines(:,2), ...
 				obj.pose(2) + sin(obj.pose(3))*obj.lines(:,1) ...
 				+ cos(obj.pose(3))*obj.lines(:,2)];
-        end
-        
-        function obj = plot(obj)
+		end
+		
+		function plot(obj)
 			if( ~isempty(obj.lines))
 				if( ~isempty(obj.h) && ishandle(obj.h))
 					set(obj.h, 'XData',obj.line_coords(:,1), ...

@@ -213,12 +213,13 @@ classdef lineMap < handle
             [ranges,angles] = raycast(lm, pose, max_range, ang_range);
             
             K = 1e-3;
+			biasFactor = 0.05;
             for i = 1:length(ranges);
                 sigma = K*ranges(i)^2/cos(angles(i));
                 if isnan(sigma)
                     continue;
                 end
-                ranges(i) = ranges(i)+sigma*randn;
+                ranges(i) = ranges(i)+ranges(i)*biasFactor+sigma*randn;
             end
         end
         

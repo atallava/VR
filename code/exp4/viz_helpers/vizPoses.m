@@ -1,8 +1,14 @@
 function hf = vizPoses(localizer,poses,trainPoseIds,testPoseIds)
-%vizPoses visualize test and training poses on map
-% localizer is an instance of lineMapLocalizer
-% poses is a 3 x num poses array
-% trainPoseIds, testPoseIds are rows/ columns
+%VIZPOSES Visualize test and training poses on map.
+% 
+% hf = VIZPOSES(localizer,poses,trainPoseIds,testPoseIds)
+% 
+% localizer    - lineMapLocalizer object.
+% poses        - 2 x nPoses array.
+% trainPoseIds - 1d Array.
+% testPoseIds  - 1d Array.
+% 
+% hf           - Figure handle.
 
 hf = localizer.drawLines();
 figure(hf); hold on;
