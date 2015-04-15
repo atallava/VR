@@ -1,13 +1,16 @@
 clearAll;
-pose = [1; 1; 0];
-lzr = laserClass(struct());
-ranges = [0.5*ones(1,180) 0.25*ones(1,180)];
+load processed_data_milli_160215
+mapSize = [-0.5 4; -0.5 5];
 
 %%
-om = occupancyMap();
-om.lzr = lzr;
-om.gridUp([0 2; 0 2]);
-om.initLogOddsGrid();
-
-%%
-om.updateLogOdds(pose,ranges);
+om = occupancyMap(laserClass(struct()),mapSize);
+obsId = 1:10;
+t1 = tic();
+% pass in ranges
+for i = trainPoseIds
+	for j = obsId
+		ranges = rangesFromObsArray(obsArray,i,j);
+		om.updateLogOdds(poses(:,i),ranges);
+	end
+end
+toc(t1)

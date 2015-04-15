@@ -13,11 +13,14 @@ classdef occupancyMap < handle
 	end
 	
 	methods
-		function obj = occupancyMap()
-			obj.scale = 0.001;
+		function obj = occupancyMap(lzr,mapSize)
+			obj.scale = 0.01;
 			obj.lInit = obj.prob2LogOdds(0.5);
 			obj.lOcc = obj.prob2LogOdds(0.8);
 			obj.lFree = obj.prob2LogOdds(0.1);
+			obj.lzr = lzr;
+			obj.gridUp(mapSize);
+			obj.initLogOddsGrid();
 		end
 		
 		function obj = gridUp(obj,mapSize)
@@ -35,24 +38,34 @@ classdef occupancyMap < handle
 			obj.logOddsGrid(:) = obj.lInit;
 		end
 		
-		function updateLogOdds(obj,pose,ranges)
-			pts = zeros(2,obj.lzr.nPixels);
-			pts(1,:) = pose(1)+ranges.*cos(obj.lzr.bearings+pose(3));
-			pts(2,:) = pose(2)+ranges.*sin(obj.lzr.bearings+pose(3));
+		function updateLogOdds(obj,pose,ranges,bearings)
+			if nargin < 4
+				bearings = obj.lzr.bearings;
+			end
+			pts = zeros(2,length(bearings));
+			pts(1,:) = pose(1)+ranges.*cos(bearings+pose(3));
+			pts(2,:) = pose(2)+ranges.*sin(bearings+pose(3));
 			
 			[rStart,cStart] = obj.xy2rc(pose(1),pose(2));
 			for i = 1:size(pts,2)
+				if ranges(i) == obj.lzr.nullReading
+					continue;
+				end
 				[rEnd,cEnd] = obj.xy2rc(pts(1,i),pts(2,i));
 				% bresenham needs flipped rows
-				[~,~,~,r,c] = bresenham(zeros(size(obj.logOddsGrid)),[obj.nY-rStart+1 cStart; ...
+				% also returns x,y in reverse order of array indexing
+				[~,~,~,c,r] = bresenham(zeros(size(obj.logOddsGrid)),[obj.nY-rStart+1 cStart; ...
 					obj.nY-rEnd+1 cEnd],0);
+				r = obj.nY-r+1;
+				if r(1) ~= rStart; r = fliplr(r); end
+				if c(1) ~= cStart; c = fliplr(c); end
 				ids = obj.rc2id(r,c);
 				% free space
 				obj.logOddsGrid(ids(1:end-1)) = obj.logOddsGrid(ids(1:end-1))+obj.lFree-obj.lInit;
 				% occupied space
 				obj.logOddsGrid(ids(end)) = obj.logOddsGrid(ids(end))+obj.lOcc-obj.lInit;
 			end
-			
+% 			keyboard
 		end
 		
 		function [r,c] = xy2rc(obj,x,y)
@@ -90,6 +103,18 @@ classdef occupancyMap < handle
 			colormap(gray);
 			xlabel('x');
 			ylabel('y');
+			axis equal;
+		end
+		
+		function hf = plotBinaryMap(obj)
+			hf = figure;
+			p = obj.logOdds2Prob(obj.logOddsGrid);
+			p = p > 0.5;
+			imagesc(flipud(1-p));
+			colormap(gray);
+			xlabel('x');
+			ylabel('y');
+			axis equal;
 		end
 	end
 	
