@@ -7,7 +7,7 @@ classdef laserClass < handle
         maxRange
         rangeRes
         bearings
-        nPixels
+        nBearings
         nullReading
         Tsensor % describes sensor frame wrt some other frame, typically robot origin
     end
@@ -36,7 +36,7 @@ classdef laserClass < handle
             else
                 obj.Tsensor = eye(3);
             end
-            obj.nPixels = length(obj.bearings);
+            obj.nBearings = length(obj.bearings);
             if isfield(inputStruct,'nullReading')
                 obj.nullReading = inputStruct.nullReading;
             else
@@ -56,7 +56,7 @@ classdef laserClass < handle
         
         function [l,r] = getNbrIds(obj,i,numNbrs,nPix)
             if nargin < 4
-                nPix = obj.nPixels;
+                nPix = obj.nBearings;
             end
             l = i-numNbrs/2:i-1;
             l(l<1) = l(l<1)+nPix;

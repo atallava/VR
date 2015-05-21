@@ -1,3 +1,4 @@
+% run neato in sim to test code
 load trajectories
 ctrl = controllerClass(struct('gainV',0,'gainW',0));
 tfl = trajectoryFollower(struct('trajectory',[],'controller',ctrl));
@@ -34,4 +35,5 @@ for i = 1:nPoses
 end
 
 enc.stopListening;
+% this is highly inefficient
 dataEncVel = getDataEncVel(dataCommVel,encLogs);

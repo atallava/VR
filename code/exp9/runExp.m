@@ -1,4 +1,5 @@
-%% initialize
+% code to run on neato
+% initialize
 cond = logical(exist('rob','var'));
 assert(cond,('ROB MUST EXIST IN WORKSPACE'));
 cond = logical(exist('map','var'));

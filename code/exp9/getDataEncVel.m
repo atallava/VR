@@ -1,14 +1,14 @@
 function dataEncVel = getDataEncVel(dataCommVel,encLogs)
-%GETDATAENCVEL 
+%GETDATAENCVEL Generate data structure with encoder velocity logs.
 % 
 % dataEncVel = GETDATAENCVEL(dataCommVel,encLogs)
 % 
-% dataCommVel - 
-% encLogs     - 
+% dataCommVel - Struct array, fields ('startPose','finalPose','vlArray','tArray')
+% encLogs     - Struct array, fields ('log','tArray')
 % 
-% dataEncVel  - 
+% dataEncVel  - Struct array, fields ('startPose','finalPose','vlArray','tArray')
 
-dataEncVel = struct('startPose',{},'finalPose',{},'vlArray',{},'tArray',{});
+dataEncVel = struct('startPose',{},'finalPose',{},'vlArray',{},'vrArray',{},'tArray',{});
 [vl,vr] = encLogsToEncVel(encLogs);
 for i = 1:length(dataCommVel)
 	dataEncVel(i).startPose = dataCommVel(i).startPose;

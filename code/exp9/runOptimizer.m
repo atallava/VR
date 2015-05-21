@@ -1,3 +1,4 @@
+% find slip parameters
 clearAll
 load data_nov12_milli
 

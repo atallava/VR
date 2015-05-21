@@ -7,7 +7,7 @@ classdef pixelRegressorBundle < handle
         % regClass is a handle to the regressor class to be used on each
         % pixel
         % inputPoseTransf is an instance of a class that transforms poses
-        % regressorArray is a cell of length nPixels, one for each
+        % regressorArray is a cell of length nBearings, one for each
         % pixel
         % XLast is num queries x dimX, cache of last query
         % YLast is num queries x dimY x numPixels, cache of last query
@@ -16,7 +16,7 @@ classdef pixelRegressorBundle < handle
         YTrain
         dimY
         poolOption = 0
-        nPixels
+        nBearings
         inputPoseTransf
         regClass
         regressorArray
@@ -44,28 +44,28 @@ classdef pixelRegressorBundle < handle
                 obj.poolOption = inputStruct.poolOption;
             end
             obj.regClass = inputStruct.regClass;
-            obj.nPixels = size(obj.YTrain,3);
+            obj.nBearings = size(obj.YTrain,3);
             obj.fillPixelRegressorArray(inputStruct);
         end
         
         function Y = predict(obj,X,queryMap)
             % if not supplied, assumed to be working in the same map as
             % contained in obj.inputPoseTransf
-            % Y is size nQueries x dimY x nPixels
+            % Y is size nQueries x dimY x nBearings
             queryPoseTransf = obj.inputPoseTransf;
             if nargin > 2
                 queryPoseTransf.setMap(queryMap);
             end
             
             nQueries = size(X,1);
-            Y = zeros(nQueries,size(obj.YTrain,2),obj.nPixels);
+            Y = zeros(nQueries,size(obj.YTrain,2),obj.nBearings);
             if isempty(obj.inputPoseTransf)
-                XTransf = repmat(X,[1,1,obj.nPixels]);
+                XTransf = repmat(X,[1,1,obj.nBearings]);
             else
                 XTransf = queryPoseTransf.transform(X);
             end
             
-            for i = 1:obj.nPixels
+            for i = 1:obj.nBearings
                 Y(:,:,i) = obj.regressorArray{i}.predict(XTransf(:,:,i));
             end
             obj.XLast = X;
@@ -75,15 +75,15 @@ classdef pixelRegressorBundle < handle
     
     methods (Access = private)
        function obj = fillPixelRegressorArray(obj,inputStruct)
-            obj.regressorArray = cell(1,obj.nPixels);
+            obj.regressorArray = cell(1,obj.nBearings);
             if isempty(obj.inputPoseTransf)
-                XTransf = repmat(obj.XTrain,[1,1,obj.nPixels]);
+                XTransf = repmat(obj.XTrain,[1,1,obj.nBearings]);
             else
                 XTransf = obj.inputPoseTransf.transform(obj.XTrain);
             end
             if ~obj.poolOption
                 %naive, indpendent pixels
-                for i = 1:obj.nPixels
+                for i = 1:obj.nBearings
                     tempInput = inputStruct;
                     tempInput.XTrain = XTransf(:,:,i);
                     tempInput.YTrain = obj.YTrain(:,:,i);
@@ -93,7 +93,7 @@ classdef pixelRegressorBundle < handle
                 %other end, throw everything together
             else
                 bigX = []; bigY = [];
-                for i = 1:obj.nPixels
+                for i = 1:obj.nBearings
                     bigX = [bigX; XTransf(:,:,i)];
                     bigY = [bigY; obj.YTrain(:,:,i)];
                 end

@@ -21,7 +21,11 @@ classdef rangeSimulator < handle & abstractSimulator
             obj.nParams = length(obj.pxRegBundleArray);
             obj.laser = inputStruct.laser;
             obj.map = inputStruct.map;
-        end
+		end
+		
+		function setMap(obj,map)
+			obj.map = map;
+		end
         
         function res = simulate(obj,poses)
             %SIMULATE
@@ -36,7 +40,7 @@ classdef rangeSimulator < handle & abstractSimulator
                 poses = poses';
             end
             nPoses = size(poses,1);
-            predParamArray = zeros(nPoses,obj.nParams,obj.laser.nPixels);
+            predParamArray = zeros(nPoses,obj.nParams,obj.laser.nBearings);
             
             % TODO: optimize for speed
             % array of predicted parameters
@@ -44,7 +48,7 @@ classdef rangeSimulator < handle & abstractSimulator
                 regBundle = obj.pxRegBundleArray(i);
                 predParamArray(:,i,:) = regBundle.predict(poses,obj.map);
             end
-            res = zeros(nPoses,obj.laser.nPixels);
+            res = zeros(nPoses,obj.laser.nBearings);
             % sample from distribution given by parameters
             for i = 1:nPoses
                 res(i,:) = rangeSimulator.sampleFromParamArray(squeeze(predParamArray(i,:,:)),obj.fitClass);
@@ -57,7 +61,7 @@ classdef rangeSimulator < handle & abstractSimulator
                 poses = poses';
             end
             nPoses = size(poses,1);
-            res = zeros(nPoses,obj.laser.nPixels);
+            res = zeros(nPoses,obj.laser.nBearings);
             for i = 1:nPoses
                 res(i,:) = obj.map.raycast(poses(i,:),obj.laser.maxRange,obj.laser.bearings);
             end
@@ -66,11 +70,11 @@ classdef rangeSimulator < handle & abstractSimulator
     end
     
     methods (Static = true)
-        function res = sampleFromParamArray(paramArray,fitClass)
+		function res = sampleFromParamArray(paramArray,fitClass)
            % paramArray is num params x num pixels
-           nPixels = size(paramArray,2);
-           res = zeros(1,nPixels);
-           for i = 1:nPixels
+           nBearings = size(paramArray,2);
+           res = zeros(1,nBearings);
+           for i = 1:nBearings
                tempObj = fitClass(struct('vec',paramArray(:,i),'choice','params'));
                res(i) = tempObj.sample();
            end

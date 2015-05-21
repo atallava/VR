@@ -1,5 +1,5 @@
 function [VArray,wArray] = wheelToBodyEnc(vlArray,vrArray,params)
-%WHEELTOBODYENC 
+%WHEELTOBODYENC Convert wheel to body velocities under encoder error.
 % 
 % [VArray,wArray] = WHEELTOBODYENC(vlArray,vrArray,params)
 % 

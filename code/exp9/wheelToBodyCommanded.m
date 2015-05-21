@@ -1,6 +1,5 @@
 function [VArray,wArray] = wheelToBodyCommanded(vlArray,vrArray,params)
-%WHEELTOBODYCOMMANDED Convert commanded wheel velocities to body velocities
-% under error.
+%WHEELTOBODYCOMMANDED Convert wheel to body velocities under body error.
 % 
 % [VArray,wArray] = WHEELTOBODYCOMMANDED(vlArray,vrArray,params)
 % 

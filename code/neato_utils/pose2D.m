@@ -7,11 +7,10 @@ classdef pose2D < handle
     
     methods(Static = true)
         function res = poseNorm(p1,p2)
-           % p1, p2 are [x,y,th]
+           % p1, p2 are [3,num_poses]
            scale = 0.5/0.44;
-           dth = atan2(sin(p1(3)-p2(3)),cos(p1(3)-p2(3)));
-           res = (p1(1)-p2(1))^2+(p1(2)-p2(2))^2+(scale*dth)^2;
-           res = sqrt(res);
+           pd = pose2D.poseDiff(p1,p2);
+		   res = sqrt(pd(1,:).^2+pd(2,:).^2+scale.*pd(3,:).^2);
         end
     end
     methods

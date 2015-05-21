@@ -81,7 +81,8 @@ classdef trajectoryFollower < handle
 %                 obj.refStateLog(:,logCount) = refState; obj.currentStateLog(:,logCount) = currentState;
                 logCount = logCount+1;
                 
-                pause(robotModel.tPause);
+%                 pause(robotModel.tPause);
+				pause(0.1);
             end
             rob.sendVelocity(0,0);
         end
