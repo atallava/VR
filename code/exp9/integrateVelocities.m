@@ -1,4 +1,4 @@
-function finalPose = integrateVelocities(startPose,VArray,wArray,tArray)
+function [finalPose,poseArray] = integrateVelocities(startPose,VArray,wArray,tArray)
 %INTEGRATEVELOCITIES 
 % 
 % finalPose = INTEGRATEVELOCITIES(vArray,tArray)

@@ -1,27 +1,44 @@
-function intervals = getTimeIntervals(fname)
+function [intervalsPub,intervalsSub,delays] = getTimeIntervals(fname)
+
 %GETTIMEINTERVALS 
 % 
-% intervals = GETTIMEINTERVALS(fname)
+% [intervalsPub,intervalsSub,delays] = GETTIMEINTERVALS(fname)
 % 
-% fname     - File name. Contains encHistArray or lzrHistArray.
+% fname        - File name. Contains encHistArray or lzrHistArray.
 % 
-% intervals - Array of communication intervals.
+% intervalsPub - Intervals of published messages.
+% intervalsSub - Intervals of subscribed messages.
+% delays       - Delays between subscribed and published.
+
+
 
 
 % Supress during file load.
 warning('off'); 
 load(fname);
-intervals = [];
+intervalsPub = [];
+intervalsSub = [];
+delays = [];
 if exist('encHistArray','var')
 	histArray = encHistArray;
 elseif exist('lzrHistArray','var')
 	histArray = lzrHistArray;
 else
-	warning('FNAME MUST CONTAIN ENCHISTARRAY OR LZRHISTARRAY');
+	warning('FILE MUST CONTAIN ENCHISTARRAY OR LZRHISTARRAY');
 end
 
 for i = 1:length(histArray)
-	ivl = histArray(i).tArray(2:end)-histArray(i).tArray(1:end-1);
-	intervals = [intervals ivl];
+	tRob = histArray(i).tArray;
+	tLocal = histArray(i).tLocalArray;
+	ivlPub = tRob(2:end)-tRob(1:end-1);
+	intervalsPub = [intervalsPub ivlPub];
+	
+	ivlSub = tLocal(2:end)-tLocal(1:end-1);
+	intervalsSub = [intervalsSub ivlSub];
+	
+	% constrain tLocal > tRob
+	offset = max(tRob-tLocal);
+	dt = tLocal-(tRob-offset);
+	delays = [delays dt];
 end
 end

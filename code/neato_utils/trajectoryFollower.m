@@ -11,6 +11,7 @@ classdef trajectoryFollower < handle
         VFfLog; wFfLog; VFbLog; wFbLog
         vlLog; vrLog;
         tEncStart; tLaserStart
+		tLocalRelative;
         tLog; refStateLog; currentStateLog;
     end
 
@@ -31,7 +32,7 @@ classdef trajectoryFollower < handle
             obj.resetLogs;
         end
         
-        function execute(obj,rob,rstate)
+        function execute(obj,rob,rstate,refTic)
 			%EXECUTE
 			%
 			% EXECUTE(obj,rob,rstate)
@@ -45,9 +46,14 @@ classdef trajectoryFollower < handle
             % Zero in encoder clock.
             obj.tEncStart = rob.encoders.data.header.stamp.secs + rob.encoders.data.header.stamp.nsecs*1e-9;
 			tClock = tic;
-            oldRState = rstate.pose;
+			if nargin > 3
+				% ticLocal relative to some refTic
+				obj.tLocalRelative = toc(refTic);
+			end
+			oldRState = rstate.pose;
             currentTh = rstate.pose(3); 
             while(toc(tClock) < obj.trajectory.getTrajectoryDuration)
+				% this was commented out due to some trouble. what was it?
 %                 while update_count_old == rstate.update_count
 %                     %pause(robotModel.tPause);
 % 					pause(0.01);
