@@ -50,7 +50,7 @@ classdef lineObject < handle
                 else
                     hold on
 					obj.h = plot(obj.line_coords(:,1), obj.line_coords(:,2),...
-						obj.plot_props{:}, 'Color', obj.color,'linewidth',3);
+						obj.plot_props{:}, 'Color', obj.color,'linewidth',2);
                     hold off
 				end
 			end

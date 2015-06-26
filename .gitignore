@@ -1,8 +1,8 @@
-#backup files
+# backup files
 *~
 *#
 
-#folders
+# folders
 writings/
 papers/
 rcr_2014/
@@ -15,18 +15,19 @@ images/
 figs/
 *build/
 
-#initialization scripts
+# initialization scripts
 initLocal.m
 
-#saved data
+# saved data
 *.mat
+*.csv
 
-#image files
+# image files
 *.png
 
 *.pdf
 
-#compressed files
+# compressed files
 *.zip
 
 

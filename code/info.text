@@ -92,6 +92,10 @@ triplets is a set of observed three consecutive (and non-nan) ranges from all tr
 * processed_data_peta_240215
 combines data from 230215 and 240215. data collected in 5720 for distribution regression.
 
+### exp12/ ###
+* mocap\_transform
+Typically after ground calibration, the floor is x-z coordinates. The transform in here sets the floor to an x-y plane.
+
 ### misc/ ###
 #### kde/ ####
 * scores  

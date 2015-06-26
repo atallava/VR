@@ -1,5 +1,15 @@
 function out = parseMocapData(fname)
-% works for single rigid body
+%PARSEMOCAPDATA Structifies optitrack motive data.
+% 
+% out = PARSEMOCAPDATA(fname)
+% 
+% fname - File name of exported trajectory data (csv).
+% 
+% out   - Structure.
+
+if isempty(strfind(fname,'.csv'))
+	fname = [fname '.csv'];
+end
 fid = fopen(fname);
 line = fgetl(fid);
 lineNum = 0;
@@ -11,38 +21,53 @@ while ischar(line)
 		
 		case 'comment'
 			% do nothing
+			
+		case 'righthanded'
+			out.handedness = 'righthanded';
+			
+		case 'lefthanded'
+			out.handedness = 'lefthanded';
 		
 		case 'info'
 			switch data{2}
 				case 'framecount'
-					out.numFrames = str2double(data{3});
+					out.frameCount = str2double(data{3});
 				case 'rigidbodycount'
-					out.numBodies = str2double(data{3});
-					if out.numBodies ~= 1
-						error('EXPECTING ONE RIGID BODY ONLY.');
+					out.rigidBodyCount = str2double(data{3});
+					rigidBodyDetail = cell(1,out.rigidBodyCount);
+					rigidBody = cell(1,out.rigidBodyCount);
+					for i = 1:out.rigidBodyCount
+						rigidBody{i} = struct('timeStamp',{},'name',{},'id',{}, ...
+							'framesSinceLastTracked',{},'markerCount',{},'markerIds',{},'markerPosns',{}, ...
+							'pcPosns',{},'markerTracked',{},'markerQuality',{},'meanError',{});						
 					end
 				otherwise
 			end
 			
 		case 'rigidbody'
 			if isnan(str2double(data{2}))
-				% general rigid body details
-				out.numMarkers = str2double(data{4});
-				out.relMarkerPosn = zeros(3,out.numMarkers);
-				for i = 1:out.numMarkers
-					offsetId = 4+3*(i-1);
+				% rigid body detail
+				detail.name = data{2};
+				detail.id = str2double(data{3});
+				detail.markerCount = str2double(data{4});
+				detail.relMarkerPosn = zeros(3,detail.markerCount);
+				for j = 1:detail.markerCount
+					offsetId = 4+3*(j-1);
 					x = str2double(data{offsetId+1});
 					y = str2double(data{offsetId+2});
 					z = str2double(data{offsetId+3});
-					out.relMarkerPosn(:,i) = [x; y; z];
+					detail.relMarkerPosn(:,j) = [x; y; z];
 				end
-			else 
+				rigidBodyDetail{detail.id} = detail;
+			else
 				% extended info for rigid body in current frame
-				frameId = str2double(data{2})+1;
+				frameIndex = str2double(data{2})+1;
 				clear rbody
-				rbody.tStamp = str2double(data{3});
-				% concern if this is neq 0
-				rbody.framesSinceTracked = str2double(data{6}); 
+				rbody.timeStamp = str2double(data{3});
+				rbody.name = data{4};
+				rbody.id = str2double(data{5});
+				% concern if this is neq 0?
+				rbody.framesSinceLastTracked = str2double(data{6});
 				% should this ever change?
 				rbody.markerCount = str2double(data{7});
 				rbody.markerIds = zeros(rbody.markerCount,1);
@@ -78,44 +103,65 @@ while ischar(line)
 					rbody.markerQuality(i) = str2double(data{id+i});
 				end
 				rbody.meanError = str2double(data{end});
-				out.rbody(frameId) = rbody;
+				rigidBody{rbody.id}(frameIndex) = rbody;
 			end
 			
 		case 'frame'
-			frameId = str2double(data{2})+1;
+			frameIndex = str2double(data{2})+1;
 			clear frame
-			frame.tStamp = str2double(data{3});
-			frame.rigidBodyDetected = str2double(data{4});
-			if frame.rigidBodyDetected
-				% rigid body xyz posn
-				frame.p = [str2double(data{6}), str2double(data{7}), str2double(data{8})]';
-				% quaternion
-				frame.q = [str2double(data{9}), str2double(data{10}), str2double(data{11}), str2double(data{12})]';
-				% rpy
-				frame.rpy = [str2double(data{13}), str2double(data{14}), str2double(data{15})]';
-				id = 16;
+			frame.timeStamp = str2double(data{3});
+			frame.rigidBodyCount = str2double(data{4});
+			
+			if ~frame.rigidBodyCount
+				% no rigid bodies detected
+				frame.rigidBody = {};
+				offsetId = 5;
 			else
-				frame.p = [];
-				frame.q = [];
-				frame.rpy = [];
-				id = 5;
+				thisFrameRigidBody = cell(1,frame.rigidBodyCount);
+				% pose of each rigid body detected
+				for i = 1:frame.rigidBodyCount
+					offsetId = 4+10*(i-1);
+					thisFrameRigidBody{i}.id = str2double(data{offsetId+1});
+					x = str2double(data{offsetId+2});
+					y = str2double(data{offsetId+3});
+					z = str2double(data{offsetId+4});
+					thisFrameRigidBody{i}.xyz = [x; y; z];
+					qx = str2double(data{offsetId+5});
+					qy = str2double(data{offsetId+6});
+					qz = str2double(data{offsetId+7});
+					qw = str2double(data{offsetId+8});
+					thisFrameRigidBody{i}.q = [qx; qy; qz; qw];
+					y = str2double(data{offsetId+9});
+					p = str2double(data{offsetId+10});
+					r = str2double(data{offsetId+11});
+					thisFrameRigidBody{i}.rpy = [y; p; r];
+				end
+				frame.rigidBody = thisFrameRigidBody;
+				offsetId = offsetId+11*frame.rigidBodyCount+1;
 			end
-			frame.numVisibleMarkers = str2double(data{id});
-			frame.markerIds = zeros(frame.numVisibleMarkers,1);
-			frame.markerPosns = zeros(3,frame.numVisibleMarkers);
-			for i = 1:frame.numVisibleMarkers
-				offsetId = id+5*(i-1);
+			
+			% marker information
+			frame.markerCount = str2double(data{offsetId});
+			frame.markerPosns = zeros(3,frame.markerCount);
+			frame.markerIds = zeros(1,frame.markerCount);
+			frame.markerNames = cell(1,frame.markerCount);
+			for i = 1:frame.markerCount
 				x = str2double(data{offsetId+1});
 				y = str2double(data{offsetId+2});
 				z = str2double(data{offsetId+3});
 				frame.markerPosns(:,i) = [x; y; z];
 				frame.markerIds(i) = str2double(data{offsetId+4});
-				% ignoring data{offsetId+5}, which is marker name
+				frame.markerNames{i} = data{offsetId+5};
+				offsetId = offsetId+5;
 			end
-			out.frames(frameId) = frame;
+								
+			out.frame(frameIndex) = frame;
 		otherwise 
+			error('UNEXPECTED DATA TYPE.');
 	end
 	line = fgetl(fid);
 end
+out.rigidBodyDetail = rigidBodyDetail;
+out.rigidBody = rigidBody;
 fclose(fid);
 end

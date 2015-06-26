@@ -34,7 +34,7 @@ for i = 1:size(poses,2)
 %     vizer.viz(ranges,pose);
 %     title(sprintf('%d',i));
 %     set(vizer.hfig,'visible','off');
-%     print(vizer.hfig,'-dpng','-r72',sprintf('images/registration_sep6/p%d.png',i));
+%     print(vizer.hfig,'-dpng','-r72',sprintf('figs/registration_sep6/p%d.png',i));
 end
 
 %% some training points are bad, because communication with matlab had slowed down 
