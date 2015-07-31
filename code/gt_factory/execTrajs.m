@@ -27,10 +27,11 @@ enc.stopListening();
 lzr.stopListening();
 pause(0.5);
 % input commands history
-tInputOffset = tfl.tLocalRelative;
-vlArray = tfl.vlLog; vrArray = tfl.vrLog;
-inputTArray = tfl.tLog;
+flag = tfl.tLog ~= 0;
+tInputV = tfl.tLog(flag)+tfl.tOffset;
+inputVlLog = tfl.vlLog(flag);
+inputVrLog = tfl.vrLog(flag);
 
 %% save to file
 fname = 'data_peta_traj_150524_10';
-save(fname,'enc','lzr','vlArray','vrArray','inputTArray','tStartTraj','tStopTraj','tInputOffset','traj');
+save(fname,'enc','lzr','inputVlLog','inputVrLog','tInputV','tStartTraj','tStopTraj','tInputOffset','traj');

@@ -11,7 +11,7 @@ classdef trajectoryFollower < handle
         VFfLog; wFfLog; VFbLog; wFbLog
         vlLog; vrLog;
         tEncStart; tLaserStart
-		tLocalRelative;
+		tOffset;
         tLog; refStateLog; currentStateLog;
     end
 
@@ -48,7 +48,7 @@ classdef trajectoryFollower < handle
 			localClock = tic;
 			if nargin > 3
 				% ticLocal relative to some refTic
-				obj.tLocalRelative = toc(refTic);
+				obj.tOffset = toc(refTic);
 			end
 			oldRState = rstate.pose;
             currentTh = rstate.pose(3); 
