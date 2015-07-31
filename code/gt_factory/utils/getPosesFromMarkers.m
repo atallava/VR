@@ -4,7 +4,7 @@ function poses = getPosesFromMarkers(frames,markerNameO,markerNameX)
 % 
 % poses = GETPOSESFROMMARKERS(frames,markerNameO,markerNameX)
 % 
-% frames      - Frames from parseMocapData.
+% frames      - Frames from mocap data struct.
 % markerNameO - String, corresponds to origin marker.
 % markerNameX - String, corresponds to x-axis marker.
 % 

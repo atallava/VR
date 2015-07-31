@@ -1,5 +1,5 @@
 % calibrate robot marker coordinates to robot coordinates
-load tfcalib_map % opti-L as map
+load optiL_map % opti-L as map
 localizer = lineMapLocalizer(map.objects);
 vizer = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser)); 
 refiner = laserPoseRefiner(struct('localizer',localizer,'laser',robotModel.laser,'skip',5,'numIterations',30));

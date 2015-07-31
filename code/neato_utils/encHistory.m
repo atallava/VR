@@ -8,8 +8,8 @@ classdef encHistory < handle
 		% tLocalArray is system timestamps
         log
         tArray
-		tLocalRelative
-		ticLocal; tLocalArray
+		tOffset
+		clockLocal; tLocalArray
         update_count
         listenerHandle
         rob
@@ -20,10 +20,10 @@ classdef encHistory < handle
 			obj.rob = rob;
             obj.log = struct('left',{},'right',{});
             obj.tArray = [];
-			obj.ticLocal = tic(); 
+			obj.clockLocal = tic(); 
 			if nargin > 1
-				% ticLocal relative to some refTic
-				obj.tLocalRelative = toc(refTic);
+				% clockLocal relative to some refTic
+				obj.tOffset = toc(refTic);
 			end
 			obj.tLocalArray = [];
 			obj.update_count = 0;
@@ -35,10 +35,10 @@ classdef encHistory < handle
             pause(0.01);
             obj.log = struct('left',{},'right',{});
             obj.tArray = [];
-			obj.ticLocal = tic(); 
+			obj.clockLocal = tic(); 
 			if nargin > 1
-				% ticLocal relative to some refTic
-				obj.tLocalRelative = toc(refTic);
+				% clockLocal relative to some refTic
+				obj.tOffset = toc(refTic);
 			end
 			obj.tLocalArray = [];
             obj.update_count = 0;
@@ -60,7 +60,7 @@ classdef encHistory < handle
         function encoderEventResponse(src,evt,obj)
             obj.update_count = obj.update_count+1;
             obj.tArray(obj.update_count) = evt.data.header.stamp.secs + (evt.data.header.stamp.nsecs*1e-9);
-			obj.tLocalArray(obj.update_count) = toc(obj.ticLocal);
+			obj.tLocalArray(obj.update_count) = toc(obj.clockLocal);
             obj.log(obj.update_count).left = evt.data.left;
             obj.log(obj.update_count).right = evt.data.right;
         end

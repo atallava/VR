@@ -82,6 +82,7 @@ classdef pose2D < handle
 			if ~iscell(T)
 				theta = atan2(T(2,1),T(1,1));
 				p = [T(1,3); T(2,3); theta];
+				return;
 			else
 				numPoses = length(T);
 				p = zeros(3,numPoses);

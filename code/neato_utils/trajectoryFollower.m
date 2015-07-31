@@ -29,7 +29,7 @@ classdef trajectoryFollower < handle
             else
                 error('CONTROLLER NOT INPUT');
             end
-            obj.resetLogs;
+            obj.resetLogs();
         end
         
         function execute(obj,rob,rstate,refTic)
@@ -40,19 +40,19 @@ classdef trajectoryFollower < handle
 			% rob    - Neato object.
 			% rstate - robState object attached to rob. 
 			
-            obj.resetLogs;
+            obj.resetLogs();
             logCount = 1;
             update_count_old = rstate.update_count;
             % Zero in encoder clock.
             obj.tEncStart = rob.encoders.data.header.stamp.secs + rob.encoders.data.header.stamp.nsecs*1e-9;
-			tClock = tic;
+			localClock = tic;
 			if nargin > 3
 				% ticLocal relative to some refTic
 				obj.tLocalRelative = toc(refTic);
 			end
 			oldRState = rstate.pose;
             currentTh = rstate.pose(3); 
-            while(toc(tClock) < obj.trajectory.getTrajectoryDuration)
+            while(toc(localClock) < obj.trajectory.getTrajectoryDuration())
 				% this was commented out due to some trouble. what was it?
 %                 while update_count_old == rstate.update_count
 %                     %pause(robotModel.tPause);
@@ -60,7 +60,7 @@ classdef trajectoryFollower < handle
 %                     continue;
 %                 end
                 update_count_old = rstate.update_count;
-                tNew = toc(tClock); 
+                tNew = toc(localClock); 
                 
                 % feedforward
                 [VFf,wFf] = obj.trajectory.getControl(tNew);
@@ -134,7 +134,7 @@ classdef trajectoryFollower < handle
 
         function resetTrajectory(obj,trajectory)
             obj.trajectory = trajectory;
-            obj.resetLogs;
+            obj.resetLogs();
         end
         
         function setController(obj,ctrl)

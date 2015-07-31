@@ -23,7 +23,7 @@ classdef laserHistory < handle
     properties
         log
         tArray
-		tLocalRelative
+		tOffset
 		ticLocal; tLocalArray
 		update_count
 		listenerHandle
@@ -50,7 +50,7 @@ classdef laserHistory < handle
 			obj.ticLocal = tic();
 			if nargin > 1
 				% ticLocal relative to some refTic
-				obj.tLocalRelative = toc(refTic);
+				obj.tOffset = toc(refTic);
 			end
 			obj.tLocalArray = [];
 			obj.update_count = 0;
@@ -69,7 +69,7 @@ classdef laserHistory < handle
             obj.ticLocal = tic(); 
 			if nargin > 1
 				% ticLocal relative to some refTic
-				obj.tLocalRelative = toc(refTic);
+				obj.tOffset = toc(refTic);
 			end
 			obj.tLocalArray = [];
 			obj.update_count = 0;

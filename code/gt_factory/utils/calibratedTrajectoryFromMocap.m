@@ -3,7 +3,7 @@ function [poses,t] = calibratedTrajectoryFromMocap(mocapStruct,tfCalibFile)
 % 
 % [poses,t] = CALIBRATEDTRAJECTORYFROMMOCAP(mocapStruct,tfCalibFile)
 % 
-% mocapStruct - parseMocapData output.
+% mocapStruct - parseMocapData output. Ground plane has to be xy.
 % tfCalibFile - File name of tf calibration.
 % 
 % poses       - [3,numPoses] array.
@@ -11,9 +11,9 @@ function [poses,t] = calibratedTrajectoryFromMocap(mocapStruct,tfCalibFile)
 
 t = [mocapStruct.frame.timeStamp];
 load(tfCalibFile);
-markerPoses = getPosesFromMarkers(mocapStruct.frame,robotMarkerY,robotMarkerO);
-relMarkerPoses = getRelativePoses(markerPoses,markerPoses(:,1));
-poses = relMarkerPoses;
-% poses = transformRelPosesOnRigidBody(relMarkerPoses,TrobotMarker_robot);
+poses = getPosesFromMarkers(mocapStruct.frame,robotMarkerO,robotMarkerX);
+% poses = getRobotPosesFromMarkerPoses(poses,TrobotMarker_robot);
+poses = getRelativePoses(poses,poses(:,1));
+poses = transformRelPosesOnRigidBody(poses,TrobotMarker_robot);
 
 end
