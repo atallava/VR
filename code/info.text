@@ -89,8 +89,14 @@ triplets is a set of observed three consecutive (and non-nan) ranges from all tr
 
 ### exp11/ ###
 #### mats/ ####
-* processed_data_peta_240215
+* processed\_data\_peta\_240215
 combines data from 230215 and 240215. data collected in 5720 for distribution regression.
+* processed\_data\_sep6\_1  
+poses from processed\_data\_sep6. simulated ranges from raycast noisy, but p(z) = p(z;r).
+* processed\_data\_sep6\_2  
+poses from processed\_data\_sep6. simulated ranges from raycast noisy, with p(z) = p(z;r,\alpha).
+* exp11\_processed\_data\_sep6  
+generated from processed\_data\_sep6\_x. generated using convert\_data\_sep6.m
 
 ### misc/ ###
 #### kde/ ####

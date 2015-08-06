@@ -1,20 +1,21 @@
 function res = dRegress(XTrain,ZTrain,Z,X,bwX,bwZ)
+% predict densities at some z|x
 % ZTrain is a cell array of length N.
-% XTrain is N x 1
+% XTrain is N x dimX
 % Z is array of size R x 1
-% X is array of size S x 1
+% X is array of size Q x dimX
 % bwX, bwZ are respective kernel widths
-% res is array of size S x R
+% res is array of size Q x R
 
 N = size(XTrain,1);
 R = length(Z);
-S = length(X);
+Q = size(X,1);
 
 % some resizing
 if isrow(Z)
     Z = Z';
 end
-if isrow(X)
+if iscolumn(X)
     X = X';
 end
 
@@ -33,10 +34,12 @@ p(:,throwCols) = [];
 assert(~isempty(p),'ZTRAIN IS EMPTY.');
 
 kernelParams.h = bwX;
-K = pdist2(XTrain(setdiff(1:N,throwCols)),X,@(x,y) kernelRBF(x,y,kernelParams));
+K = pdist2(XTrain(setdiff(1:N,throwCols),:),X,@(x,y) kernelRBF2(x,y,kernelParams));
 % normalize each column of K
 colSum = sum(K,1);
-% K is N x S
+% avoid appearance of NaNs
+colSum(colSum == 0) = eps;
+% K is N x Q
 K = bsxfun(@rdivide,K,colSum);
 
 res = p*K;

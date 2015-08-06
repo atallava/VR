@@ -6,7 +6,7 @@ function res = kernelBox(x1,x2,kernelParams)
 % 
 % x1           - 1 x dimX.
 % x2           - n x dimX.
-% kernelParams - struct with fields ('h'), kernel width. Default = 1.0 if
+% kernelParams - struct with fields ('h'), kernel bandwidth. Default = 1.0 if
 %                passed empty struct.
 % 
 % res          - 1 x n kernel values.x
@@ -25,6 +25,5 @@ res = zeros(1,n);
 for i = 1:n
     res(i) = norm(x1-x2(i,:)) <= h/2;
 end
-res = res*1/h;
 end
 
