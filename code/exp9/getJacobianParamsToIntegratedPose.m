@@ -1,5 +1,5 @@
 function J = getJacobianParamsToIntegratedPose(startPose,vlArray,vrArray,tArray,wheelToBodyVel,params,delParams)
-%GETJACOBIANPARAMSTOINTEGRATEDPOSE 
+%GETJACOBIANPARAMSTOINTEGRATEDPOSE Numerical Jacobian.
 % 
 % J = GETJACOBIANPARAMSTOINTEGRATEDPOSE(startPose,vlArray,vrArray,tArray,wheelToBodyVel,params,delParams)
 % 
@@ -9,7 +9,7 @@ function J = getJacobianParamsToIntegratedPose(startPose,vlArray,vrArray,tArray,
 % tArray         - Timestamps.
 % wheelToBodyVel - Handle to function that maps wheel to body velocities.
 % params         - Array of params.
-% delParams      - Change to each params in getting Jacobian.
+% delParams      - Parameter perturbation in calculating Jacobian.
 % 
 % J              - Jacobian, array of size 3 x num params.
 

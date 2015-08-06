@@ -8,12 +8,12 @@ muTest = testPdfs.paramArray(:,1,:); muTest = squeeze(muTest);
 rArray = p2r.transform(XTest);
 rArray = squeeze(rArray);
 
-modelGraph = zeros(dp.laser.nPixels,dp.laser.nPixels);
+modelGraph = zeros(dp.laser.nBearings,dp.laser.nBearings);
 warning('off');
 t1 = tic();
-for i = 1:(dp.laser.nPixels-1)
+for i = 1:(dp.laser.nBearings-1)
     fprintf('Pixel %d...\n',i);
-    for j = (i+1):dp.laser.nPixels
+    for j = (i+1):dp.laser.nBearings
         model1 = rsim.pxRegBundleArray(1).regressorArray{i};
         x1 = rArray(:,i); y1 = muTest(:,i);
         model2 = rsim.pxRegBundleArray(1).regressorArray{j};

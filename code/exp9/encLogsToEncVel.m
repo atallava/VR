@@ -1,12 +1,12 @@
 function [vlCell,vrCell] = encLogsToEncVel(encLogs)
-%ENCLOGSTOENCVEL 
+%ENCLOGSTOENCVEL Convert encoder logged data to wheel velocities.
 % 
 % [vlCell,vrCell] = ENCLOGSTOENCVEL(encLogs)
 % 
-% encLogs - 
+% encLogs - Struct array, fields ('log','tArray').
 % 
-% vlCell  - 
-% vrCell  - 
+% vlCell  - Cell array of left wheel velocities.
+% vrCell  - Cell array of right wheel velocities.
 
 [vlCell,vrCell] = deal(cell(1,length(encLogs)));
 for i = 1:length(encLogs)

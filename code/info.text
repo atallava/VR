@@ -98,6 +98,10 @@ poses from processed\_data\_sep6. simulated ranges from raycast noisy, with p(z)
 * exp11\_processed\_data\_sep6  
 generated from processed\_data\_sep6\_x. generated using convert\_data\_sep6.m
 
+### exp12/ ###
+* mocap\_transform
+Typically after ground calibration, the floor is x-z coordinates. The transform in here sets the floor to an x-y plane.
+
 ### misc/ ###
 #### kde/ ####
 * scores  

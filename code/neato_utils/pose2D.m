@@ -7,11 +7,10 @@ classdef pose2D < handle
     
     methods(Static = true)
         function res = poseNorm(p1,p2)
-           % p1, p2 are [x,y,th]
+           % p1, p2 are [3,num_poses]
            scale = 0.5/0.44;
-           dth = atan2(sin(p1(3)-p2(3)),cos(p1(3)-p2(3)));
-           res = (p1(1)-p2(1))^2+(p1(2)-p2(2))^2+(scale*dth)^2;
-           res = sqrt(res);
+           pd = pose2D.poseDiff(p1,p2);
+		   res = sqrt(pd(1,:).^2+pd(2,:).^2+scale.*pd(3,:).^2);
         end
     end
     methods
@@ -48,16 +47,48 @@ classdef pose2D < handle
         end
     end
     
-    methods (Static = true)
-        function T = poseToTransform(p)
-            T = [cos(p(3)) -sin(p(3)) p(1); ...
-                sin(p(3)) cos(p(3)) p(2); ...
-                0 0 1];
-        end
+	methods (Static = true)
+		function T = poseToTransform(p)
+			%POSETOTRANSFORM
+			%
+			% T = POSETOTRANSFORM(p)
+			%
+			% p - Length 3 vector or [3,numPoses] array.
+			%
+			% T - [3,3] array or length numPoses cell of [3,3] arrays.
+			
+			if iscolumn(p) || isrow(p)
+				T = [cos(p(3)) -sin(p(3)) p(1); ...
+					sin(p(3)) cos(p(3)) p(2); ...
+					0 0 1];
+			else
+				numPoses = size(p,2);
+				T = cell(1,numPoses);
+				for i = 1:numPoses
+					T{i} = pose2D.poseToTransform(p(:,i));
+				end
+			end
+		end
         
-        function p = transformToPose(T)
-            theta = atan2(T(2,1),T(1,1));
-            p = [T(1,3); T(2,3); theta];
+		function p = transformToPose(T)
+			%TRANSFORMTOPOSE
+			%
+			% p = TRANSFORMTOPOSE(T)
+			%
+			% T - [3,3] array or length numPoses cell of [3,3] arrays.
+			%
+			% p - Length 3 vector or [3,numPoses] array.
+
+			if ~iscell(T)
+				theta = atan2(T(2,1),T(1,1));
+				p = [T(1,3); T(2,3); theta];
+			else
+				numPoses = length(T);
+				p = zeros(3,numPoses);
+				for i = 1:numPoses
+					p(:,i) = pose2D.transformToPose(T{i});
+				end
+			end
         end
         
         function dp = poseDiff(p1,p2)
@@ -70,7 +101,7 @@ classdef pose2D < handle
             %
             % dp - Takes p1 to p2.
             
-            dp = p2-p1;
+			dp = bsxfun(@minus,p2,p1);
             dp(3) = thDiff(p1(3),p2(3));
         end
         

@@ -1,4 +1,4 @@
-function finalPose = integrateVelocities(startPose,VArray,wArray,tArray)
+function [finalPose,poseArray] = integrateVelocities(startPose,VArray,wArray,tArray)
 %INTEGRATEVELOCITIES 
 % 
 % finalPose = INTEGRATEVELOCITIES(vArray,tArray)
@@ -12,6 +12,7 @@ function finalPose = integrateVelocities(startPose,VArray,wArray,tArray)
 
 poseArray = zeros(3,length(tArray)+1);
 poseArray(:,1) = startPose;
+% assumes that startPose is at time 0.
 for i = 1:length(tArray)
     if i == 1
         dt = tArray(i);

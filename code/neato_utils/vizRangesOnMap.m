@@ -64,7 +64,8 @@ classdef vizRangesOnMap < handle
             if  isempty(obj.hfig) || ~ishandle(obj.hfig)
                 obj.hfig = obj.localizer.drawLines();
 			end
-            ha = get(obj.hfig,'children');
+            hchildren = get(obj.hfig,'children');
+			ha = hchildren(1); % assuming that first child is axes
             xl0 = xlim(ha);
             yl0 = ylim(ha);
             xlabel(ha,'x'); ylabel(ha,'y');

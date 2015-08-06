@@ -7,9 +7,9 @@ hkLaser = laserClass(struct('maxRange',5,'rangeRes',1e-3,'bearings',deg2rad(lins
 trainPoseIds = 1:nPoses;
 
 %%
-obsArrayTrain = cell(nPoses,hkLaser.nPixels);
+obsArrayTrain = cell(nPoses,hkLaser.nBearings);
 for i = 1:nPoses
-    for j = 1:hkLaser.nPixels
+    for j = 1:hkLaser.nBearings
         ids = (i-1)*nObs+1:i*nObs;
         data = rangeHistory(ids,j);
         obsArrayTrain{i,j} = data;
@@ -23,9 +23,9 @@ testPoseIds = trainPoseIds(end)+1:nPoses;
 poses = [poses poseHistory];
 
 %%
-obsArrayTest = cell(nPoses,hkLaser.nPixels);
+obsArrayTest = cell(nPoses,hkLaser.nBearings);
 for i = 1:nPoses
-    for j = 1:hkLaser.nPixels
+    for j = 1:hkLaser.nBearings
         ids = (i-1)*nObs+1:i*nObs;
         data = rangeHistory(ids,j);
         obsArrayTest{i,j} = data;

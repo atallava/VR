@@ -136,74 +136,8 @@ classdef lineMap < handle
             % ranges           - Vector in m.
             % incidence_angles - Vector in rad.
             
-            sweep = pose(3) + ang_range;
-            
-            p0x = pose(1);
-            p0y = pose(2);
-            
-            p1x = p0x + max_range.*cos(sweep);
-            p1y = p0y + max_range.*sin(sweep);
-			
-            s1x = p1x - p0x;
-            s1y = p1y - p0y;
-            
-            lc = cell2mat({obj.objects(:).line_coords}');
-            
-            % start points of lines
-            p2x = lc(1:end-1,1);
-            p2y = lc(1:end-1,2);
-            
-            % end points of lines
-            p3x = lc(2:end,1);
-            p3y = lc(2:end,2);
-            
-            % line segments
-            s2x = p3x - p2x; 
-            s2y = p3y - p2y;
-
-            % s takes into account that the line segment is finite
-            s = ((p2x-p0x)*s1y + (p0y-p2y)*s1x)./...
-                (-s2x*s1y + s2y*s1x);
-            
-            % t takes into account that the rays are finite
-			t = repmat(( s2x.*(p0y-p2y) - s2y.*(p0x-p2x)),1,length(s1x))...
-                ./ (-s2x*s1y + s2y*s1x);
-
-            col = s >= 0 & s <= 1 & t >= 0 & t <= 1;
-            t(~isfinite(t)) = 0;
-            cpx = (t .* repmat(s1x,length(s2x),1)) .* col;
-            cpy = (t .* repmat(s1y,length(s2x),1)) .* col;
-            r = (cpx.^2 + cpy.^2).^.5;
-            
-            r(~col) = nan;
-            
-            % angles of incidence to each line segment
-            % currently has positive/ negative ambiguity
-            alpha = zeros(length(p2x),1);
-            for i = 1:length(p2x)
-                params = ParametrizePts2ABC(lc(i,1:2),lc(i+1,1:2));
-                alpha(i) = atanLine2D(params(1),params(2));
-            end
-            incidence_angles = repmat(alpha,1,length(ang_range))-repmat(mod(ang_range+pose(3),pi),length(alpha),1); 
-            incidence_angles(incidence_angles == 0) = pi;
-            incidence_angles = incidence_angles-pi/2*ones(size(incidence_angles)).*sign(incidence_angles);
-                                                
-            % remove spurious line segments between points not belonging to same
-            % object
-            ng = cumsum(cellfun(@(x) size(x,1), {obj.objects(:).line_coords}'));
-            r(ng(1:end-1),:) = [];
-            incidence_angles(ng(1:end-1),:) = [];
-            
-            % get minimum range and angle to that segment
-            [ranges, min_sub] = min(r,[],1);
-            ids = sub2ind(size(incidence_angles),min_sub,1:length(ang_range));
-            incidence_angles = incidence_angles(ids);
-            incidence_angles(isnan(ranges)) = nan;
-            % return absolute value of incidence angles
-            incidence_angles = abs(incidence_angles);
-                        
-            % TODO: shift out of here, this is neato-specific
-            ranges(isnan(ranges)) = 0;
+           [ranges,incidence_angles] = obj.getRAlpha(pose,max_range,ang_range);
+		   ranges(isnan(ranges)) = 0;
         end
         
         function [ranges,angles] = raycastNoisy(lm, pose, max_range, ang_range)

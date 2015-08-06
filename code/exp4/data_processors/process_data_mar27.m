@@ -63,7 +63,7 @@ for i = 1:enc.update_count
         hf = plotScan(poseOut,ptsLocal,hf);
         set(hf,'visible','off');
         title(sprintf('laser count %d',lzrCount));
-        print('-dpng','-r72',sprintf('images/pose_est/enc%d_lzr%d.png',i,lzrCount));
+        print('-dpng','-r72',sprintf('figs/pose_est/enc%d_lzr%d.png',i,lzrCount));
         close(hf);
     end
     rState.setEncoders(enc.log(i+1),tCommonEnc(i));

@@ -23,6 +23,7 @@ classdef laserHistory < handle
     properties
         log
         tArray
+		tLocalRelative
 		ticLocal; tLocalArray
 		update_count
 		listenerHandle
@@ -33,7 +34,7 @@ classdef laserHistory < handle
     end
     
     methods
-        function obj = laserHistory(rob)
+        function obj = laserHistory(rob,refTic)
             %LASERHISTORY Constructor.
             %
             % obj = LASERHISTORY(rob)
@@ -46,7 +47,12 @@ classdef laserHistory < handle
             obj.rob = rob;
             obj.log = struct('ranges',{},'intensities',{});
             obj.tArray = [];
-            obj.ticLocal = tic(); obj.tLocalArray = [];
+			obj.ticLocal = tic();
+			if nargin > 1
+				% ticLocal relative to some refTic
+				obj.tLocalRelative = toc(refTic);
+			end
+			obj.tLocalArray = [];
 			obj.update_count = 0;
             obj.bearings = deg2rad(0:359);
             obj.hfig = figure; obj.hplot = plot(0,0,'.'); 
@@ -55,12 +61,17 @@ classdef laserHistory < handle
             obj.listenerHandle = addlistener(rob.laser,'OnMessageReceived',@(src,evt) laserHistory.laserEventResponse(src,evt,obj));
         end
         
-        function reset(obj)
+        function reset(obj,refTic)
             obj.listenerHandle.delete;
             pause(0.01);
             obj.log = struct('ranges',{},'intensities',{});
             obj.tArray = [];
-            obj.ticLocal = tic(); obj.tLocalArray = [];
+            obj.ticLocal = tic(); 
+			if nargin > 1
+				% ticLocal relative to some refTic
+				obj.tLocalRelative = toc(refTic);
+			end
+			obj.tLocalArray = [];
 			obj.update_count = 0;
             obj.listenerHandle = addlistener(obj.rob.laser,'OnMessageReceived',@(src,evt) encHistory.laserEventResponse(src,evt,obj));
         end

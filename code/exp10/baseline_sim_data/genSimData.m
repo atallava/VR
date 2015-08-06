@@ -10,16 +10,16 @@ bsim.map = map;
 ranges = cell(1,size(poses,2));
 for i = trainPoseIds
 	fprintf('Pose id: %d\n',i);
-	data = zeros(nObs,bsim.laser.nPixels);
+	data = zeros(nObs,bsim.laser.nBearings);
 	for j = 1:nObs
 		data(j,:) = bsim.simulate(poses(:,i));
 	end
 	ranges{i} = data;
 end
-obsArray = cell(size(poses,2),bsim.laser.nPixels);
+obsArray = cell(size(poses,2),bsim.laser.nBearings);
 
 for i = trainPoseIds
-	for j = 1:bsim.laser.nPixels
+	for j = 1:bsim.laser.nBearings
 		obsArray{i,j} = ranges{i}(:,j);
 	end
 end
@@ -29,7 +29,7 @@ load mock_map_test
 bsim.map = map;
 for i = testPoseIds
 	fprintf('Pose id: %d\n',i);
-	data = zeros(nObs,bsim.laser.nPixels);
+	data = zeros(nObs,bsim.laser.nBearings);
 	for j = 1:nObs
 		data(j,:) = bsim.simulate(poses(:,i));
 	end
@@ -37,7 +37,7 @@ for i = testPoseIds
 end
 
 for i = trainPoseIds
-	for j = 1:bsim.laser.nPixels
+	for j = 1:bsim.laser.nBearings
 		obsArray{i,j} = ranges{i}(:,j);
 	end
 end

@@ -31,16 +31,16 @@ trainSigmaArray = trainPdfs.paramArray(:,2,:);
 trainPzArray = trainPdfs.paramArray(:,3,:);
 
 % hack hack hack. throwing outliers in regression stage
-% thresh = 0.1;
-% nominalRange = p2r.transform(dp.XTrain);
-% flag = (trainMuArray > nominalRange+thresh) | (trainMuArray < nominalRange-thresh);
-% trainMuArray(flag) = nan;
-% trainSigmaArray(flag) = nan;
+thresh = 0.1;
+nominalRange = p2r.transform(dp.XTrain);
+flag = (trainMuArray > nominalRange+thresh) | (trainMuArray < nominalRange-thresh);
+trainMuArray(flag) = nan;
+trainSigmaArray(flag) = nan;
 
 % use result from a robust np
-load outlier_flags_sep6
-trainMuArray(outlierFlag) = nan;
-trainSigmaArray(outlierFlag) = nan;
+% load outlier_flags_sep6
+% trainMuArray(outlierFlag) = nan;
+% trainSigmaArray(outlierFlag) = nan;
 
 % switches to account for laser.maxRange
 bsMu = boxSwitch(struct('XRanges',[0; dp.laser.maxRange],'switchY',0));

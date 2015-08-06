@@ -56,7 +56,7 @@ for poseId = 1:nPoses
     legend(hl(1:2),{'poseOut','poseEst'});
     xlim([-0.5 4]); ylim([-0.5 2]);
     title(sprintf('pose %d, observation %d',poseId,obsId));
-    print('-dpng','-r72',sprintf('images/scan_match/p%d_o%d.png',poseId,obsId));
+    print('-dpng','-r72',sprintf('figs/scan_match/p%d_o%d.png',poseId,obsId));
     close(hf);
 end
 
