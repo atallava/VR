@@ -1,4 +1,4 @@
-classdef occupancyMap < handle
+classdef occupancyMap < abstractMap
 		
 	properties
 		scale % in m
@@ -8,6 +8,7 @@ classdef occupancyMap < handle
 		yMin; yMax
 		xGrid; yGrid
 		logOddsGrid
+		binaryGrid
 		lInit; lOcc; lFree
 		lzr
 	end
@@ -65,14 +66,13 @@ classdef occupancyMap < handle
 				% occupied space
 				obj.logOddsGrid(ids(end)) = obj.logOddsGrid(ids(end))+obj.lOcc-obj.lInit;
 			end
-% 			keyboard
 		end
 		
 		function [r,c] = xy2rc(obj,x,y)
-			assert(x >= obj.xMin && x <= obj.xMax,'X NOT IN MAP RANGE');
-			assert(y >= obj.yMin && y <= obj.yMax,'Y NOT IN MAP RANGE');
-			c = ceil((x-obj.xMin)/obj.scale);
-			r = ceil((y-obj.yMin)/obj.scale);
+			assert(all(x >= obj.xMin) && all(x <= obj.xMax),'X NOT IN MAP RANGE');
+			assert(all(y >= obj.yMin) && all(y <= obj.yMax),'Y NOT IN MAP RANGE');
+			c = ceil((x-obj.xMin)./obj.scale);
+			r = ceil((y-obj.yMin)./obj.scale);
 		end
 		
 		function [x,y] = rc2xy(obj,r,c)
@@ -115,6 +115,103 @@ classdef occupancyMap < handle
 			xlabel('x');
 			ylabel('y');
 			axis equal;
+		end
+		
+		function hf = plot(obj)
+			hf = obj.plotBinaryMap();
+		end
+		
+		function calcBinaryGrid(obj)
+			obj.binaryGrid = obj.logOdds2Prob(obj.logOddsGrid);
+			obj.binaryGrid = obj.binaryGrid > 0.5;
+		end
+		
+		function p = getBinaryGrid(obj)
+			if isempty(obj.binaryGrid)
+				obj.calcBinaryGrid();
+			end
+			p = obj.binaryGrid;
+		end
+		
+		function [ranges,incidenceAngles] = raycast(obj,pose,maxRange,thRange)
+			assert(pose(1) >= obj.xMin && pose(1) <= obj.xMax,'X NOT IN MAP RANGE');
+			assert(pose(2) >= obj.yMin && pose(2) <= obj.yMax,'Y NOT IN MAP RANGE');
+			numPts = length(thRange);
+
+			sweep = pose(3)+thRange;
+			x1 = pose(1)*ones(1,numPts);
+			y1 = pose(2)*ones(1,numPts);
+			[x2,y2] = deal(zeros(size(x1)));
+			for i = 1:numPts
+				[x2(i),y2(i)] = obj.farthestPointOnRay(x1(i),y1(i),sweep(i));
+			end
+			[r1,c1] = obj.xy2rc(x1,y1);
+			[r2,c2] = obj.xy2rc(x2,y2);
+			[xHit,yHit] = deal(zeros(1,numPts));
+			ranges = zeros(1,numPts);
+			for i = 1:numPts
+				[~,~,~,c,r] = bresenham(zeros(size(obj.binaryGrid)),[obj.nY-r1(i)+1 c1(i); ...
+					obj.nY-r2(i)+1 c2(i)],0);
+				r = obj.nY-r+1;
+				if r(1) ~= r1(i); r = fliplr(r); end
+				if c(1) ~= c1(i); c = fliplr(c); end
+				ids = obj.rc2id(r,c);
+								
+				hits = find(obj.binaryGrid(ids));
+				if isempty(hits)
+					xHit(i) = nan; yHit(i) = nan;
+					ranges(i) = 0;
+				else
+					hit = hits(1); % closest hit
+					[xHit(i),yHit(i)] = obj.rc2xy(r(hit),c(hit));
+					range = norm([xHit(i)-x1(i),yHit(i)-y1(i)]);
+					if range <= maxRange
+						ranges(i) = range;
+					else
+						ranges(i) = 0;
+					end
+				end
+			end
+			
+			incidenceAngles = [];
+		end
+		
+		function [x2,y2] = farthestPointOnRay(obj,x1,y1,th)
+			% shoot a ray from x1,y1 in the direction th. which is the
+			% farthest point on the map it reaches.
+			% this can be made faster using lineMap. but currently not
+			% needed since this isn't bottleneck.
+			
+			assert(all(x1 >= obj.xMin) && all(x1 <= obj.xMax),'X NOT IN MAP RANGE');
+			assert(all(y1 >= obj.yMin) && all(y1 <= obj.yMax),'Y NOT IN MAP RANGE');
+			
+			th = mod(th,2*pi);
+			% angles with vertices
+			thVertices = zeros(1,4);
+			vec = [obj.xMax;obj.yMax]-[x1;y1];
+			thVertices(1) = atan2(vec(2),vec(1));
+			vec = [obj.xMin;obj.yMax]-[x1;y1];
+			thVertices(2) = atan2(vec(2),vec(1));
+			vec = [obj.xMin;obj.yMin]-[x1;y1];
+			thVertices(3) = atan2(vec(2),vec(1));
+			vec = [obj.xMax;obj.yMin]-[x1;y1];
+			thVertices(4) = atan2(vec(2),vec(1));
+			thVertices = mod(thVertices,2*pi);
+			
+			del = 1e-3;
+			if thVertices(1) <= th && th < thVertices(2)
+				y2 = obj.yMax-del;
+				x2 = (y2-y1)/tan(th)+x1;
+			elseif thVertices(2) <= th && th < thVertices(3)
+				x2 = obj.xMin+del;
+				y2 = (x2-x1)*tan(th)+y1;
+			elseif thVertices(3) <= th && th < thVertices(4)
+				y2 = obj.yMin+del;
+				x2 = (y2-y1)/tan(th)+x1;
+			else
+				x2 = obj.xMax-del;
+				y2 = (x2-x1)*tan(th)+y1;
+			end
 		end
 	end
 	

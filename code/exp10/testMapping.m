@@ -13,4 +13,5 @@ for i = trainPoseIds
 		om.updateLogOdds(poses(:,i),ranges);
 	end
 end
+om.calcBinaryGrid();
 toc(t1)
