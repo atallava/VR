@@ -96,6 +96,9 @@ combines data from 230215 and 240215. data collected in 5720 for distribution re
 * mocap\_transform
 Typically after ground calibration, the floor is x-z coordinates. The transform in here sets the floor to an x-y plane.
 
+### exp13/ ###
+testing ideas of simulator adaptation on the detection domain.
+
 ### misc/ ###
 #### kde/ ####
 * scores  
