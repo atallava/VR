@@ -1,3 +1,4 @@
+% run on the neato to collect data
 % initialize
 if ~exist('rob','var')
     error('ROB MUST EXIST IN WORKSPACE');

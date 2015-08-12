@@ -24,6 +24,7 @@ classdef rangeImage < handle
             % default (,deg2rad(0:359),0)
             if isfield(inputStruct,'bearings')
                 obj.thArray = inputStruct.bearings;
+                if ~isrow(obj.thArray) obj.thArray = obj.thArray'; end;
             else
                 obj.thArray = deg2rad(0:359);
             end
@@ -99,11 +100,12 @@ classdef rangeImage < handle
             dcm_obj = datacursormode(hf);
             set(dcm_obj,'UpdateFcn',@updateWithId);
 
+            % display reading id
             function txt = updateWithId(~,event_obj)
                 pos = get(event_obj,'Position');
                 x_coord = pos(1); y_coord = pos(2);
-                x_id = find(obj.xArray == x_coord);
-                y_id = find(obj.yArray == y_coord);
+                x_id = find(x == x_coord);
+                y_id = find(y == y_coord);
                 id = intersect(x_id,y_id);
                 txt = {['x: ',num2str(x_coord)],...
                     ['y: ',num2str(y_coord)],...

@@ -19,6 +19,7 @@ classdef poses2RAlpha < handle & abstractInputTransformer
         
         function rAlphaArray = transform(obj,poses)
             % transform a given array of poses
+            % poses is N x dimPoses
             % poses in nPoses x 3
             nPoses = size(poses,1);
             rAlphaArray = zeros(nPoses,1,length(obj.laser.bearings));

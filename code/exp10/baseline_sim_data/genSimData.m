@@ -2,7 +2,7 @@ clearAll
 load processed_data_milli_160215
 inputStruct.laser = laserClass(struct());
 bsim = baselineSimulator(inputStruct);
-nObs = 50;
+nObs = 200;
 
 %% train poses
 load mock_map_train

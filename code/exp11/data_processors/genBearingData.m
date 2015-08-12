@@ -1,3 +1,4 @@
+% extract data for one pixel
 load processed_data_peta_240215
 
 %%

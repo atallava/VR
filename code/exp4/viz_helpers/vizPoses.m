@@ -1,16 +1,16 @@
-function hf = vizPoses(localizer,poses,trainPoseIds,testPoseIds)
+function hf = vizPoses(map,poses,trainPoseIds,testPoseIds)
 %VIZPOSES Visualize test and training poses on map.
 % 
-% hf = VIZPOSES(localizer,poses,trainPoseIds,testPoseIds)
+% hf = VIZPOSES(map,poses,trainPoseIds,testPoseIds)
 % 
-% localizer    - lineMapLocalizer object.
+% map          - lineMap object.
 % poses        - 2 x nPoses array.
 % trainPoseIds - 1d Array.
 % testPoseIds  - 1d Array.
 % 
 % hf           - Figure handle.
 
-hf = localizer.drawLines();
+hf = map.plot();
 figure(hf); hold on;
 for i = trainPoseIds
     quiver(poses(1,i),poses(2,i),0.1*cos(poses(3,i)),0.1*sin(poses(3,i)),'g','LineWidth',2);

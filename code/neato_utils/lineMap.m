@@ -146,9 +146,10 @@ classdef lineMap < handle
             % incidence
             [ranges,angles] = raycast(lm, pose, max_range, ang_range);
             
-            K = 1e-3;
-			biasFactor = 0.05;
+            K = 2e-3;
+			biasFactor = 0.02;
             for i = 1:length(ranges);
+%                 sigma = K*ranges(i)^2;
                 sigma = K*ranges(i)^2/cos(angles(i));
                 if isnan(sigma)
                     continue;

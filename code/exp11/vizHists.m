@@ -1,5 +1,5 @@
 function hf = vizHists(h,hEst,xc)
-%VIZHISTS 
+%VIZHISTS Viz two hists as subplots.
 % 
 % hf = VIZHISTS(h,hEst,xc)
 % 
@@ -12,9 +12,11 @@ function hf = vizHists(h,hEst,xc)
 hf = figure;
 subplot(2,1,1);
 bar(xc,h);
+yl = ylim;
 title('true histogram');
 subplot(2,1,2);
 bar(xc,hEst);
+% ylim(yl);
 title('estimated histogram');
 end
 
