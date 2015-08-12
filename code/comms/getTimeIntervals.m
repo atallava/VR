@@ -1,5 +1,4 @@
 function [intervalsPub,intervalsSub,delays] = getTimeIntervals(fname)
-
 %GETTIMEINTERVALS 
 % 
 % [intervalsPub,intervalsSub,delays] = GETTIMEINTERVALS(fname)
@@ -9,8 +8,6 @@ function [intervalsPub,intervalsSub,delays] = getTimeIntervals(fname)
 % intervalsPub - Intervals of published messages.
 % intervalsSub - Intervals of subscribed messages.
 % delays       - Delays between subscribed and published.
-
-
 
 
 % Supress during file load.

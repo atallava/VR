@@ -12,8 +12,4 @@ for i = 1:length(indices)
 	fname = ['data/' fname];
 	save(fname,'-struct','outputStruct');
 end
-
-
-
 end
-

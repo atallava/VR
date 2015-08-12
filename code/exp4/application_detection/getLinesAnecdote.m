@@ -24,7 +24,7 @@ end
 length_pad = 0.1;
 longLinesInfo = {};
 for i = 1:ri.nPix
-    res = lineCandidateAlgo(ri,i,targetLength+length_pad);
+    res = lineCandidateAlgo(ri,i,targetLength+length_pad,false);
     if isempty(res)
         continue;
     end

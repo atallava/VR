@@ -11,9 +11,11 @@ function [poses,t] = calibratedTrajectoryFromMocap(mocapStruct,tfCalibFile)
 
 t = [mocapStruct.frame.timeStamp];
 load(tfCalibFile);
+robotMarkerO = 'Marker-3';
+robotMarkerX = 'Marker-2';
 poses = getPosesFromMarkers(mocapStruct.frame,robotMarkerO,robotMarkerX);
 % poses = getRobotPosesFromMarkerPoses(poses,TrobotMarker_robot);
-poses = getRelativePoses(poses,poses(:,1));
-poses = transformRelPosesOnRigidBody(poses,TrobotMarker_robot);
+% poses = getRelativePoses(poses,poses(:,1));
+% poses = transformRelPosesOnRigidBody(poses,TrobotMarker_robot);
 
 end

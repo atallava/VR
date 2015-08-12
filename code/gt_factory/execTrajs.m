@@ -10,7 +10,7 @@ assert(cond,'LASER MUST BE ON!');
 load motion_vars
 
 %% execute trajectory
-traj = stlineTraj;
+traj = sTraj;
 tfl.resetTrajectory(traj);
 pause(0.5);
 rstate.reset([0; 0; 0]); % reset to zero
@@ -33,5 +33,10 @@ inputVlLog = tfl.vlLog(flag);
 inputVrLog = tfl.vrLog(flag);
 
 %% save to file
-fname = 'data_peta_traj_150524_10';
-save(fname,'enc','lzr','inputVlLog','inputVrLog','tInputV','tStartTraj','tStopTraj','tInputOffset','traj');
+robotName = 'peta';
+tag = 'traj';
+dateStr = yymmddDate();
+index = 10;
+fname = buildDataFileName(robotName,tag,dateStr,index);
+fname = ['data/' fname];
+save(fname,'enc','lzr','inputVlLog','inputVrLog','tInputV','tStartTraj','tStopTraj','traj');

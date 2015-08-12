@@ -1,7 +1,7 @@
 % initialize
 robotName = 'peta';
 tag = 'traj';
-dateStr = '150524';
+dateStr = '150804';
 index = '1';
 
 %% parse mocap data
@@ -11,7 +11,7 @@ load mocap_ground_plane_transform
 mocapStruct = transformMocapStruct(mocapStruct,T);
 
 %% calibrated robot poses from mocap
-tfCalibFile = 'tfcalib_150524';
+tfCalibFile = 'tfcalib_150804';
 [poseLog,tMocap] = calibratedTrajectoryFromMocap(mocapStruct,tfCalibFile);
 
 %% logged robot commands

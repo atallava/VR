@@ -1,52 +1,36 @@
 % calibrate robot marker coordinates to robot coordinates
-load optiL_map % opti-L as map
-localizer = lineMapLocalizer(map.objects);
-vizer = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser)); 
-refiner = laserPoseRefiner(struct('localizer',localizer,'laser',robotModel.laser,'skip',5,'numIterations',30));
+load('optiL_map','map'); % optiL map
 
 %% pose from sensor registration
-fname = 'data_peta_tfcalib_150524_1';
+robotName = 'peta';
+tag = 'tfcalib';
+dateStr = '150804';
+index = '1';
+fname = buildDataFileName(robotName,tag,dateStr,index);
 load(fname);
-% might be beneficial to do this online
-poseIn = [0.4; 0.4; pi/2]; % manual
-numScans = size(ranges,1);
-poseOutArray = zeros(3,numScans);
-for i = 1:numScans
-	[~,poseOutArray(:,i)] = refiner.refine(ranges(i,:),poseIn);
-end
-poseRobot = mean(poseOutArray,2);
-Trobot_world = pose2D.poseToTransform(poseRobot);
+
+poseRobot = mean(poses,2);
+Trobot_optiL = pose2D.poseToTransform(poseRobot); % in the realm of 2d transforms
+Trobot_optiL(1:2,3) = Trobot_optiL(1:2,3)+optiL_map_marker_offset;
 
 %% parse mocap data
-load mocap_transform
-fname = 'data_mocap_tfcalib_150524_1.csv';
+load mocap_ground_plane_transform
+fname = buildDataFileName('mocap',tag,dateStr,index,'.csv');
 mocapStruct = parseMocapData(fname);
 % set floor plane to xy
 mocapStruct = transformMocapStruct(mocapStruct,T);
 
-%% transform mocap coordinates relative to opti-L
+%% optiL pose
 % assuming that marker names are fixed through capture
-% manual
-markerName1 = 'Marker-2'; % origin
-markerName2 = 'Marker-5'; % on x-axis
-markerName3 = 'Marker-3'; % on y-axis
-optiLPose = getPosesFromMarkers(mocapStruct.frame(1),markerName1,markerName2);
+load(['marker_names_' dateStr]);
+optiLPose = getPosesFromMarkers(mocapStruct.frame(1),optiLMarkerO,optiLMarkerX);
 ToptiL_world = pose2D.poseToTransform(optiLPose);
-Tworld_optiL = inv(ToptiL_world);
-T3 = [cos(th) -sin(th)  0 optiLPose(1); ...
-	sin(th) cos(th)  0 optiLPose(2); ...
-	0 0 1 0; ...
-	0 0 0 1];
-T3 = inv(T3);
-mocapStruct = transformMocapStruct(mocapStruct,T3);
 
-%% robot marker pose from mocap
+%% robot marker pose and final transform
 % manual
-robotMarkerO = 'Rigid Body 2-Marker 3';
-robotMarkerX = 'Rigid Body 2-Marker 1';
-robotMarkerY = 'Rigid Body 2-Marker 2';
-robotRigidBodyId = 2;
 poseRobotMarker = getPosesFromMarkers(mocapStruct.frame(1),robotMarkerO,robotMarkerX);
 TrobotMarker_world = pose2D.poseToTransform(poseRobotMarker);
-TrobotMarker_robot = Trobot_world\TrobotMarker_world;
-save('tfcalib_results_150524','TrobotMarker_robot','robotMarkerO','robotMarkerX','robotMarkerY','robotRigidBodyId');
+TrobotMarker_optiL = ToptiL_world\TrobotMarker_world;
+TrobotMarker_robot = Trobot_optiL\TrobotMarker_optiL;
+fname = ['tfcalib_' dateStr];
+save(fname,'TrobotMarker_robot','robotMarkerO','robotMarkerX','robotRigidBodyId');
