@@ -9,17 +9,19 @@ fname = ['algo_' algoName '/sim_train_variables.mat']; load(fname);
 numS = length(simDataset);
 numA = length(trainParamList);
 metricValues = zeros(numA,numS);
+statReal = zeros(1,numA);
+statSim = zeros(numA,numS);
 statMetric = @(x,y) norm(x-y); % pick metric
 for i = 1:numA
-	statReal = algoStat(algoTemplate,trainParamList(i),realDataset);
+	statReal(i) = algoStat(algoTemplate,trainParamList(i),realDataset);
 	for j = 1:numS
-		statSim = algoStat(algoTemplate,trainParamList(i),simDataset{j});
-		metricValues(i,j) = statMetric(statReal,statSim);
+		statSim(i,j) = algoStat(algoTemplate,trainParamList(i),simDataset{j});
+		metricValues(i,j) = statMetric(statReal(i),statSim(i,j));
 	end
 end
 
 %% Pick simulator.
 % Determine best simulator. Perhaps write to file
-[~,bestId] = min(max(metricValues,1));
+[~,bestId] = min(max(metricValues,[],1));
 rmpath(['./algo_' algoName]);
-save(['algo_' algoName '/metricValues.mat','metricValues');
+save(['algo_' algoName '/train_metric_values.mat'],'statReal','statSim','metricValues');
