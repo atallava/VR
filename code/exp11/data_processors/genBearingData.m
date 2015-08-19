@@ -15,4 +15,4 @@ XTest = poses(2,testPoseIds); XTest = XTest';
 
 lzr = laserClass(struct());
 
-save(sprintf('mats/bearing_%d_data',pxId),'XTrain','ZTrain','XHold','ZHold','XTest','ZTest','lzr');
+save(sprintf('data/bearing_%d_data',pxId),'XTrain','ZTrain','XHold','ZHold','XTest','ZTest','lzr');

@@ -1,6 +1,6 @@
 % convert neato pose data to apt format
 clearAll;
-load mats/processed_data_160215_sim.mat
+load data/processed_data_160215_sim.mat
 
 %% 
 nHold = ceil(0.2*length(trainPoseIds));
@@ -36,5 +36,5 @@ ZTest = obsArray(testIds,:)'; ZTest = ZTest(:);
 [XTest,ZTest,bearingsTest,pIdsTest] = cleanupDataForDRegress(XTest,ZTest,bearingsTest,pIdsTest);
 
 %% save data
-save('./mats/exp11_processed_data_160215.mat','XTrain','pIdsTrain','bearingsTrain','ZTrain','posesTrain',...
+save('./data/exp11_processed_data_160215.mat','XTrain','pIdsTrain','bearingsTrain','ZTrain','posesTrain',...
     'XHold','pIdsHold','bearingsHold','posesHold','ZHold','XTest','pIdsTest','bearingsTest','ZTest','posesTest');

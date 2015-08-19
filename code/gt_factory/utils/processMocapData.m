@@ -20,35 +20,33 @@ for i = 1:length(indices)
 	mocapStruct = transformMocapStruct(mocapStruct,T);
 	
 	% calibrated robot poses from mocap
-	[robotPoses,tMocap] = calibratedTrajectoryFromMocap(mocapStruct,tfCalibFile);
+	[poseLog,tMocap] = calibratedTrajectoryFromMocap(mocapStruct,tfCalibFile);
+	pose0 = poseLog(:,1);
 	
 	% logged robot commands
 	fname = buildDataFileName(robotName,tag,dateStr,index);
 	load(fname);
 	% encoder data
 	encLog = enc.log;
-	tEnc = enc.tArray-enc.tArray(1)+enc.tLocalArray(1)+enc.tLocalRelative;
+	tEnc = enc.tArray-enc.tArray(1)+enc.tLocalArray(1)+enc.tOffset;
 	% laser data
 	lzrLog = lzr.log;
-	tLzr = lzr.tArray-lzr.tArray(1)+lzr.tLocalArray(1)+lzr.tLocalRelative;
-	% commanded velocities
-	inputVlLog = vlArray;
-	inputVrLog = vrArray;
-	tInputV = inputTArray+tInputOffset;
+	tLzr = lzr.tArray-lzr.tArray(1)+lzr.tLocalArray(1)+lzr.tOffset;
+	% commanded velocities already logged
 	
 	% align clocks
 	load mocap_clock_calibration_params
-	xMocap = robotPoses(1,:);
+	xMocap = poseLog(1,:);
 	tMotionStartMocap = calcMotionStartTime(xMocap,tMocap,windowSize,threshold);
 	load encoder_clock_calibration_params
 	xEnc = [encLog.left];
 	tMotionStartEnc = calcMotionStartTime(xEnc,tEnc,windowSize,threshold);
-	tPoses = tMocap-tMotionStartMocap+(tMotionStartEnc-tEncDelay);
+	tPose = tMocap-tMotionStartMocap+(tMotionStartEnc-tEncDelay);
 	
 	% save data
 	fname = buildDataFileName('gt',tag,dateStr,index);
 	fname = ['data/' fname];
-	save(fname,'robotPoses','tPoses','inputVrLog','inputVlLog','tInputV', ...
+	save(fname,'poseLog','tPose','pose0','inputVrLog','inputVlLog','tInputV', ...
 		'encLog','tEnc','lzrLog','tLzr');
 end
 end

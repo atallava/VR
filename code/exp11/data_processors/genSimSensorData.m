@@ -1,6 +1,6 @@
 % generate simulated sensor readings
-load ../exp4/mats/processed_data_sep6.mat
-load ../exp4/mats/roomLineMap.mat
+load ../exp4/data/processed_data_sep6.mat
+load ../exp4/data/roomLineMap.mat
 
 %% sim obsArray
 nObs = 200;
@@ -22,4 +22,4 @@ for i = 1:size(poses,2)
 end
 
 %%
-save('mats/processed_data_sep6_2.mat','obsArray','poses','testPoseIds','trainPoseIds');
+save('data/processed_data_sep6_2.mat','obsArray','poses','testPoseIds','trainPoseIds');

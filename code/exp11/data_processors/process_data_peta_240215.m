@@ -1,4 +1,4 @@
-load mats/data_peta_230215
+load data/data_peta_230215
 obsArray1 = fillObsArray(lzr,t_range_collection);
 % reading 91 has too less data
 for i = 1:length(90)
@@ -6,7 +6,7 @@ for i = 1:length(90)
 end
 
 %%
-load mats/data_peta_240215
+load data/data_peta_240215
 obsArray2 = fillObsArray(lzr,t_range_collection);
 for i = 1:length(t_range_collection)
     poses2(:,i) = robotModel.laser.refPoseToLaserPose(poseHistory(:,i));

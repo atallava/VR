@@ -13,6 +13,7 @@ mocapStruct = transformMocapStruct(mocapStruct,T);
 %% calibrated robot poses from mocap
 tfCalibFile = 'tfcalib_150804';
 [poseLog,tMocap] = calibratedTrajectoryFromMocap(mocapStruct,tfCalibFile);
+pose0 = poseLog(:,1);
 
 %% logged robot commands
 fname = buildDataFileName(robotName,tag,dateStr,index);
@@ -36,5 +37,6 @@ tPose = tMocap-tMotionStartMocap+(tMotionStartEnc-tEncDelay);
 
 %% save data
 fname = buildDataFileName('gt',tag,dateStr,index);
-save(fname,'robotMocapPoses','tPose','inputVrLog','inputVlLog','tInputV', ...
+fname = ['data/' fname];
+save(fname,'poseLog','tPose','pose0','inputVrLog','inputVlLog','tInputV', ...
 	'encLog','tEnc','lzrLog','tLzr');

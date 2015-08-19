@@ -1,6 +1,6 @@
 % find how error varies with number of Z 
 clearAll;
-load mats/bearing_1_data.mat
+load data/bearing_1_data.mat
 
 %% 
 % fraction of data to hold out

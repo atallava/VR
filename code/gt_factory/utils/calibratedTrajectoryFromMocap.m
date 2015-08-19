@@ -11,11 +11,12 @@ function [poses,t] = calibratedTrajectoryFromMocap(mocapStruct,tfCalibFile)
 
 t = [mocapStruct.frame.timeStamp];
 load(tfCalibFile);
-robotMarkerO = 'Marker-3';
-robotMarkerX = 'Marker-2';
-poses = getPosesFromMarkers(mocapStruct.frame,robotMarkerO,robotMarkerX);
-% poses = getRobotPosesFromMarkerPoses(poses,TrobotMarker_robot);
-% poses = getRelativePoses(poses,poses(:,1));
-% poses = transformRelPosesOnRigidBody(poses,TrobotMarker_robot);
-
+% robotMarkerO = 'Marker-4';
+% robotMarkerX = 'Marker-2';
+robotMarkerO = 'Rigid Body 1-Marker 3';
+robotMarkerX = 'Rigid Body 1-Marker 2';
+[poses,stats] = getPosesFromMarkers(mocapStruct.frame,robotMarkerO,robotMarkerX);
+poses = getRobotPosesFromMarkerPoses(poses,TrobotMarker_robot);
+vec = find(stats.framesMissingOrigin); id = vec(end)+1;
+poses(1:2,stats.framesMissingOrigin) = repmat(poses(1:2,id),1,sum(stats.framesMissingOrigin));
 end

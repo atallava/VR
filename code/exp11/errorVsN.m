@@ -1,6 +1,6 @@
 % find how error varies with number of training samples
 clearAll;
-load mats/bearing_1_data.mat
+load data/bearing_1_data.mat
 X = [XTrain; XHold];
 Z = [ZTrain ZHold];
 

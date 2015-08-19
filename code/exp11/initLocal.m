@@ -6,13 +6,13 @@ addpath([pwd '/hist_distances']);
 addpath([pwd '/utils']);
 addpath([pwd '/data_processors']);
 addpath([pwd '/data']);
-exp4path = [here '/../exp4'];
-delete here
+exp4Path = [here '/../exp4'];
+clear here
 
 % for kernels
-exp4Path = 
-addpath ../exp4/kernels/
-% why are these needed?
-% addpath ../exp4/data_processors/
-% addpath ../exp4/input_transformers
-
+addpath([exp4Path '/kernels']);
+% for laser gencal simulator
+addpath([exp4Path '/predictors']);
+addpath([exp4Path '/input_transformers']);
+addpath([exp4Path '/space_switches']);
+addpath([exp4Path '/data']);
