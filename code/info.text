@@ -88,7 +88,7 @@ localGeomRegressor instance, with muArray from full\_predictor\_means\_only\_mar
 triplets is a set of observed three consecutive (and non-nan) ranges from all training poses.
 
 ### exp11/ ###
-#### mats/ ####
+#### data/ ####
 * processed\_data\_peta\_240215
 combines data from 230215 and 240215. data collected in 5720 for distribution regression.
 * processed\_data\_sep6\_1  
@@ -97,6 +97,11 @@ poses from processed\_data\_sep6. simulated ranges from raycast noisy, but p(z) 
 poses from processed\_data\_sep6. simulated ranges from raycast noisy, with p(z) = p(z;r,\alpha).
 * exp11\_processed\_data\_sep6  
 generated from processed\_data\_sep6\_x. generated using convert\_data\_sep6.m
+* Map files
+These have to contain a variable called map, which is a lineMap
+instance. Additionally, they may contain a variable called support, which is a
+struct with fields ('xv','yv'). This is used to define the support of a
+uniform probability distribution from which to draw data.
 
 ### exp12/ ###
 * mocap\_transform
