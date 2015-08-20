@@ -1,13 +1,17 @@
+res = which('someUsefulPaths');
+if isempty(res)
+    error('initLocal:scriptNotFound','someUsefulPaths not found.');
+end
 someUsefulPaths
 addpath(genpath(pathToM))
 
-here = pwd;
+exp11Path = pwd;
+addpath(pwd);
 addpath([pwd '/hist_distances']);
-addpath([pwd '/utils']);
+addpath([pwd '/pose_sampling']);
 addpath([pwd '/data_processors']);
 addpath([pwd '/data']);
-exp4Path = [here '/../exp4'];
-clear here
+exp4Path = [exp11Path '/../exp4'];
 
 % for kernels
 addpath([exp4Path '/kernels']);
@@ -16,3 +20,6 @@ addpath([exp4Path '/predictors']);
 addpath([exp4Path '/input_transformers']);
 addpath([exp4Path '/space_switches']);
 addpath([exp4Path '/data']);
+addpath([exp4Path '/pdf_models']);
+% for visualization
+addpath([exp4Path '/viz_helpers']);

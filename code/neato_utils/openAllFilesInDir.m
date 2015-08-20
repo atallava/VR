@@ -1,9 +1,16 @@
-function openAllFilesInDir(dirName)
+function openAllFilesInDir(varargin)
 %OPENFILES Open all directory files in editor.
 % 
 % OPENFILES(dirName)
 % 
 % dirName - String. Often pass pwd.
+
+if nargin == 0
+    dirName = pwd;
+else
+    dirname = varargin{1};
+end
+    
 
 files = dir(dirName);
 for i = 1:length(files)

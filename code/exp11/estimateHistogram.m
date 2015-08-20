@@ -31,4 +31,3 @@ for i = 1:nHCenters
 end
 h = h*iBinW;
 end
-

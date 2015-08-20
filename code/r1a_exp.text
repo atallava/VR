@@ -1,26 +1,39 @@
 ### exp1 ###
+* early trials, deleted.
 
 ### exp2 ###
+* early trials, deleted.
 
 ### exp3 ###
+* early trials, deleted.
 
 ### exp4 ###
+* icra 2015 workhorse.
 
 ### exp5 ###
+* early state estimation with laser and encoder. deleted.
 
 ### exp6 ###
+* hacked attempt at distribution regression, deleted.
 
 ### exp7 ###
+* attempt at model collapsing, deleted.
 
 ### exp8 ###
+* filtering, for icra 2015. 
 
 ### exp9 ###
+* mobility error parameter recovery.
 
 ### exp10 ###
+* indoor implementation of vaneSim. didn't work well.
+* occupancy mapping code here.
 
 ### exp11 ###
+* dReg stuff.
 
 ### exp12 ###
+* 
 
 ### exp13 ###
 
@@ -30,6 +43,13 @@
   create copies of data files because 1. they take up more space and
   2. if you make a change in one file you need to make a change to all
   of them, which is undesirable.
+
+* sensorClass object. has bearings, max range, rangeres
+
+* cleanup neato_utils? or it's ok as a bunch of miscellaneous
+  functions. tradeoff to organization.
+
+* same dRegSceneScript for sensor modeling and mapping. 
 
 ### gt_factory ###
 

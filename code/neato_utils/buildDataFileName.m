@@ -1,4 +1,4 @@
-function fname = buildDataFileName(source,tag,date,index,format)
+function fname = buildDataFileName(inputStruct)
 %BUILDDATAFILENAME 
 % 
 % fname = BUILDDATAFILENAME(source,tag,date,index,format)
@@ -11,13 +11,34 @@ function fname = buildDataFileName(source,tag,date,index,format)
 % 
 % fname  - Output.
 
-if nargin < 5
-	format = '.mat';
+% default, no prefix
+if ~isfield(inputStruct,'pre')
+    inputStruct.pre = '';
 end
-if ~ischar(index)
-	index = num2str(index);
+% default, matlab data file
+if ~isfield(inputStruct,'format')
+    inputStruct.format = '.mat';
+end
+% prepend dot to extension 
+if isempty(strcmp(inputStruct.format,'.'))
+    inputStruct.format = ['.' inputStruct.format];
+end
+% default, no index
+if ~isfield(inputStruct,'index')
+    inputStruct.index = '';
+end
+% index may be number
+if ~ischar(inputStruct.index)
+	inputStruct.index = num2str(inputStruct.index);
 end
 
-fname = ['data_' source '_' tag '_' date '_' index format];
+fname = [inputStruct.pre '/data_' ...
+    inputStruct.source '_' ...
+    inputStruct.tag '_' ...
+    inputStruct.date];
+if ~isempty(inputStruct.index)
+    fname = [fname '_' inputStruct.index];
+end
+fname = [fname inputStruct.format];
 end
 
