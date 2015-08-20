@@ -1,0 +1,113 @@
+### exp1 ###
+
+### exp2 ###
+
+### exp3 ###
+
+### exp4 ###
+
+### exp5 ###
+
+### exp6 ###
+
+### exp7 ###
+
+### exp8 ###
+
+### exp9 ###
+
+### exp10 ###
+
+### exp11 ###
+
+### exp12 ###
+
+### exp13 ###
+
+* running into some path issues here which you need to take care
+  of. do you reference data files from other experiments or not? if
+  you do, then you can't have the same data file names. don't want to
+  create copies of data files because 1. they take up more space and
+  2. if you make a change in one file you need to make a change to all
+  of them, which is undesirable.
+
+### gt_factory ###
+
+* replace tLocalRelative with tOffset.
+
+* might want to downsample mocap poses.  
+
+* still need a better demarcation between gt_factory and who really
+has the scripts to run on the robot and generate the data.
+
+* now think about how you will get ranges for a map during mocap phase.
+
+* gt_factory seems married to trajectory generation.
+
+### mocap ###
+
+* from now on, rename all mats/ folders to data/, since there could be
+data in other formats.
+
+* naming functions wrong? perhaps many of the get functions should be
+called compute?
+
+* should replace xdiff with a smoothed time derivative.
+
+* again bad function naming: why perform?
+
+* data naming convention: data_<source>_<tag>_<date>_<index>.<format>. in each field, separate words with a hyphen.
+
+* create a table showing the correspondence between variables in the
+mocap csv and your struct output.
+
+* in calcMotionStartTime, i think the threshold should have units
+dx/dt. currently the units are dx.
+
+* a comment
+% manual
+beside each manual input
+
+* remember that also need to measure distance between reflective beads
+and planks which are maps.
+
+* i forgot why there are two transforms. go back to experiment and
+remind yourself. 
+
+* are marker names preserved in a session? 
+
+* transforms nomenclature. Ta_b takes points in frame a to b.
+
+* i wonder if it is a better strategy to convert the robot frame to mocap frame.
+
+* remember that 'ground truth' involves some modelling as well:
+specifically the time of motion start, and the time delay of the
+encoders to report the motion.
+
+* filtering of mocap data needed. throw away things which have immense
+linear velocities.
+
+* move the utils files in exp12 to code/mocap?
+
+* what should actually go into utils/? it seems like all functions are
+being happily dumped there.
+
+* nested initLocals
+
+* from now on, call tics clocks.
+
+* change date convention in file names: yy/mm/dd
+
+* sanity checks for mocap: z axis shouldn't change.
+sanity check for calibration: straight line trajectory.
+will be a pain associating markers with identity. look for an alternative.
+
+* conventions of 3x3 or 4x4 transforms. mocap ground plane transform is
+4x4. but by the time you extract data, it is 2d so should shift to
+using 3x3 matrices.
+* what are some visible checks that the mocap data parsing has worked?
+
+* assumption broken. marker names have changed during the course of a
+  run.
+
+
