@@ -41,6 +41,8 @@
 
 * what if a sensor null reading is nan? then an equality check will break.
 
+* function go-between matrix and list representation.
+
 ### exp12 ###
 * 
 

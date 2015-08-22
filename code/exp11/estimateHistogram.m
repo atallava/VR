@@ -13,13 +13,14 @@ function [h,hCenters] = estimateHistogram(XTrain,ZTrain,X,laser,bwX,bwZ)
 % h         - Q x hCenters array of histogram values.
 % hCenters  - Histogram centers.
 
-nHCenters = (laser.maxRange/laser.rangeRes)+1; % number of histogram centers
+nHCenters = round(laser.maxRange/laser.rangeRes)+1; % number of histogram centers
 hCenters = linspace(0,laser.maxRange,nHCenters); % histogram centers
 hBinW = hCenters(2)-hCenters(1); % histogram bin width
 k = 2; % fine-graining factor
 nICenters = nHCenters*k; % number of integration centers
 iBinW = hBinW/k; % integration bin width
-iCenters = [0:nICenters-1]*iBinW-hBinW; % integration centers
+% iCenters = [0:nICenters-1]*iBinW-hBinW; % integration centers
+iCenters = [0:nICenters-1]*iBinW-iBinW; % integration centers
 
 Q = size(X,1);
 % estimate density values
