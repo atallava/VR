@@ -53,7 +53,38 @@ classdef rangeSimulator < handle & abstractSimulator
                 res(i,:) = rangeSimulator.sampleFromParamArray(squeeze(predParamArray(i,:,:)),obj.fitClass);
             end            
         end
-                
+           
+        function [hArray,hCenters] = estimateHistograms(obj,poses)
+            % spit out histograms at pose
+            % hArray is [nPoses*nBearings,H]
+            % xc is [1,H], histogram bin center
+            if size(poses,1) == 3
+                poses = poses';
+            end
+            nPoses = size(poses,1);
+            predParamArray = zeros(nPoses,obj.nParams,obj.laser.nBearings);
+            
+            % array of predicted parameters
+            for i = 1:obj.nParams
+                regBundle = obj.pxRegBundleArray(i);
+                predParamArray(:,i,:) = regBundle.predict(poses,obj.map);
+            end
+            
+            % fill histograms
+            nHCenters = (obj.laser.maxRange/obj.laser.rangeRes)+1; % number of histogram centers
+            hCenters = linspace(0,obj.laser.maxRange,nHCenters); % histogram centers
+            hArray = zeros(nPoses*obj.laser.nBearings,nHCenters);
+            count = 1;
+            for i = 1:nPoses
+               for j = 1:obj.laser.nBearings
+                   params = squeeze(predParamArray(i,:,j));
+                   tempObj = obj.fitClass(struct('vec',params,'choice','params'));
+                   hArray(count,:) = tempObj.snap2PMF(hCenters);
+                   count = count+1;
+               end
+            end
+        end
+        
         function res = simulateGeometric(obj,poses)
             % poses is n x 3
             if size(poses,1) == 3

@@ -19,16 +19,6 @@ posesTrain = poses(:,trainIds);
 posesHold = poses(:,holdIds);
 posesTest = poses(:,testIds);
 
-% subsample pose data
-poseFrac = 1;
-posesTrain(:,randsample(trainIds,ceil(poseFrac*length(trainIds)))) = [];
-posesHold(:,randsample(holdIds,ceil(poseFrac*length(holdIds)))) = [];
-posesTest(:,randsample(testIds,ceil(poseFrac*length(testIds)))) = [];
-
-% subsample sensor readings
-obsFrac = 1;
-obsArray = subsampleObsArray(obsArray,obsFrac);
-
 % X data
 % can train on some bearings only
 bearingIds = 1:360;

@@ -1,17 +1,17 @@
 % test dReg on a scene
-in.pre = 'data';
-in.source = 'sim-laser-gencal'; 
-in.tag = 'exp11-sensor-modeling-dreg';
-in.date = '150819'; 
-in.index = '';
-fname = buildDataFileName(in);
+% in.pre = 'data';
+% in.source = 'sim-laser-gencal'; 
+% in.tag = 'exp11-sensor-modeling-dreg';
+% in.date = '150819'; 
+% in.index = '';
+% fname = buildDataFileName(in);
 
-% modifier = 'peta_240215';
-% v = '2';
-% fname = ['exp11_processed_data_' modifier];
-% load(fname);
-% fname = 'data/processed_data_peta_240215';
-% load(fname);
+modifier = 'peta_240215';
+v = '2';
+fname = ['exp11_processed_data_' modifier];
+load(fname);
+fname = 'data/processed_data_peta_240215';
+load(fname);
 
 %% Estimate
 % CHECK PARAMETERS BEFORE ESTIMATING!

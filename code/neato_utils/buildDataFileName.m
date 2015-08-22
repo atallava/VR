@@ -1,7 +1,7 @@
-function fname = buildDataFileName(inputStruct)
+function fileName = buildDataFileName(inputStruct)
 %BUILDDATAFILENAME 
 % 
-% fname = BUILDDATAFILENAME(source,tag,date,index,format)
+% fileName = BUILDDATAFILENAME(source,tag,date,index,format)
 % 
 % source - Robot name.
 % tag    - 'traj','tfcalib' etc.
@@ -9,7 +9,7 @@ function fname = buildDataFileName(inputStruct)
 % index  - ...
 % format - .mat by default.
 % 
-% fname  - Output.
+% fileName  - Output.
 
 % default, no prefix
 if ~isfield(inputStruct,'pre')
@@ -32,13 +32,18 @@ if ~ischar(inputStruct.index)
 	inputStruct.index = num2str(inputStruct.index);
 end
 
-fname = [inputStruct.pre '/data_' ...
+if ~isempty(inputStruct.pre)
+    fileName = [inputStruct.pre '/'];
+else
+    fileName = [];
+end
+fileName = [fileName 'data_' ...
     inputStruct.source '_' ...
     inputStruct.tag '_' ...
     inputStruct.date];
 if ~isempty(inputStruct.index)
-    fname = [fname '_' inputStruct.index];
+    fileName = [fileName '_' inputStruct.index];
 end
-fname = [fname inputStruct.format];
+fileName = [fileName inputStruct.format];
 end
 

@@ -6,7 +6,7 @@ classdef rangeImage < handle
     end
     
     properties (Access = public)
-        maxUsefulRange = 4;
+        maxUsefulRange = 5;
         minUsefulRange = 0.08;
         rArray = [];
         thArray = deg2rad(0:359);

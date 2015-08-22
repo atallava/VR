@@ -102,7 +102,7 @@ classdef lineMap < handle
             % currently has positive/ negative ambiguity
             alpha = zeros(length(p2x),1);
             for i = 1:length(p2x)
-                params = ParametrizePts2ABC(lc(i,1:2),lc(i+1,1:2));
+                params = parametrizePts2ABC(lc(i,1:2),lc(i+1,1:2));
                 alpha(i) = atanLine2D(params(1),params(2));
             end
             incidence_angles = repmat(alpha,1,length(ang_range))-repmat(mod(ang_range+pose(3),pi),length(alpha),1); 

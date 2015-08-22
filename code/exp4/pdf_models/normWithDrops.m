@@ -30,8 +30,11 @@ classdef normWithDrops < handle & abstractPdf
                         error('NEED 3 VALUES IF WANT TO INPUT PARAMETERS TO NORMWITHDROPS.');
                     end
                     obj.mu = inputStruct.vec(1);
+                    if obj.mu < 0; obj.mu = 0; end
                     obj.sigma = inputStruct.vec(2);
+                    if obj.sigma < 0; obj.sigma = 0; end
                     obj.pZero = inputStruct.vec(3);
+                    if obj.pZero < 0; obj.pZero = 0; end
                     obj.nll = NaN;
                 end
             end

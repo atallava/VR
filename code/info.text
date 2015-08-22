@@ -8,7 +8,7 @@ Information about contents of files. Mostly data files,
 derived from above file. contains a struct array called datax-position in world, and range readings of bearing ids 1-10, 351-360. assuming that these readings are from a static world. 
 
 ### exp4/ ###
-#### mats/ ####
+#### data/ ####
 * data\_Feb7  
 Range readings in artificial environment for building simulator. Robot: mega.
 Made a mistake: no time logs of encoder returns.
@@ -89,7 +89,7 @@ triplets is a set of observed three consecutive (and non-nan) ranges from all tr
 
 ### exp11/ ###
 #### data/ ####
-* processed\_data\_peta\_240215
+* processed\_data\_peta\_240215  
 combines data from 230215 and 240215. data collected in 5720 for distribution regression.
 * processed\_data\_sep6\_1  
 poses from processed\_data\_sep6. simulated ranges from raycast noisy, but p(z) = p(z;r).
@@ -97,11 +97,22 @@ poses from processed\_data\_sep6. simulated ranges from raycast noisy, but p(z) 
 poses from processed\_data\_sep6. simulated ranges from raycast noisy, with p(z) = p(z;r,\alpha).
 * exp11\_processed\_data\_sep6  
 generated from processed\_data\_sep6\_x. generated using convert\_data\_sep6.m
-* Map files
-These have to contain a variable called map, which is a lineMap
-instance. Additionally, they may contain a variable called support, which is a
+* *_support.mat  
+Supports a map. Contains a variable called support, which is a
 struct with fields ('xv','yv'). This is used to define the support of a
 uniform probability distribution from which to draw data.
+* data\_sim-laser-gencal\_exp11-sensor-modeling_150821.mat  
+big dataset with N = 500, M = 100 on room\_line\_map. spawn smaller
+datasets from this one.
+* data\_sim-laser-gencal\_exp11-mapping\_150821_1.mat  
+big dataset with N = 500, M = 100 on cluttered\_box\_map. spawn smaller
+datasets from this one.
+* data\_sim-laser-gencal\_exp11-mapping\_150821_2.mat  
+big dataset with N = 500, M = 100 on nsh3\_corridor. spawn smaller
+datasets from this one.
+* data\_sim-laser-gencal\_exp11-mapping\_150821_3.mat  
+Spawned from data\_sim-laser-gencal\_exp11-mapping\_150821_1.mat. M = 50, Ntrain
+= 30.
 
 ### exp12/ ###
 * mocap\_transform

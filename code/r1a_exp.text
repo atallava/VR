@@ -28,9 +28,18 @@
 ### exp10 ###
 * indoor implementation of vaneSim. didn't work well.
 * occupancy mapping code here.
+* when you plot map, should show x and y in m.
+* speedup: can slash fine-grainig factor in estimateHistogram
+* check operation of snap2PMF.
 
 ### exp11 ###
 * dReg stuff.
+
+* check: if you sample from second reflection and project it along the same
+  orientation as the original ray, you will see reflections. the original
+  surface becomes a mirror.
+
+* what if a sensor null reading is nan? then an equality check will break.
 
 ### exp12 ###
 * 
@@ -49,7 +58,11 @@
 * cleanup neato_utils? or it's ok as a bunch of miscellaneous
   functions. tradeoff to organization.
 
-* same dRegSceneScript for sensor modeling and mapping. 
+* same dRegSceneScript for sensor modeling and mapping.
+
+* occ map doesn't produce distribs. occ map is for laser only!
+
+* function that generates histograms from obsArray.
 
 ### gt_factory ###
 

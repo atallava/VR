@@ -11,10 +11,12 @@ classdef occupancyMap < abstractMap
 		binaryGrid
 		lInit; lOcc; lFree
 		lzr
+        distThreshForAlpha = 0.02; % in cm
 	end
 	
 	methods
 		function obj = occupancyMap(lzr,mapSize)
+            % mapSize = [xMin xMax; yMin yMax]
 			obj.scale = 0.01;
 			obj.lInit = obj.prob2LogOdds(0.5);
 			obj.lOcc = obj.prob2LogOdds(0.8);
@@ -101,9 +103,18 @@ classdef occupancyMap < abstractMap
 			p = obj.logOdds2Prob(obj.logOddsGrid);
 			imagesc(flipud(1-p));
 			colormap(gray);
-			xlabel('x');
-			ylabel('y');
+			xlabel('x (m)');
+			ylabel('y (m)');
 			axis equal;
+            
+            % euclidean ticks
+            ax = gca;
+            c = ax.XTick;
+            [x,~] = obj.rc2xy([],c);
+            ax.XTickLabel = x;
+            r = ax.YTick;
+            [~,y] = obj.rc2xy(r,[]);
+            ax.YTickLabel = flip(y);            
 		end
 		
 		function hf = plotBinaryMap(obj)
@@ -112,9 +123,18 @@ classdef occupancyMap < abstractMap
 			p = p > 0.5;
 			imagesc(flipud(1-p));
 			colormap(gray);
-			xlabel('x');
-			ylabel('y');
+			xlabel('x (m)');
+			ylabel('y (m)');
 			axis equal;
+
+            % euclidean ticks
+            ax = gca;
+            c = ax.XTick;
+            [x,~] = obj.rc2xy([],c);
+            ax.XTickLabel = x;
+            r = ax.YTick;
+            [~,y] = obj.rc2xy(r,[]);
+            ax.YTickLabel = flip(y);            
 		end
 		
 		function hf = plot(obj)
@@ -131,10 +151,15 @@ classdef occupancyMap < abstractMap
 				obj.calcBinaryGrid();
 			end
 			p = obj.binaryGrid;
-		end
+        end
+        
+        function [ranges,incidenceAngles] = raycast(obj,pose,maxRange,thRange)
+            [ranges,incidenceAngles] = obj.getRAlpha(pose,maxRange,thRange);
+            ranges(isnan(ranges)) = 0;
+        end
 		
-		function [ranges,incidenceAngles] = raycast(obj,pose,maxRange,thRange)
-			assert(pose(1) >= obj.xMin && pose(1) <= obj.xMax,'X NOT IN MAP RANGE');
+		function [ranges,incidenceAngles] = getRAlpha(obj,pose,maxRange,thRange)
+            assert(pose(1) >= obj.xMin && pose(1) <= obj.xMax,'X NOT IN MAP RANGE');
 			assert(pose(2) >= obj.yMin && pose(2) <= obj.yMax,'Y NOT IN MAP RANGE');
 			numPts = length(thRange);
 
@@ -160,7 +185,7 @@ classdef occupancyMap < abstractMap
 				hits = find(obj.binaryGrid(ids));
 				if isempty(hits)
 					xHit(i) = nan; yHit(i) = nan;
-					ranges(i) = 0;
+					ranges(i) = nan;
 				else
 					hit = hits(1); % closest hit
 					[xHit(i),yHit(i)] = obj.rc2xy(r(hit),c(hit));
@@ -168,13 +193,54 @@ classdef occupancyMap < abstractMap
 					if range <= maxRange
 						ranges(i) = range;
 					else
-						ranges(i) = 0;
+						ranges(i) = nan;
 					end
 				end
-			end
-			
-			incidenceAngles = [];
-		end
+            end
+            
+            % incidence angles by fitting lines to nearby points
+            incidenceAngles = zeros(size(ranges));
+            pts = zeros(2,length(thRange));
+            pts(1,:) = pose(1)+ranges.*cos(pose(3)+thRange);
+            pts(2,:) = pose(2)+ranges.*sin(pose(3)+thRange);
+            for i = 1:numPts
+                if ranges(i) == obj.lzr.nullReading
+                    continue;
+                end
+                
+                [l,r] = circArray.circNbrs(i,length(thRange),2);
+                if norm(pts(:,i)-pts(:,l)) < obj.distThreshForAlpha
+                    lineParams = parametrizePts2ABC(pts(:,i),pts(:,l));
+                elseif norm(pts(:,i)-pts(:,l)) < obj.distThreshForAlpha
+                    lineParams = parametrizePts2ABC(pts(:,i),pts(:,r));
+                else
+                    continue;
+                end
+
+                % use more than one neighbour
+%                 k = 2;
+%                 [l,r] = circArray.circNbrs(i,length(thRange),2);
+%                 linePts = pts(:,i);
+%                 for j = [l r]
+%                     if norm(pts(:,j)-pts(:,i)) < obj.distThreshForAlpha
+%                         linePts = [linePts pts(:,j)];
+%                     end
+%                 end
+%                 if size(linePts,2) == 1
+%                     continue;
+%                 end
+%                 linefit = polyfit(linePts(1,:),linePts(2,:),1);
+%                 lineParams(1) = 1; lineParams(2) = -linefit(1);
+                
+                % messy bit of code lifted from lineMap.raycast
+                alpha = atanLine2D(lineParams(1),lineParams(2));
+                beta = alpha-mod(pose(3)+thRange(i),pi);
+                if beta == 0; beta = pi; end
+                beta = beta-pi/2*sign(beta);
+                incidenceAngles(i) = beta;
+            end
+            
+        end
 		
 		function [x2,y2] = farthestPointOnRay(obj,x1,y1,th)
 			% shoot a ray from x1,y1 in the direction th. which is the
