@@ -41,10 +41,10 @@
 
 * what if a sensor null reading is nan? then an equality check will break.
 
-* function go-between matrix and list representation.
+* function to go-between matrix and list representation of xc1,xc2.
+* viz hists uses matrix, but estimateHistoram2 likes list.
 
 ### exp12 ###
-* 
 
 ### exp13 ###
 

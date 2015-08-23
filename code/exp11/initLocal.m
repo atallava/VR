@@ -6,11 +6,12 @@ someUsefulPaths
 addpath(genpath(pathToM))
 
 exp11Path = pwd;
-addpath(pwd);
-addpath([pwd '/hist_distances']);
-addpath([pwd '/pose_sampling']);
-addpath([pwd '/data_processors']);
-addpath([pwd '/data']);
+addpath(exp11Path);
+addpath([exp11Path '/hist_distances']);
+addpath([exp11Path '/pose_sampling']);
+addpath([exp11Path '/data_processors']);
+addpath([exp11Path '/data']);
+addpath([exp11Path '/gkde2']);
 
 exp4Path = [exp11Path '/../exp4'];
 % for kernels
