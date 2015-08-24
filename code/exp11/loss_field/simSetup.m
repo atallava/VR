@@ -42,4 +42,4 @@ in.tag = 'exp11-loss-field';
 in.date = yymmddDate();
 in.index = '';
 fname = buildDataFileName(in);
-save(fname,'map','fieldPts','hArray');
+save(fname,'map','fieldPts','hArray','-v7.3');

@@ -43,6 +43,8 @@
 
 * function to go-between matrix and list representation of xc1,xc2.
 * viz hists uses matrix, but estimateHistoram2 likes list.
+* pIdsTrain index into the poses, whereas all other indices, like trainIds, go
+  directly into poses. should conver former to latter.
 
 ### exp12 ###
 

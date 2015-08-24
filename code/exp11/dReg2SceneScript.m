@@ -6,9 +6,7 @@
 % in.index = '';
 % fname = buildDataFileName(in);
 
-modifier = 'peta_240215';
-v = '2';
-fname = ['exp11_processed_data_' modifier];
+fname = ['exp11_processed_data2_peta_240215'];
 load(fname);
 fname = 'data/processed_data_peta_240215';
 load(fname);
@@ -19,39 +17,40 @@ bwX = [0.01 0.01 0.01];
 % bwX = [0.03 0.03 0.08];
 % bwX = [0.001 0.0644];
 bwZ = 1e-3;
-pId = 4; 
+pId = 1; 
 t1 = tic();
-[hPred,xc] = estimateHistogram2(XTrain,ZTrain,XHold(pIdsHold == pId,:),sensor,bwX,bwZ);
+[hPredCell,xc1,xc2] = estimateHistogram2(XTrain,ZTrain,XHold(pIdsHold == pId,:),sensor,bwX,bwZ);
 fprintf('Estimation took %.2fs\n',toc(t1));
 
 %% Calculate error
-% for small dataset typically
-[hArray,~] = ranges2Histogram(ZHold(pIdsHold == pId),sensor);
+% for single pose
+[hCell,~] = ranges2Histogram2(ZHold(pIdsHold == pId),sensor);
 histDistance = @histDistanceKL;
 Q = length(ZHold(pIdsHold == pId));
 err = zeros(1,Q);
 for i = 1:Q
-    err(i) = histDistance(hArray(i,:),hPred(i,:));
+    err(i) = histDistance(hCell{i},hPredCell{i});
 end
 meanErr = mean(err);
 
 %% Sample from histograms
-ranges = sampleFromHistogram(hPred,xc,1);
+% assemble into range reading
+[ranges,bearings] = sampleReadingFromHistogram2(hPredCell,xc1,xc2,bearingGroupsHold);
 
 %% Visualize
-ri = rangeImage(struct('ranges',ranges,'bearings',bearingsHold(pIdsHold == pId)));
+ri = rangeImage(struct('ranges',ranges,'bearings',bearings));
 hf = ri.plotXvsY(posesHold(:,pId));
 
 %% Vizualize some histograms
 histId = 49;
-[h,~] = ranges2Histogram(ZHold{histId},sensor);
-hf = vizHists(h,hPred(histId,:),xc);
+[h,~,~] = rangePairs2Histogram(ZHold{histId},sensor);
+hf = vizHists(h,hPred{histId},xc1,xc2);
 
 %% Evaluate on dataset
 % histDistance = @histDistanceEuclidean;
 histDistance = @histDistanceKL;
-evalStats = evalDReg(XTrain,ZTrain,XHold,ZHold,sensor,bwX,bwZ,histDistance);
+evalStats = evalDReg2(XTrain,ZTrain,XHold,ZHold,sensor,bwX,bwZ,histDistance);
 
 %%
-save('test_regression_scene.mat','XTrain','ZTrain','XHold','ZHold','sensor','bwX','bwZ','hPred','evalStats');
+save('dreg2_scene.mat','XTrain','ZTrain','XHold','ZHold','sensor','bwX','bwZ','hPred','evalStats');
 

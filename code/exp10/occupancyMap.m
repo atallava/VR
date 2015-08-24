@@ -53,8 +53,14 @@ classdef occupancyMap < abstractMap
 			for i = 1:size(pts,2)
 				if ranges(i) == obj.lzr.nullReading
 					continue;
-				end
-				[rEnd,cEnd] = obj.xy2rc(pts(1,i),pts(2,i));
+                end
+                try
+                    [rEnd,cEnd] = obj.xy2rc(pts(1,i),pts(2,i));
+                catch
+                    % ignore point if it happens to lie outside limits
+                    % fix this so it snaps to boundary of map
+                    continue;
+                end
 				% bresenham needs flipped rows
 				% also returns x,y in reverse order of array indexing
 				[~,~,~,c,r] = bresenham(zeros(size(obj.logOddsGrid)),[obj.nY-rStart+1 cStart; ...

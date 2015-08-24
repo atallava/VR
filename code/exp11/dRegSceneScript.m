@@ -10,7 +10,7 @@ modifier = 'peta_240215';
 v = '2';
 fname = ['exp11_processed_data_' modifier];
 load(fname);
-fname = 'data/processed_data_peta_240215';
+fname = 'processed_data_peta_240215';
 load(fname);
 
 %% Estimate
@@ -19,7 +19,7 @@ bwX = [0.01 0.01 0.01];
 % bwX = [0.03 0.03 0.08];
 % bwX = [0.001 0.0644];
 bwZ = 1e-3;
-pId = 4; 
+pId = 1; 
 t1 = tic();
 [hPred,xc] = estimateHistogram(XTrain,ZTrain,XHold(pIdsHold == pId,:),sensor,bwX,bwZ);
 fprintf('Estimation took %.2fs\n',toc(t1));
@@ -53,5 +53,5 @@ histDistance = @histDistanceKL;
 evalStats = evalDReg(XTrain,ZTrain,XHold,ZHold,sensor,bwX,bwZ,histDistance);
 
 %%
-save('test_regression_scene.mat','XTrain','ZTrain','XHold','ZHold','sensor','bwX','bwZ','hPred','evalStats');
+save('dreg_scene.mat','XTrain','ZTrain','XHold','ZHold','sensor','bwX','bwZ','hPred','evalStats');
 

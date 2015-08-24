@@ -20,8 +20,9 @@ mapSize = [xMin xMax; yMin yMax];
 % this occupancy map only designed to work with laser
 om = occupancyMap(sensor,mapSize);
 
+%% roadwork
 clockLocal = tic();
-for i = trainIds
+for i = trainIds(25:29)
     nObs = length(obsArray{i,1});
 	for j = 1:nObs
 		ranges = rangesFromObsArray(obsArray,i,j);
@@ -45,4 +46,4 @@ end
 in.pre = '../data/';
 in.tag = 'exp11-loss-field-occmap';
 fileName = buildDataFileName(in);
-save(fileName,'om','hArray','xc');
+save(fileName,'om','hArray','xc','-v7.3');

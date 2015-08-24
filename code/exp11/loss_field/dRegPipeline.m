@@ -17,8 +17,8 @@ t1 = tic();
 fprintf('Estimation took %.2fs\n',toc(t1));
 
 %% Save to file
-in.pre = '../data/';
+in.pre = '../data';
 in.tag = 'exp11-loss-field-dreg-output';
 fileName = buildDataFileName(in);
-save(fileName,'om','hArray','xc');
+save(fileName,'hArray','xc','-v7.3');
 
