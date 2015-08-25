@@ -1,6 +1,15 @@
 function [meanErr,err] = evalHPred(hArray,hPredArray,histDistance)
-    % evaluate predicted histogram array
-    
+    %EVALHPRED
+    %
+    % [meanErr,err] = EVALHPRED(hArray,hPredArray,histDistance)
+    %
+    % hArray       - [Q,R] gt histograms.
+    % hPredArray   - [Q,R] predicted histograms.
+    % histDistance - Function handle.
+    %
+    % meanErr      - Scalar.
+    % err          - Size [1,Q].
+
    Q = size(hArray,1);
    err = zeros(1,Q);
    for i = 1:Q

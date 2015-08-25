@@ -11,7 +11,7 @@ load(fileName);
 bwX = [0.001 0.0644];
 bwZ = 1e-3;
 clockLocal = tic();
-[hArray,xc] = estimateHistogram(XTrain,ZTrain,XHold,sensor,bwX,bwZ);
+[hPredArray,xc] = estimateHistogram(XTrain,ZTrain,XHold,sensor,bwX,bwZ);
 compTime = toc(clockLocal);
 fprintf('Estimation took %.2fs\n',compTime);
 
@@ -19,5 +19,5 @@ fprintf('Estimation took %.2fs\n',compTime);
 in.pre = '../data';
 in.tag = 'exp11-sensor-modeling-dreg-output';
 fileName = buildDataFileName(in);
-save(fileName,'hArray','xc','bwX','bwZ','compTime','-v7.3');
+save(fileName,'hPredArray','xc','bwX','bwZ','compTime','-v7.3');
 

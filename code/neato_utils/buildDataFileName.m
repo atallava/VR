@@ -12,9 +12,13 @@ function fileName = buildDataFileName(inputStruct)
 % fileName  - Output.
 
 % default, no prefix
+if isfield(inputStruct,'pre') && strcmp(inputStruct.pre(end),'/')
+    inputStruct.pre(end) = [];
+end
 if ~isfield(inputStruct,'pre')
     inputStruct.pre = '';
 end
+
 % default, matlab data file
 if ~isfield(inputStruct,'format')
     inputStruct.format = '.mat';

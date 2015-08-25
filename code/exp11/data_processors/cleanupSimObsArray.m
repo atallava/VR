@@ -1,9 +1,9 @@
 % input
 in.pre = '../data';
 in.source = 'sim-laser-gencal';
-in.tag = 'exp11-mapping';
+in.tag = 'exp11-sensor-modeling';
 in.date = '150821'; 
-in.index = '3';
+in.index = '1';
 fname = buildDataFileName(in);
 load(fname);
 

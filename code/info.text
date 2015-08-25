@@ -101,12 +101,18 @@ generated from processed\_data\_sep6\_x. generated using convert\_data\_sep6.m
 Supports a map. Contains a variable called support, which is a
 struct with fields ('xv','yv'). This is used to define the support of a
 uniform probability distribution from which to draw data.
+
+* data\_neato-laser\_exp11-sensor-modeling\_140906.mat
+exp4/processed\_data\_sep6 repackaged.
+* data\_neato-laser\_exp11-sensor-modeling\_140906\_1.mat
+Spawned from data\_neato-laser\_exp11-sensor-modeling\_140906. M = 100.
 * data\_sim-laser-gencal\_exp11-sensor-modeling_150821.mat  
 big dataset with N = 500, M = 100 on room\_line\_map. spawn smaller
 datasets from this one.
 * data\_sim-laser-gencal\_exp11-sensor-modeling\_150821\_1.mat  
 Spawned from data\_sim-laser-gencal\_exp11-sensor-modeling_150821.mat. Ntrain =
 180, Nhold = Ntest = 30, M = 100.
+
 * data\_sim-laser-gencal\_exp11-mapping\_150821_1.mat  
 big dataset with N = 500, M = 100 on cluttered\_box\_map. spawn smaller
 datasets from this one.

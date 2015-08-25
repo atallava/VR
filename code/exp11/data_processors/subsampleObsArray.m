@@ -11,7 +11,8 @@ function obsArray = subsampleObsArray(obsArray,frac)
     for i = 1:size(obsArray,1)
         for j = 1:size(obsArray,2)
             vec = obsArray{i,j};
-            obsArray{i,j} = randsample(vec,frac*length(vec));
+            nKeep = ceil(frac*length(vec));
+            obsArray{i,j} = randsample(vec,nKeep);
         end
     end
 end

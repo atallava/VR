@@ -53,6 +53,9 @@
 * still are manually specifying which data files link to which.
 * change evalDReg so it doesn't perform the estimation as well!
 * i don't think there is a point to evalDReg anymore.
+* when is a histogram predicted to be nans?
+* a little unfair to dreg, which builds one bearing model whereas the other has
+  individual bearing models.
 
 ### exp12 ###
 

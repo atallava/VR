@@ -14,6 +14,8 @@ classdef locallyWeightedLinearRegressor < handle & abstractRegressor
     methods
         function obj = locallyWeightedLinearRegressor(inputStruct)
             % inputStruct fields ('XTrain','YTrain','XSpaceSwitch','kernelFn','kernelParams')
+            % X is [n,dimX]
+            % Y is [n,dimY]
             if nargin > 0
                 obj.XTrain = inputStruct.XTrain;
                 obj.YTrain = inputStruct.YTrain;

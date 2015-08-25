@@ -1,21 +1,20 @@
 % input
 in.pre = '../data';
-in.source = 'sim-laser-gencal';
-in.tag = 'exp11-mapping';
-in.date = '150821'; 
-in.index = '1';
+in.source = 'neato-laser';
+in.tag = 'exp11-sensor-modeling';
+in.date = '140906'; 
+in.index = '';
 fname1 = buildDataFileName(in);
 load(fname1);
 
 %%
 % subsample pose data
-poseFrac = 0.5;
-% nTrainSub = ceil(poseFrac*length(trainIds));
-nTrainSub = 100;
+poseFrac = 1;
+nTrainSub = ceil(poseFrac*length(trainIds));
 nHoldSub = ceil(poseFrac*length(holdIds));
 nTestSub = ceil(poseFrac*length(testIds));
 trainIds = randsample(trainIds,nTrainSub);
-holdIds = randsample(holdIds,nHoldSub);
+% holdIds = randsample(holdIds,nHoldSub);
 testIds = randsample(testIds,nTestSub);
 
 % subsample sensor readings
@@ -23,7 +22,7 @@ obsFrac = 0.5;
 obsArray = subsampleObsArray(obsArray,obsFrac);
 
 %% output
-in.index = 4;
+in.index = 1;
 fname2 = buildDataFileName(in);
 copyfile(fname1,fname2);
 save(fname2,'trainIds','holdIds','testIds','obsArray','-append');

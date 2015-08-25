@@ -28,7 +28,7 @@ end
 histDistance = @histDistanceEuclidean;
 bwXMeanErr = zeros(1,length(bwXList));
 [hArray,xc] = ranges2Histogram(ZHold,sensor);
-hPredCell = zeros(1,length(bwXList));
+hPredCell = cell(1,length(bwXList));
 
 localClock = tic();
 for i = 1:length(bwXList)

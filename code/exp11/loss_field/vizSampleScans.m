@@ -66,11 +66,11 @@ hId = randsample(hIds,1);
 
 % comparator
 hf1 = vizHists(dataGt.hArray(hId,:),dataOm.hArray(hId,:),xc);
-title('om');
+suptitle('om');
 movegui(hf1,'west');
 
 % dReg
 hf2 = vizHists(dataGt.hArray(hId,:),dataDReg.hArray(hId,:),xc);
-title('dReg');
+suptitle('dReg');
 movegui(hf2,'east');
 

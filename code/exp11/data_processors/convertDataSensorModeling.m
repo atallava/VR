@@ -1,9 +1,9 @@
 % convert sensor data to dreg format
 % for sensor modeling
 in.pre = '../data';
-in.source = 'sim-laser-gencal';
+in.source = 'neato-laser';
 in.tag = 'exp11-sensor-modeling';
-in.date = '150821'; 
+in.date = '140906'; 
 in.index = '1';
 fname = buildDataFileName(in);
 load(fname);
