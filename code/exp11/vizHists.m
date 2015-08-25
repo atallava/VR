@@ -12,11 +12,13 @@ function hf = vizHists(h,hEst,xc)
 hf = figure;
 subplot(2,1,1);
 bar(xc,h);
+xlabel('bins'); ylabel('probability');
 yl = ylim;
 title('true histogram');
 subplot(2,1,2);
 bar(xc,hEst);
 % ylim(yl);
+xlabel('bins'); ylabel('probability');
 title('estimated histogram');
 end
 
