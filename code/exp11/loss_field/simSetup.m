@@ -33,7 +33,8 @@ for i = 1:N
         count = count+1;
     end
 end
-fprintf('Computation took %.2fs.\n',toc(clockLocal));
+compTime = toc(clockLocal);
+fprintf('Computation took %.2fs.\n',compTime);
 
 %% save to file
 in.pre = '../data';
@@ -42,4 +43,4 @@ in.tag = 'exp11-loss-field';
 in.date = yymmddDate();
 in.index = '';
 fname = buildDataFileName(in);
-save(fname,'map','fieldPts','hArray','-v7.3');
+save(fname,'map','fieldPts','sensor','sensorModel','hArray','compTime','-v7.3');

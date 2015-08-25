@@ -104,15 +104,24 @@ uniform probability distribution from which to draw data.
 * data\_sim-laser-gencal\_exp11-sensor-modeling_150821.mat  
 big dataset with N = 500, M = 100 on room\_line\_map. spawn smaller
 datasets from this one.
+* data\_sim-laser-gencal\_exp11-sensor-modeling\_150821\_1.mat  
+Spawned from data\_sim-laser-gencal\_exp11-sensor-modeling_150821.mat. Ntrain =
+180, Nhold = Ntest = 30, M = 100.
 * data\_sim-laser-gencal\_exp11-mapping\_150821_1.mat  
 big dataset with N = 500, M = 100 on cluttered\_box\_map. spawn smaller
 datasets from this one.
 * data\_sim-laser-gencal\_exp11-mapping\_150821_2.mat  
 big dataset with N = 500, M = 100 on nsh3\_corridor. spawn smaller
 datasets from this one.
-* data\_sim-laser-gencal\_exp11-mapping\_150821_3.mat  
+* data\_sim-laser-gencal\_exp11-mapping\_150821\_3.mat  
 Spawned from data\_sim-laser-gencal\_exp11-mapping\_150821_1.mat. M = 50, Ntrain
-= 30.
+= 30. This is used for loss field calculation. Those files will have the same
+source, date and index.
+* data\_sim-laser-gencal\_exp11-mapping\_150821\_4.mat  
+Spawned from data\_sim-laser-gencal\_exp11-mapping\_150821_1.mat. M = 50, Ntrain
+= 100, NHold = NTest = 30. Used for mapping bw selection.
+* dRegPipeline is bogus in loss field if the kernel dies out sooner than the
+  query 
 
 ### exp12/ ###
 * mocap\_transform

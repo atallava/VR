@@ -40,10 +40,12 @@ for i = 1:N
     [h,xc] = sensorModel.estimateHistograms(pose);
     hArray((i-1)*sensor.nBearings+1:i*sensor.nBearings,:) = h;
 end
+compTime = toc(clockLocal);
+fprintf('Computation took %.2fs.\n',compTime);
 
 %% Save to file
 % run occupancy mapping
 in.pre = '../data/';
 in.tag = 'exp11-loss-field-occmap';
 fileName = buildDataFileName(in);
-save(fileName,'om','hArray','xc','-v7.3');
+save(fileName,'om','hArray','xc','compTime','-v7.3');

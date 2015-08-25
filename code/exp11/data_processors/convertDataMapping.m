@@ -3,8 +3,8 @@
 in.pre = '../data';
 in.source = 'sim-laser-gencal';
 in.tag = 'exp11-mapping';
-in.date = '150819'; 
-in.index = '';
+in.date = '150821'; 
+in.index = '4';
 fname = buildDataFileName(in);
 load(fname);
 
@@ -42,7 +42,7 @@ ZTest = obsArray(testIds,:)'; ZTest = ZTest(:);
 [XTest,ZTest,bearingsTest,pIdsTest] = cleanupDataForDRegress(XTest,ZTest,bearingsTest,pIdsTest);
 
 %% save data
-in.tag = 'exp11-mapping-dreg';
+in.tag = 'exp11-mapping-dreg-input';
 fname = buildDataFileName(in);
 save(fname,'sensor',...
     'XTrain','pIdsTrain','bearingsTrain','ZTrain','posesTrain','trainIds',...

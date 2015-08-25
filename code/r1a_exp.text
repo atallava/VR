@@ -45,6 +45,14 @@
 * viz hists uses matrix, but estimateHistoram2 likes list.
 * pIdsTrain index into the poses, whereas all other indices, like trainIds, go
   directly into poses. should conver former to latter.
+* gkde2 runs out of memory.
+* if try myKde2, then pdist2 complains. out of memory.
+* same dRegSceneScript for sensor modeling and mapping.
+* occ map doesn't produce distribs. occ map is for laser only!
+* function that generates histograms from obsArray.
+* still are manually specifying which data files link to which.
+* change evalDReg so it doesn't perform the estimation as well!
+* i don't think there is a point to evalDReg anymore.
 
 ### exp12 ###
 
@@ -61,12 +69,6 @@
 
 * cleanup neato_utils? or it's ok as a bunch of miscellaneous
   functions. tradeoff to organization.
-
-* same dRegSceneScript for sensor modeling and mapping.
-
-* occ map doesn't produce distribs. occ map is for laser only!
-
-* function that generates histograms from obsArray.
 
 ### gt_factory ###
 

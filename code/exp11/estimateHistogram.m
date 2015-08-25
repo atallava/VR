@@ -31,4 +31,8 @@ for i = 1:nHCenters
     h(:,i) = sum(p(:,k*(i-1)+1:k*i),2);
 end
 h = h*iBinW;
+% normalize histograms
+colSum = sum(h,2);
+nonZero = (colSum ~= 0);
+h(nonZero,:) = bsxfun(@rdivide,h(nonZero,:),colSum(nonZero));
 end

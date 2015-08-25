@@ -32,6 +32,8 @@ for i = 1:length(posesHold)
     pId = posesHold(i);
     rangesHold(i,:) = om.raycast(poses(:,pId),sensor.maxRange,sensor.bearings);
 end
+compTime = toc(clockLocal);
+fprintf('Computation took %.2fs.\n',compTime);
 
 %% Calculate error
 

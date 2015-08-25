@@ -1,24 +1,23 @@
 % dReg pipeline for loss field
 in.source = 'sim-laser-gencal'; 
-in.tag = 'exp11-loss-field-dreg-input';
+in.tag = 'exp11-sensor-modeling-dreg-input';
 in.date = '150821'; 
-in.index = '3';
+in.index = '1';
 fileName = buildDataFileName(in);
 load(fileName);
 
 %% Estimate histograms
 % CHECK PARAMETERS BEFORE ESTIMATING!
-% bwX = [0.01 0.01 0.01];
-bwX = [0.04 0.04 0.08];
+bwX = [0.001 0.0644];
 bwZ = 1e-3;
-t1 = tic();
-[hArray,xc] = estimateHistogram(XTrain,ZTrain,XField,sensor,bwX,bwZ);
-compTime = toc(t1);
+clockLocal = tic();
+[hArray,xc] = estimateHistogram(XTrain,ZTrain,XHold,sensor,bwX,bwZ);
+compTime = toc(clockLocal);
 fprintf('Estimation took %.2fs\n',compTime);
 
 %% Save to file
 in.pre = '../data';
-in.tag = 'exp11-loss-field-dreg-output';
+in.tag = 'exp11-sensor-modeling-dreg-output';
 fileName = buildDataFileName(in);
 save(fileName,'hArray','xc','bwX','bwZ','compTime','-v7.3');
 

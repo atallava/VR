@@ -9,6 +9,8 @@ function [X,bearingsX,pIds] = pose2BearingPoses(poses,bearings)
 % X        - Array of size (nPoses*nBearings) x dimPoses.
 % pIds     - Vector of length (nPoses*nBearings). Maps bearing pose to
 %            robot pose.
+% bearingsX - Vector of length (nPoses*nBearings). Maps X to sensor
+%             bearing.
 
 
 if nargin < 2

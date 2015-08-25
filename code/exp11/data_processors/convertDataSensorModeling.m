@@ -3,8 +3,8 @@
 in.pre = '../data';
 in.source = 'sim-laser-gencal';
 in.tag = 'exp11-sensor-modeling';
-in.date = '150819'; 
-in.index = '';
+in.date = '150821'; 
+in.index = '1';
 fname = buildDataFileName(in);
 load(fname);
 
@@ -26,9 +26,9 @@ bearings = sensor.bearings(bearingIds);
 
 % bearing features
 % X is [NB,d]
-[XTrain,bearingsTrain,pIdsTrain] = pose2BearingFeatures(posesTrain,bearings,map); 
-[XHold,bearingsHold,pIdsHold] = pose2BearingFeatures(posesHold,sensor.bearings,map);
-[XTest,bearingsTest,pIdsTest] = pose2BearingFeatures(posesTest,sensor.bearings,map);
+[XTrain,bearingsTrain,pIdsTrain] = pose2BearingFeatures(posesTrain,bearings,map,sensor); 
+[XHold,bearingsHold,pIdsHold] = pose2BearingFeatures(posesHold,sensor.bearings,map,sensor);
+[XTest,bearingsTest,pIdsTest] = pose2BearingFeatures(posesTest,sensor.bearings,map,sensor);
 
 % Z data
 % Z is [NB,1]. Z{i} is [1,M]
@@ -42,7 +42,7 @@ ZTest = obsArray(testIds,:)'; ZTest = ZTest(:);
 [XTest,ZTest,bearingsTest,pIdsTest] = cleanupDataForDRegress(XTest,ZTest,bearingsTest,pIdsTest);
 
 %% save data
-in.tag = 'exp11-sensor-modeling-dreg';
+in.tag = 'exp11-sensor-modeling-dreg-input';
 fname = buildDataFileName(in);
 save(fname,'sensor',...
     'XTrain','pIdsTrain','bearingsTrain','ZTrain','posesTrain','trainIds',...

@@ -6,9 +6,9 @@
 % in.index = '';
 % fname = buildDataFileName(in);
 
-fname = ['exp11_processed_data2_peta_240215'];
+fname = 'exp11_processed_data2_peta_240215';
 load(fname);
-fname = 'data/processed_data_peta_240215';
+fname = 'processed_data_peta_240215';
 load(fname);
 
 %% Estimate

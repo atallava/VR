@@ -21,22 +21,17 @@ bwX = [0.01 0.01 0.01];
 bwZ = 1e-3;
 pId = 1; 
 t1 = tic();
-[hPred,xc] = estimateHistogram(XTrain,ZTrain,XHold(pIdsHold == pId,:),sensor,bwX,bwZ);
+[hPredArray,xc] = estimateHistogram(XTrain,ZTrain,XHold(pIdsHold == pId,:),sensor,bwX,bwZ);
 fprintf('Estimation took %.2fs\n',toc(t1));
 
 %% Calculate error
 % for small dataset typically
 [hArray,~] = ranges2Histogram(ZHold(pIdsHold == pId),sensor);
 histDistance = @histDistanceKL;
-Q = length(ZHold(pIdsHold == pId));
-err = zeros(1,Q);
-for i = 1:Q
-    err(i) = histDistance(hArray(i,:),hPred(i,:));
-end
-meanErr = mean(err);
+[meanErr,err] = evalHPred(hArray,hPredArray,histDistance);
 
 %% Sample from histograms
-ranges = sampleFromHistogram(hPred,xc,1);
+ranges = sampleFromHistogram(hPredArray,xc,1);
 
 %% Visualize
 ri = rangeImage(struct('ranges',ranges,'bearings',bearingsHold(pIdsHold == pId)));
@@ -45,12 +40,14 @@ hf = ri.plotXvsY(posesHold(:,pId));
 %% Vizualize some histograms
 histId = 49;
 [h,~] = ranges2Histogram(ZHold{histId},sensor);
-hf = vizHists(h,hPred(histId,:),xc);
+hf = vizHists(h,hPredArray(histId,:),xc);
 
 %% Evaluate on dataset
 % histDistance = @histDistanceEuclidean;
 histDistance = @histDistanceKL;
-evalStats = evalDReg(XTrain,ZTrain,XHold,ZHold,sensor,bwX,bwZ,histDistance);
+[hArray,~] = ranges2Histogram(ZHold,sensor);
+hPredArray = estimateHistogram(XTrain,ZTrain,XHold,sensor,bwX,bwZ);
+[meanErr,err] = evalHPred(hArray,hPredArray,histDistance);
 
 %%
 save('dreg_scene.mat','XTrain','ZTrain','XHold','ZHold','sensor','bwX','bwZ','hPred','evalStats');
