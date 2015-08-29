@@ -8,7 +8,7 @@ function res = kernelRBF(x1,x2,kernelParams)
 % kernelParams - struct with fields ('h','lambda'), kernel width. Default = 1.0 if
 %                passed empty struct.
 % 
-% res          - 1 x n kernel values.
+% res          - [n,1] kernel values.
 
 dimX = length(x1);
 if isfield(kernelParams,'h')
@@ -36,5 +36,8 @@ end
 temp = -temp.^2/(2*h^2);
 normalizer = ((2*pi)^(dimX/2))*(h^dimX);
 res = exp(temp)/normalizer;
+if isrow(res)
+    res = res';
+end
 end
 

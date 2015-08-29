@@ -55,7 +55,16 @@
 * i don't think there is a point to evalDReg anymore.
 * when is a histogram predicted to be nans?
 * a little unfair to dreg, which builds one bearing model whereas the other has
-  individual bearing models.
+  individual bearing models.  
+* bwX stuff is hung, doesn't look receptive. by some stroke of luck, i can look
+  at the mean error values: they are monotonic and decrease from 0.5059
+  to 0.4733. This puts the optimal bandwidth at [0.2,0.2,0.0.0175]. i think this
+  is just squashing all predictions. mapping might not work so well
+  then. lesson: should never dump this much memory in the workspace.
+* should probably not be creating so many estimateHistograms and just pass the
+  dRegress as a function handle. Because estimateHistograms is only doing the
+  numerical integration.
+* sped up kernelRBF2. it was embarassingly easy.
 
 ### exp12 ###
 

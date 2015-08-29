@@ -9,6 +9,7 @@ load(fName);
 in.source = 'sim-laser-gencal';
 in.tag = 'exp11-loss-field';
 in.date = '150821'; 
+in.index = '';
 fname = buildDataFileName(in);
 dataGt = load(fname);
 % comparator

@@ -4,7 +4,7 @@ in.pre = '../data';
 in.source = 'sim-laser-gencal';
 in.tag = 'exp11-mapping';
 in.date = '150821'; 
-in.index = '4';
+in.index = '';
 fname = buildDataFileName(in);
 load(fname);
 

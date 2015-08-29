@@ -1,4 +1,4 @@
-function [res,xcenters] = ranges2Histogram(ranges,laser)
+function [res,xcenters] = ranges2Histogram(ranges,xcenters)
 %RANGES2HISTOGRAM 
 % 
 % [res,xcenters] = RANGES2HISTOGRAM(ranges,laser)
@@ -9,9 +9,6 @@ function [res,xcenters] = ranges2Histogram(ranges,laser)
 % res      - Normalized count of ranges in bins. Array of size B x
 %            length(xcenters)
 % xcenters - Bin centers.
-
-nCenters = (laser.maxRange/laser.rangeRes)+1;
-xcenters = linspace(0,laser.maxRange,nCenters);
 
 if ~iscell(ranges)
     res = hist(ranges,xcenters);

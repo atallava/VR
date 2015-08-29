@@ -106,18 +106,21 @@ uniform probability distribution from which to draw data.
 exp4/processed\_data\_sep6 repackaged.
 * data\_neato-laser\_exp11-sensor-modeling\_140906\_1.mat
 Spawned from data\_neato-laser\_exp11-sensor-modeling\_140906. M = 100.
+* data\_neato-laser\_exp11-sensor-modeling-perf-ntrain\_140906\_1.mat
+This was a fiasco because coded it wrong. In any case, have results for the best
+performance, and dreg does well.
 * data\_sim-laser-gencal\_exp11-sensor-modeling_150821.mat  
-big dataset with N = 500, M = 100 on room\_line\_map. spawn smaller
+big dataset with N = 300, M = 100 on room\_line\_map. spawn smaller
 datasets from this one.
 * data\_sim-laser-gencal\_exp11-sensor-modeling\_150821\_1.mat  
 Spawned from data\_sim-laser-gencal\_exp11-sensor-modeling_150821.mat. Ntrain =
 180, Nhold = Ntest = 30, M = 100.
 
 * data\_sim-laser-gencal\_exp11-mapping\_150821_1.mat  
-big dataset with N = 500, M = 100 on cluttered\_box\_map. spawn smaller
+big dataset with N = 300, M = 100 on cluttered\_box\_map. spawn smaller
 datasets from this one.
 * data\_sim-laser-gencal\_exp11-mapping\_150821_2.mat  
-big dataset with N = 500, M = 100 on nsh3\_corridor. spawn smaller
+big dataset with N = 300, M = 100 on nsh3\_corridor. spawn smaller
 datasets from this one.
 * data\_sim-laser-gencal\_exp11-mapping\_150821\_3.mat  
 Spawned from data\_sim-laser-gencal\_exp11-mapping\_150821_1.mat. M = 50, Ntrain

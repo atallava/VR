@@ -11,7 +11,7 @@ addpath([exp11Path '/hist_distances']);
 addpath([exp11Path '/pose_sampling']);
 addpath([exp11Path '/data_processors']);
 addpath([exp11Path '/data']);
-addpath([exp11Path '/gkde2']);
+addpath([exp11Path '/histStat']);
 
 exp4Path = [exp11Path '/../exp4'];
 % for kernels
