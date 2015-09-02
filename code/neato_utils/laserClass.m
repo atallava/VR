@@ -4,6 +4,7 @@ classdef laserClass < handle
     properties (SetAccess = private)
         % distance unit: m
         % angle unit: rad
+        minRange
         maxRange
         rangeRes
         bearings
@@ -16,6 +17,11 @@ classdef laserClass < handle
         function obj = laserClass(inputStruct)
             % inputStruct fields ('maxRange','rangeRes','bearings','nullReading','Tsensor')
             % default (4.5, 0.001, deg2rad(0:359), 0, eye(3))
+            if isfield(inputStruct,'minRange')
+                obj.minRange = inputStruct.minRange;
+            else
+                obj.minRange = 0;
+            end
             if isfield(inputStruct,'maxRange')
                 obj.maxRange = inputStruct.maxRange;
             else
