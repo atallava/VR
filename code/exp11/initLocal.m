@@ -4,6 +4,7 @@ if isempty(res)
 end
 someUsefulPaths
 addpath(genpath(pathToM))
+addpath(pathToNeatoM)
 
 exp11Path = pwd;
 addpath(exp11Path);

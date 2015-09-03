@@ -16,13 +16,15 @@ if ~exist('rstate','var')
     error('RSTATE MUST EXIST IN WORKSPACE');
 end
 
+%%
 v = struct('left',0,'right',0);
 T = [1 -0.5*robotModel.W; ...
     1 0.5*robotModel.W];
 data_count = 0;
-num_obs = 30;
+num_obs = 50;
 t_range_collection = struct('start',{},'end',{});
 
+%%
 t_sys_start = tic;
 enc = encHistory(rob);
 lzr = laserHistory(rob);
@@ -35,6 +37,7 @@ vizer = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser,'ro
 pause(1);
 poseHistory = [];
 
+%%
 timeScale = 0.5; % in s
 velScale = 0.5;
 while true
@@ -126,6 +129,7 @@ while true
     end
 end
 
+%%
 vizer.delete;
 enc.stopListening();
 lzr.stopListening();
