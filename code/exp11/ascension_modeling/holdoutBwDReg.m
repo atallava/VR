@@ -10,8 +10,8 @@ load(fname);
 %% specify bw range
 nBwX = 10;
 nBwZ = 10;
-limsBwX = [0.01 3];
-limsBwZ = [0.01 2];
+limsBwX = [0.1 40];
+limsBwZ = [0.05 5];
 [bwXArray,bwZArray] = meshgrid(linspace(limsBwX(1),limsBwX(2),nBwX),linspace(limsBwZ(1),limsBwZ(2),nBwZ));
 bwXArray = bwXArray(:);
 bwZArray = bwZArray(:);
@@ -39,9 +39,7 @@ fprintf('Computation took %.2fs\n',compTime);
 bwXOpt = bwXArray(minId); bwZOpt = bwZArray(minId);
 
 %% save to file
-in.tag = 'exp11-sensor-modeling-dreg-bwXZ';
+in.tag = 'exp11-sensor-modeling-dreg-bw';
 fname = buildDataFileName(in);
-
-%%
-save(fname,'bwZ','bwXArray','bwZArray','histDistance',...
+save(fname,'bwXArray','bwZArray','histDistance',...
     'bwMeanErr','bwXOpt','bwZOpt','compTime');

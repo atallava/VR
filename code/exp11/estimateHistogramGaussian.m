@@ -1,4 +1,4 @@
-function [h,hCenters] = estimateHistogramGaussian(XTrain,ZTrain,X,laser)
+function [h,hCenters] = estimateHistogramGaussian(XTrain,ZTrain,X,sensor,bwXList)
     %ESTIMATEHISTOGRAMPARAM Use a parametric model to estimate distributions.
     %
     % [h,hCenters] = ESTIMATEHISTOGRAMPARAM(XTrain,ZTrain,X,laser,bwX)
@@ -13,7 +13,9 @@ function [h,hCenters] = estimateHistogramGaussian(XTrain,ZTrain,X,laser)
     
     N = length(ZTrain);
     Q = size(X,1);
-   
+    nHCenters = round(sensor.maxRange/sensor.rangeRes)+1; % number of histogram centers
+    hCenters = linspace(0,sensor.maxRange,nHCenters); % histogram centers
+    
     % estimate parameters at training locations
     musTrain = zeros(1,N);
     sigmasTrain = zeros(1,N);
@@ -24,22 +26,22 @@ function [h,hCenters] = estimateHistogramGaussian(XTrain,ZTrain,X,laser)
         elseif M == 1
             musTrain(i) = mean(ZTrain{i}); sigmasTrain(i) = nan;
         else
-            musTrain(i) = mean(ZTrain{i}); sigmasTrain = std(ZTrain{i});
+            musTrain(i) = mean(ZTrain{i}); sigmasTrain(i) = std(ZTrain{i});
         end
     end
     if isrow(musTrain); musTrain = musTrain'; end
     if isrow(sigmasTrain); sigmasTrain = sigmasTrain'; end
-
+    
     % construct regressors for parameters
     % bandwidths taken from exp4/modeler
     in.XTrain = XTrain;
     in.YTrain = musTrain;
-    in.kernelFn = @kernelRBF;
-    in.kernelParams = struct('h',0.5053,'lambda',1.5539);
+    in.kernelFn = @kernelRBF2;
+    in.kernelParams = struct('h',bwXList{1});
     muRegressor = locallyWeightedLinearRegressor(in);
     
     in.YTrain = sigmasTrain;
-    in.kernelParams = struct('h',0.2639,'lambda',0.7509);
+    in.kernelParams = struct('h',bwXList{2});
     sigmaRegressor = locallyWeightedLinearRegressor(in);
     
     % estimate parameters at query locations
@@ -48,8 +50,6 @@ function [h,hCenters] = estimateHistogramGaussian(XTrain,ZTrain,X,laser)
     pZsQuery = zeros(1,Q); % no dropouts
     
     % construct histograms at query locations
-    nHCenters = round(laser.maxRange/laser.rangeRes)+1; % number of histogram centers
-    hCenters = linspace(0,laser.maxRange,nHCenters); % histogram centers
     h = zeros(Q,nHCenters);
     for i = 1:Q
         vec = [musQuery(i) sigmasQuery(i) pZsQuery(i)];

@@ -9,9 +9,9 @@ load(fname);
 
 %% estimate at one pose only
 % CHECK PARAMETERS BEFORE ESTIMATING!
-pId = 10%randsample(1:length(XHold),1);
-bwX = 2;
-bwZ = 0.01;
+pId = randsample(1:length(XHold),1);
+bwX = 0.1;
+bwZ = 0.05;
 
 clockLocal = tic();
 [hDReg,xc] = estimateHistogram(XTrain,ZTrain,XHold(pId),sensor,bwX,bwZ);
@@ -19,7 +19,7 @@ clockLocal = tic();
 fprintf('Computation took %.2fs.\n',toc(clockLocal));
 
 %% error
-histDistance = @histDistanceKL;
+histDistance = @(h1,h2) histDistanceMomentMatch(h1,h2,xc);
 err = histDistance(hGt,hDReg);
 
 %% visualize histogram

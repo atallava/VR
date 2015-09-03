@@ -1,4 +1,4 @@
-% dReg pipeline for ascension modeling
+% pReg pipeline for ascension modeling
 in.source = 'ascension-tracker'; 
 in.tag = 'exp11-sensor-modeling-dreg-input';
 in.date = '150831'; 
@@ -6,12 +6,12 @@ in.index = '';
 fileName = buildDataFileName(in);
 load(fileName);
 
-%% Estimate histograms
-% CHECK PARAMETERS BEFORE ESTIMATING!
-bwX = 3;
-bwZ = 1e-3;
+%%
+bwXMu = 1;
+bwXSigma = 1;
+bwXList = {bwXMu bwXSigma};
 clockLocal = tic();
-[hPredArray,xc] = estimateHistogram(XTrain,ZTrain,XHold,sensor,bwX,bwZ);
+[hPredArray,xc] = estimateHistogramGaussian(XTrain,ZTrain,XHold,sensor,bwXList);
 compTime = toc(clockLocal);
 fprintf('Estimation took %.2fs\n',compTime);
 
@@ -19,4 +19,5 @@ fprintf('Estimation took %.2fs\n',compTime);
 in.pre = '../data';
 in.tag = 'exp11-ascension-modeling-dreg-output';
 fileName = buildDataFileName(in);
-save(fileName,'hPredArray','xc','bwX','bwZ','compTime','-v7.3');
+save(fileName,'hPredArray','xc','bwXList','compTime','-v7.3');
+

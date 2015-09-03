@@ -9,11 +9,6 @@ fname = buildDataFileName(in);
 load(fname);
 
 %% convert data
-
-% hand-pick ids
-% trainIds = [1 2 3];
-% holdIds = [4];
-
 % poses
 posesTrain = poses(trainIds);
 posesHold = poses(holdIds);
