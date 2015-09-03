@@ -130,7 +130,12 @@ source, date and index.
 Spawned from data\_sim-laser-gencal\_exp11-mapping\_150821_1.mat. M = 50, Ntrain
 = 100, NHold = NTest = 30. Used for mapping bw selection.
 * dRegPipeline is bogus in loss field if the kernel dies out sooner than the
-  query 
+  query
+
+* data\_ascension-tracker\_exp11-sensor-modeling\_150831
+N = 199, M between 600 and 1200.
+* data\_ascension-tracker\_exp11-sensor-modeling\_150831\_1
+N = 199, M = 600.
 
 ### exp12/ ###
 * mocap\_transform

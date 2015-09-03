@@ -34,5 +34,9 @@ h = h*iBinW;
 % normalize histograms
 colSum = sum(h,2);
 nonZero = (colSum ~= 0);
-h(nonZero,:) = bsxfun(@rdivide,h(nonZero,:),colSum(nonZero));
+if ~any(nonZero)
+    return;
+else
+    h(nonZero,:) = bsxfun(@rdivide,h(nonZero,:),colSum(nonZero));
+end
 end

@@ -65,6 +65,8 @@
   dRegress as a function handle. Because estimateHistograms is only doing the
   numerical integration.
 * sped up kernelRBF2. it was embarassingly easy.
+* had to create a new script for converting data for ascension. this is because
+  getting features was specific to laser geometric features.
 
 ### exp12 ###
 

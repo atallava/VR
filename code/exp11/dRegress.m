@@ -15,7 +15,7 @@ Q = size(X,1);
 if isrow(Z)
     Z = Z';
 end
-if iscolumn(X)
+if isrow(X)
     X = X';
 end
 
@@ -34,8 +34,8 @@ p = ranges2Histogram(ZTrain,Z)'; % [N,R]
 %         p(:,i) = ksdensity(ZTrain{i},Z,'bandwidth',bwZ);
 %     end
 % end
-% at some XTrain there is no data
 
+% at some XTrain there is no data
 p(:,throwCols) = [];
 assert(~isempty(p),'ZTRAIN IS EMPTY.');
 

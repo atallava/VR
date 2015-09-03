@@ -1,4 +1,4 @@
-function poses = uniformSamplesOnSupport(support,map,bBox,nPoses)
+function poses = uniformSamplesOnSupport(map,support,bBox,nPoses)
 % Uses a uniform distribution on support.
 % bBox is a bounding box.
 
@@ -14,7 +14,7 @@ while true
     theta = rand()*2*pi;
     pose = [x; y; theta];
     tBBox = transformPolygon(pose,bBox);
-    if isValidPose(support,map,tBBox)
+    if isValidPose(map,support,tBBox)
         poses(:,count) = pose;
         count = count+1;
     end

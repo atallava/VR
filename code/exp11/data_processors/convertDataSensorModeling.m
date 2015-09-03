@@ -1,10 +1,10 @@
 % convert sensor data to dreg format
 % for sensor modeling
 in.pre = '../data';
-in.source = 'neato-laser';
+in.source = 'ascension-tracker';
 in.tag = 'exp11-sensor-modeling';
-in.date = '140906'; 
-in.index = '1';
+in.date = '150831'; 
+in.index = '';
 fname = buildDataFileName(in);
 load(fname);
 
