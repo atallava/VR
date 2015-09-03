@@ -17,7 +17,7 @@ bwZ = 1e-3;
 clockLocal = tic();
 % [hDReg,xc] = estimateHistogramSmoothing(XTrain,ZTrain,XHold(pIdsHold == pId,:),sensor,bwX,bwZ);
 [hDReg,xc] = estimateHistogram(XTrain,ZTrain,XHold(pIdsHold == pId,:),sensor,bwX,bwZ);
-[hGt,xc] = ranges2Histogram(ZHold(pIdsHold == pId),xc);
+hGt = ranges2Histogram(ZHold(pIdsHold == pId),xc);
 fprintf('Computation took %.2fs.\n',toc(clockLocal));
 
 %% error

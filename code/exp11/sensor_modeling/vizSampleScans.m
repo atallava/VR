@@ -15,8 +15,9 @@ fileName = buildDataFileName(in);
 load(fileName);
 
 %% helpers
+xc = getHistogramBins(sensor);
 histDistance = @histDistanceEuclidean;
-[hArray,~] = ranges2Histogram(ZHold,sensor);
+hArray = ranges2Histogram(ZHold,xc);
 
 %% viz ranges
 close all;

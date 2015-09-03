@@ -21,7 +21,7 @@ xc = getHistogramBins(sensor);
 % histDistance = @(h1,h2) histDistanceMomentMatch(h1,h2,xc);
 histDistance = @histDistanceMatch;
 bwMeanErr = zeros(1,length(bwXMuArray));
-[hArray,xc] = ranges2Histogram(ZHold,xc);
+hArray = ranges2Histogram(ZHold,xc);
 
 localClock = tic();
 for i = 1:length(bwXMuArray)

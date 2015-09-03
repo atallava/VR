@@ -11,7 +11,7 @@ load(fileName);
 
 %% specify sets of training data to use
 xc = getHistogramBins(sensor);
-[hArrayGt,~] = ranges2Histogram(ZHold,xc);
+hArrayGt = ranges2Histogram(ZHold,xc);
 histDistance = @histDistanceMatch;
 nRandomDraws = 5; % can't afford more
 

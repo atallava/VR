@@ -16,7 +16,7 @@ bwXList = {bwXMu bwXSigma};
 
 clockLocal = tic();
 [hPReg,xc] = estimateHistogramGaussian(XTrain,ZTrain,XHold(pId),sensor,bwXList);
-[hGt,xc] = ranges2Histogram(ZHold(pId),xc);
+hGt = ranges2Histogram(ZHold(pId),xc);
 fprintf('Computation took %.2fs.\n',toc(clockLocal));
 
 %% error

@@ -26,7 +26,8 @@ fprintf('Estimation took %.2fs\n',toc(t1));
 
 %% Calculate error
 % for small dataset typically
-[hArray,~] = ranges2Histogram(ZHold(pIdsHold == pId),sensor);
+xc = getHistogramBins(sensor);
+hArray = ranges2Histogram(ZHold(pIdsHold == pId),sensor);
 histDistance = @histDistanceKL;
 [meanErr,err] = evalHPred(hArray,hPredArray,histDistance);
 
@@ -39,13 +40,13 @@ hf = ri.plotXvsY(posesHold(:,pId));
 
 %% Vizualize some histograms
 histId = 49;
-[h,~] = ranges2Histogram(ZHold{histId},sensor);
+h = ranges2Histogram(ZHold{histId},sensor);
 hf = vizHists(h,hPredArray(histId,:),xc);
 
 %% Evaluate on dataset
 % histDistance = @histDistanceEuclidean;
 histDistance = @histDistanceKL;
-[hArray,~] = ranges2Histogram(ZHold,sensor);
+hArray = ranges2Histogram(ZHold,sensor);
 hPredArray = estimateHistogram(XTrain,ZTrain,XHold,sensor,bwX,bwZ);
 [meanErr,err] = evalHPred(hArray,hPredArray,histDistance);
 

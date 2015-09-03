@@ -1,18 +1,13 @@
 % convert sensor data to dreg format
 % for sensor modeling
-in.source = 'sensor-modeling';
-in.tag = 'exp11-sensor-modeling';
-in.date = '150831'; 
+in.source = 'sim-laser-gencal';
+in.tag = 'exp11-dynamic-env';
+in.date = '150903'; 
 in.index = '';
 fname = buildDataFileName(in);
 load(fname);
 
 %% convert data
-
-% hand-pick ids
-% trainIds = [1 2 3];
-% holdIds = [4];
-
 % poses
 posesTrain = poses(:,trainIds);
 posesHold = poses(:,holdIds);
@@ -41,7 +36,8 @@ ZTest = obsArray(testIds,:)'; ZTest = ZTest(:);
 [XTest,ZTest,bearingsTest,pIdsTest] = cleanupDataForDRegress(XTest,ZTest,bearingsTest,pIdsTest);
 
 %% save data
-in.tag = 'exp11-sensor-modeling-dreg-input';
+in.pre = '../data/';
+in.tag = 'exp11-dynamic-env-dreg-input';
 fname = buildDataFileName(in);
 save(fname,'sensor',...
     'XTrain','pIdsTrain','bearingsTrain','ZTrain','posesTrain','trainIds',...

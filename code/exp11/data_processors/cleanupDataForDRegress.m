@@ -19,12 +19,16 @@ assert(nargout == nargin, 'NARGIN MUST BE EQUAL TO NARGOUT');
 throwIds = [];
 for i = 1:length(Z)
     z = Z{i};
-    % Filter 1: throw away zeroes. if too few readings remain, discard
+    % filter 1: throw away zeroes. if too few readings remain, discard
     % observation
     oldNumZ = length(z);
     z(z == 0) = [];
     Z{i} = z;
     if length(z) < 0.7*oldNumZ
+        throwIds = [throwIds i];
+    end
+    % filter 2: throw away any nan features
+    if any(isnan(X(i,:)))
         throwIds = [throwIds i];
     end
 end

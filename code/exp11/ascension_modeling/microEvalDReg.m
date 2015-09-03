@@ -15,7 +15,7 @@ bwZ = 0.05;
 
 clockLocal = tic();
 [hDReg,xc] = estimateHistogram(XTrain,ZTrain,XHold(pId),sensor,bwX,bwZ);
-[hGt,xc] = ranges2Histogram(ZHold(pId),xc);
+hGt = ranges2Histogram(ZHold(pId),xc);
 fprintf('Computation took %.2fs.\n',toc(clockLocal));
 
 %% error

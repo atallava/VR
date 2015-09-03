@@ -137,6 +137,10 @@ N = 199, M between 600 and 1200.
 * data\_ascension-tracker\_exp11-sensor-modeling\_150831\_1
 N = 199, M = 600.
 
+* data\_sim-laser-gencal\_exp11-dynamic-env\_150903
+big dataset with N = 300, M = 100 on a straight corridor with walkway
+strips. spawn smaller datasets from this one.
+
 ### exp12/ ###
 * mocap\_transform
 Typically after ground calibration, the floor is x-z coordinates. The transform in here sets the floor to an x-y plane.

@@ -10,7 +10,8 @@ fileName = buildDataFileName(in);
 load(fileName);
 
 %% specify sets of training data to use
-[hArrayGt,~] = ranges2Histogram(ZTest,sensor);
+xc = getHistogramBins(sensor);
+hArrayGt = ranges2Histogram(ZTest,sensor);
 histDistance = @histDistanceEuclidean;
 nRandomDraws = 3; % can't afford more
 

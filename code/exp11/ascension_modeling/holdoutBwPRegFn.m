@@ -14,7 +14,7 @@ function bwXListOpt = holdoutBwPRegFn(XTrain,ZTrain,XHold,ZHold,sensor,histDista
     % estimate histograms
     xc = getHistogramBins(sensor);
     bwMeanErr = zeros(1,length(bwXMuArray));
-    [hArray,~] = ranges2Histogram(ZHold,xc);
+    hArray = ranges2Histogram(ZHold,xc);
     
     for i = 1:length(bwXMuArray)
         bwXMu = bwXMuArray(i);
