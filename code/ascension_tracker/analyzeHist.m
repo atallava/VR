@@ -1,10 +1,11 @@
 % just plot some histograms
-fname = 'data_000';
+fname = 'data_ascension_dynamic';
 data = parseData(fname);
 
 %% true histogram
 load parameters_150831
 readings = [data.x];
+reading0 = 8.25;
 z = magicFactor*(readings-reading0);
 minZ = -5;
 maxZ = 25;
@@ -17,7 +18,8 @@ h0 = hist(z,bins);
 h0 = h0/sum(h0);
 bar(bins,h0);
 xlabel('bins');
-ylabel('probability');
+ylabel('prob');
+ylim([0 0.25]);
 
 %% approximations
 n = linspace(100,length(z),10);

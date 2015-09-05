@@ -9,7 +9,7 @@ load(fname);
 
 %% estimate at one pose only
 % CHECK PARAMETERS BEFORE ESTIMATING!
-pId = randsample(1:length(XHold),1);
+pId = 11;%randsample(1:length(XHold),1);
 bwX = 0.1;
 bwZ = 0.05;
 
@@ -25,4 +25,4 @@ err = histDistance(hGt,hDReg);
 %% visualize histogram
 close all;
 vizHists(hGt,hDReg,xc);
-suptitle(sprintf('pose: %d',XHold(pId)));
+suptitle(sprintf('pose: %.2f',XHold(pId)));

@@ -9,7 +9,7 @@ load(fname);
 
 %% estimate at one pose only
 % CHECK PARAMETERS BEFORE ESTIMATING!
-pId = randsample(1:length(XHold),1);
+pId = 11;%randsample(1:length(XHold),1);
 bwXMu = 40;
 bwXSigma = 40;
 bwXList = {bwXMu bwXSigma};

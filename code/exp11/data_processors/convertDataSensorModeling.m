@@ -1,17 +1,13 @@
 % convert sensor data to dreg format
 % for sensor modeling
-in.source = 'sensor-modeling';
+in.source = 'neato-laser';
 in.tag = 'exp11-sensor-modeling';
-in.date = '150831'; 
+in.date = '140906'; 
 in.index = '';
 fname = buildDataFileName(in);
 load(fname);
 
 %% convert data
-
-% hand-pick ids
-% trainIds = [1 2 3];
-% holdIds = [4];
 
 % poses
 posesTrain = poses(:,trainIds);
@@ -41,6 +37,7 @@ ZTest = obsArray(testIds,:)'; ZTest = ZTest(:);
 [XTest,ZTest,bearingsTest,pIdsTest] = cleanupDataForDRegress(XTest,ZTest,bearingsTest,pIdsTest);
 
 %% save data
+in.pre = '../data/';
 in.tag = 'exp11-sensor-modeling-dreg-input';
 fname = buildDataFileName(in);
 save(fname,'sensor',...

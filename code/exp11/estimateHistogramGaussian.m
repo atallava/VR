@@ -1,15 +1,16 @@
 function [h,hCenters] = estimateHistogramGaussian(XTrain,ZTrain,X,sensor,bwXList)
-    %ESTIMATEHISTOGRAMPARAM Use a parametric model to estimate distributions.
+    %ESTIMATEHISTOGRAMGAUSSIAN
     %
-    % [h,hCenters] = ESTIMATEHISTOGRAMPARAM(XTrain,ZTrain,X,laser,bwX)
+    % [h,hCenters] = ESTIMATEHISTOGRAMGAUSSIAN(XTrain,ZTrain,X,sensor,bwXList)
     %
-    % XTrain    - N x dimX array.
-    % ZTrain    - length N cell array.
-    % X         - Q x dimX array. Q is number of queries.
-    % laser     - laserClass object.
+    % XTrain   -
+    % ZTrain   -
+    % X        -
+    % sensor   -
+    % bwXList  -
     %
-    % h         - Q x hCenters array of histogram values.
-    % hCenters  - Histogram centers.
+    % h        -
+    % hCenters -
     
     N = length(ZTrain);
     Q = size(X,1);

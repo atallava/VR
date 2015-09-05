@@ -1,5 +1,4 @@
 % how does performance vary with training data
-% this is going to be a patchy script
 
 % load data
 in.source = 'neato-laser'; 
@@ -11,57 +10,44 @@ load(fileName);
 
 %% specify sets of training data to use
 xc = getHistogramBins(sensor);
-hArrayGt = ranges2Histogram(ZTest,sensor);
-histDistance = @histDistanceEuclidean;
-nRandomDraws = 3; % can't afford more
+hArrayGt = ranges2Histogram(ZTest,xc);
+histDistance = @histDistanceMatch;
+nRandomDraws = 5; % can't afford more
 
 %% run parametric model
-NTrainSetGenCal = ceil(linspace(size(XTest,1)+10,min(size(XTrain,1),2e4),4)/2);
-hPredCellGenCal = cell(1,nRandomDraws*length(NTrainSetGenCal));
-errGenCal = zeros(length(NTrainSetGenCal),nRandomDraws);
-count = 1;
+NTrainSetPReg = ceil(linspace(size(XTest,1)+10,min(size(XTrain,1),1e4),4));
+errPReg = zeros(length(NTrainSetPReg),nRandomDraws);
+bwXMu = [0.5053 0.3252];
+bwXSigma = [0.2639 0.3514];
+bwXListPReg = {bwXMu bwXSigma};
 
 clockLocal = tic();
-for i = 1:length(NTrainSet)
-    N = NTrainSetGenCal(i);
-    if i < length(NTrainSetGenCal);
-        jRange = 1:nRandomDraws;
-    else 
-        jRange = 1;
-    end
-    for j = jRange
+for i = 1:length(NTrainSetPReg)
+    N = NTrainSetPReg(i);
+    for j = 1:nRandomDraws
         trainIdsSub = randsample(1:length(ZTrain),N);
-        [hPredArray,xc] = estimateHistogramGaussian(XTrain(trainIdsSub,:),ZTrain(trainIdsSub),XTest,sensor);
-        [errGenCal(i,j),~] = evalHPred(hArrayGt,hPredArray,histDistance);
-        hPredCellGenCal{count} = hPredArray;
-        count = count+1;
+%         bwXListPReg = holdoutBwPRegFn(XTrain,ZTrain,XHold,ZHold,sensor,histDistance);
+        [hPredArray,xc] = estimateHistogramGaussian(XTrain(trainIdsSub,:),ZTrain(trainIdsSub),XTest,sensor,bwXListPReg);
+        [errPReg(i,j),~] = evalHPred(hArrayGt,hPredArray,histDistance);
     end
 end
-compTimeGenCal = toc(clockLocal);
-fprintf('Gen cal estimation time: %.2fs.\n',compTimeGenCal);
+compTimePReg = toc(clockLocal);
+fprintf('PReg estimation time: %.2fs.\n',compTimePReg);
 
 %% dReg
 NTrainSetDReg = ceil(linspace(size(XTest,1)+10,size(XTrain,1),4));
-hPredCellDReg = cell(1,nRandomDraws*length(NTrainSetDReg));
 errDReg = zeros(length(NTrainSetDReg),nRandomDraws);
-bwXDReg = [0.001 0.0644];
+bwXDReg = [0.001 0.02];
 bwZDReg = 1e-3;
-count = 1;
 
 clockLocal = tic();
 for i = 1:length(NTrainSetDReg)
     N = NTrainSetDReg(i);
-    if i < length(NTrainSetDReg);
-        jRange = 1:nRandomDraws;
-    else 
-        jRange = 1;
-    end
-    for j = jRange
+    for j = 1:nRandomDraws
         trainIdsSub = randsample(1:length(ZTrain),N);
+%         [bwXDreg,bwZDReg] = holdoutBwDRegFn(XTrain,ZTrain,XHold,ZHold,sensor,histDistance);
         [hPredArray,xc] = estimateHistogram(XTrain(trainIdsSub,:),ZTrain(trainIdsSub),XTest,sensor,bwXDReg,bwZDReg);
         [errDReg(i,j),~] = evalHPred(hArrayGt,hPredArray,histDistance);
-        hPredCellDReg{count} = hPredArray;
-        count = count+1;
     end
 end
 compTimeDReg = toc(clockLocal);
@@ -72,18 +58,18 @@ in.pre = '../data';
 in.tag = 'exp11-sensor-modeling-perf-ntrain';
 fileName = buildDataFileName(in);
 save(fileName,...
-    'sensor','hArrayGt','histDistance','xc',...
-    'NTrainSetGenCal','errGenCal','hPredCellGenCal','compTimeGenCal',...
-    'NTrainSetDReg','bwXDReg','bwZDReg','errDReg','hPredCellDReg','compTimeDReg');
+    'sensor','histDistance','xc',...
+    'NTrainSetPReg','bwXListPReg','errPReg','compTimePReg',...
+    'NTrainSetDReg','bwXDReg','bwZDReg','errDReg','compTimeDReg');
 
 %% plot
 hf = figure; hold on;
-errorbar(NTrainSetGenCal,mean(errGenCal,2),std(errGenCal,0,2),'.-r');
+errorbar(NTrainSetPReg,mean(errPReg,2),std(errPReg,0,2),'.-r');
 hold on;
 errorbar(NTrainSetDReg,mean(errDReg,2),std(errDReg,0,2),'.-b');
 xlabel('training data');
 ylabel('test error');
-legend('parametric modeling','dReg');
+legend('pReg','dReg');
 
 
 

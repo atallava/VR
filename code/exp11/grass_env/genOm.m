@@ -19,3 +19,15 @@ for i = trainIds
 end
 om.calcBinaryGrid();
 fprintf('Occupancy map in %.2fs.\n',toc(clockLocal));
+
+%%
+og = om.logOdds2Prob(om.logOddsGrid);
+bg = og > 0.5;
+
+%%
+hf = figure;
+imagesc(flipud(1-bg));
+colormap(gray);
+xlabel('x (m)');
+ylabel('y (m)');
+axis equal;
