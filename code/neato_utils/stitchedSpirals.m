@@ -50,18 +50,36 @@ classdef stitchedSpirals < abstractTrajectory
                 res = interp1(obj.tArray,obj.poseArray',t);
                 res = res';
             end
-        end
+		end
         
-        function [V,w] = getControl(obj,t)
-            if t < obj.tIdle
-                V = 0; w = 0;
-            elseif t > obj.tArray(end)+obj.tIdle
-                V = 0; w = 0;
-            else
-                t = t-obj.tIdle;
-                V = interp1(obj.tArray,obj.VArray,t);
-                w = interp1(obj.tArray,obj.wArray,t);
-            end
+		function [V,w] = getControl(obj,t)
+			%GETCONTROL Get reference velocities at time t.
+			%
+			% [V,w] = GETCONTROL(obj,t)
+			%
+			% t   - Time in s.
+			%
+			% V   - Linear velocity.
+			% w   - Angular velocity.
+			
+			[V,w] = deal(zeros(size(t)));
+			ids1 = t < obj.tIdle;
+			ids2 = t > obj.tArray(end)+obj.tIdle;
+			ids3 = ~(ids1 | ids2);
+			t(ids3) = t(ids3)-obj.tIdle;
+			V(ids3) = interp1(obj.tArray,obj.VArray,t(ids3));
+			w(ids3) = interp1(obj.tArray,obj.wArray,t(ids3));
+			
+			% scalar version
+%             if t < obj.tIdle
+%                 V = 0; w = 0;
+%             elseif t > obj.tArray(end)+obj.tIdle
+%                 V = 0; w = 0;
+%             else
+%                 t = t-obj.tIdle;
+%                 V = interp1(obj.tArray,obj.VArray,t);
+%                 w = interp1(obj.tArray,obj.wArray,t);
+%             end
         end
         
          function hf = plot(obj)

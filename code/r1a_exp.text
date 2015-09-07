@@ -163,4 +163,7 @@ using 3x3 matrices.
 * assumption broken. marker names have changed during the course of a
   run.
 
+### neato_utils ###
 
+* it is very annoying that map.plot does so in its own handle. fix
+  that.
