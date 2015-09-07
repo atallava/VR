@@ -40,16 +40,30 @@ classdef stitchedSpirals < abstractTrajectory
             res = obj.tArray(end)+2*obj.tIdle;
         end
         
-        function res = getPoseAtTime(obj,t)
-            if t < obj.tIdle
-                res = obj.startPose;
-            elseif t > obj.tArray(end)+obj.tIdle
-                res = obj.finalPose;
-            else
-                t = t-obj.tIdle;
-                res = interp1(obj.tArray,obj.poseArray',t);
-                res = res';
-            end
+        function poses = getPoseAtTime(obj,t)
+            poses = zeros(3,length(t));
+            
+            % before start of motion
+            ids1 = t < obj.tIdle;
+            poses(:,ids1) = repmat(obj.startPose,1,sum(ids1));
+            % after end of motion
+            ids2 = t > obj.tArray(end)+obj.tIdle;
+            poses(:,ids2) = repmat(obj.finalPose,1,sum(ids2));
+            % otherwise
+            ids3 = ~(ids1 | ids2);
+            x = interp1(obj.tArray,obj.poseArray',t(ids3)-obj.tIdle);
+            poses(:,ids3) = x';
+            
+            % scalar version
+%             if t < obj.tIdle
+%                 poses = obj.startPose;
+%             elseif t > obj.tArray(end)+obj.tIdle
+%                 poses = obj.finalPose;
+%             else
+%                 t = t-obj.tIdle;
+%                 poses = interp1(obj.tArray,obj.poseArray',t);
+%                 poses = poses';
+%             end
 		end
         
 		function [V,w] = getControl(obj,t)

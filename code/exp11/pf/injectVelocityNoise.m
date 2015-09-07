@@ -13,5 +13,4 @@ sigmaW = sign(wArray)*etaW.*abs(wArray); % [1,T]
 
 VNoisy = VArray+rand(1,T).*sigmaV.^2;
 wNoisy = wArray+rand(1,T).*sigmaW.^2;
-wNoisy = mod(wNoisy,2*pi);
 end

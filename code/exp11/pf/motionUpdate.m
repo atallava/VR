@@ -1,4 +1,4 @@
-function particlesOut = motionUpdate(particlesIn,VArray,wArray,dtArray)
+function particlesOut = motionUpdate(particlesIn,VArray,wArray,dtArray,etaV,etaW)
 
 if iscolumn(VArray)
 	VArray = VArray';

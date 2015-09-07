@@ -1,10 +1,10 @@
 % how does performance vary with training data
 
 % load data
-in.source = 'neato-laser'; 
+in.source = 'sim-laser-gencal'; 
 in.tag = 'exp11-sensor-modeling-dreg-input';
-in.date = '140906'; 
-in.index = '1';
+in.date = '150821'; 
+in.index = '2';
 fileName = buildDataFileName(in);
 load(fileName);
 
@@ -39,13 +39,14 @@ NTrainSetDReg = ceil(linspace(size(XTest,1)+10,size(XTrain,1),4));
 errDReg = zeros(length(NTrainSetDReg),nRandomDraws);
 bwXDReg = [0.001 0.02];
 bwZDReg = 1e-3;
+NTrainSetDReg = NTrainSetPReg;
 
 clockLocal = tic();
 for i = 1:length(NTrainSetDReg)
     N = NTrainSetDReg(i);
     for j = 1:nRandomDraws
         trainIdsSub = randsample(1:length(ZTrain),N);
-%         [bwXDreg,bwZDReg] = holdoutBwDRegFn(XTrain,ZTrain,XHold,ZHold,sensor,histDistance);
+        [bwXDreg,bwZDReg] = holdoutBwDRegFn(XTrain,ZTrain,XHold,ZHold,sensor,histDistance);
         [hPredArray,xc] = estimateHistogram(XTrain(trainIdsSub,:),ZTrain(trainIdsSub),XTest,sensor,bwXDReg,bwZDReg);
         [errDReg(i,j),~] = evalHPred(hArrayGt,hPredArray,histDistance);
     end
