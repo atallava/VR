@@ -1,4 +1,4 @@
-etaV = 1;
-etaW = 1;
+etaV = 0;
+etaW = 0;
 
 save('pf_motion_noise','etaV','etaW');

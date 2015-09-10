@@ -3,6 +3,7 @@
 %% load map
 fNameMap = 'l_corridor';
 load(fNameMap);
+load([fNameMap '_support']);
 tp = trajPlanner(struct('file','trajectory_table.mat'));
 
 %% use gui to get waypoints
@@ -46,4 +47,4 @@ plot(traj.poseArray(1,:),traj.poseArray(2,:));
 
 %% save stuff
 fname = 'pf_reference_traj';
-save(fname,'map','traj');
+save(fname,'map','support','traj');

@@ -65,7 +65,10 @@ for i = 2:numLaserReadings
 	% observation reading
 	readings(count).type = 'observation';
 	% set dynamic map in sensor model
-	observationData.ranges = sensorModel.simulate(pose);
+	ranges = sensorModel.simulate(pose);
+    ranges = floor(observationData.ranges);
+    ranges(ranges < 0) = 0;
+    observationData.ranges = ranges;
 	readings(count).data = observationData;
 	count = count+1;
     prevTime = currentTime;
@@ -74,4 +77,4 @@ fprintf('Computation took %.2fs.\n',toc(clockLocal));
 
 %% save to file
 fname = 'pf_readings';
-save(fname,'map','traj','poseHistory','tHistory','readings');
+save(fname,'map','support','sensor','traj','poseHistory','tHistory','readings');

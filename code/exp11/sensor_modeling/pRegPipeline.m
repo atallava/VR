@@ -1,8 +1,8 @@
 % pReg pipeline for ascension modeling
-in.source = 'ascension-tracker'; 
+in.source = 'sim-laser-gencal'; 
 in.tag = 'exp11-sensor-modeling-dreg-input';
-in.date = '150831'; 
-in.index = '';
+in.date = '150821'; 
+in.index = '2';
 fileName = buildDataFileName(in);
 load(fileName);
 

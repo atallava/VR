@@ -2,7 +2,7 @@
 in.source = 'sim-laser-gencal'; 
 in.tag = 'exp11-sensor-modeling-dreg-input';
 in.date = '150821'; 
-in.index = '1';
+in.index = '2';
 fileName = buildDataFileName(in);
 load(fileName);
 

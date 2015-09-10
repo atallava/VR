@@ -7,7 +7,7 @@ if iscolumn(wArray)
 	wArray = wArray';
 end
 
-P = length(paticlesIn);
+P = length(particlesIn);
 T = length(dtArray);
 
 particlesOut = struct('pose',{});
@@ -22,10 +22,9 @@ VNoisy = bsxfun(@plus,VNoisy,VArray);
 wNoisy = rand(P,T);
 wNoisy = bsxfun(@times,wNoisy,sigmaW.^2);
 wNoisy = bsxfun(@plus,wNoisy,wArray);
-wNoisy = mod(wNoisy,2*pi);
 
 for i = 1:P
 	particlesOut(i).pose = integrateVelocityArray(particlesIn(i).pose,VNoisy(i,:),...
-		wNoisy(i,:),dt);
+		wNoisy(i,:),dtArray);
 end
 end
