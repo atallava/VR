@@ -115,6 +115,14 @@ datasets from this one.
 * data\_sim-laser-gencal\_exp11-sensor-modeling\_150821\_1.mat  
 Spawned from data\_sim-laser-gencal\_exp11-sensor-modeling_150821.mat. Ntrain =
 180, Nhold = Ntest = 30, M = 100.
+* data\_sim-laser-gencal\_exp11-sensor-modeling-dreg-input\_150821\_1.mat  
+Just the output of running convertDataSensorModeling on
+data\_sim-laser-gencal\_exp11-sensor-modeling\_150821\_1.mat.
+* data\_sim-laser-gencal\_exp11-sensor-modeling-dreg-input\_150821\_2.mat  
+Spawned from
+data\_sim-laser-gencal\_exp11-sensor-modeling-dreg-input\_150821\_1.mat using
+subsampleDRegInput. subsampleData subsamples at the level of poses, the former
+does so at the level of X.
 
 * data\_sim-laser-gencal\_exp11-mapping\_150821_1.mat  
 big dataset with N = 300, M = 100 on cluttered\_box\_map. spawn smaller

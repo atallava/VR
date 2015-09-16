@@ -9,7 +9,8 @@ load(fname);
 
 %% estimate at one pose only
 % CHECK PARAMETERS BEFORE ESTIMATING!
-pId = 11;%randsample(1:length(XHold),1);
+% pId = randsample(1:length(XHold),1);
+pId = 11;%1:length(XHold);
 bwX = 0.1;
 bwZ = 0.05;
 
@@ -19,7 +20,7 @@ hGt = ranges2Histogram(ZHold(pId),xc);
 fprintf('Computation took %.2fs.\n',toc(clockLocal));
 
 %% error
-histDistance = @(h1,h2) histDistanceMomentMatch(h1,h2,xc);
+histDistance = @histDistanceMatch;
 err = histDistance(hGt,hDReg);
 
 %% visualize histogram

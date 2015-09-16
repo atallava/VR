@@ -12,7 +12,7 @@ load(fileName);
 xc = getHistogramBins(sensor);
 hArrayGt = ranges2Histogram(ZTest,xc);
 histDistance = @histDistanceMatch;
-nRandomDraws = 5; % can't afford more
+nRandomDraws = 1; % can't afford more
 
 %% run parametric model
 NTrainSetPReg = ceil(linspace(size(XTest,1)+10,size(XTrain,1),10));

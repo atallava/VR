@@ -1,4 +1,4 @@
-% dReg pipeline for loss field
+% dReg pipeline for sensor modeling
 in.source = 'sim-laser-gencal'; 
 in.tag = 'exp11-sensor-modeling-dreg-input';
 in.date = '150821'; 

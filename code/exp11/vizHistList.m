@@ -6,8 +6,8 @@ function hf = vizHistList(hList,xc,titles)
 
 % force axis limits
 forceAxLim = 1;
-xl = [0 4.5];
-yl = [0 0.2];
+xl = [0 4];
+yl = [0 0.08];
 
 n = length(hList);
 

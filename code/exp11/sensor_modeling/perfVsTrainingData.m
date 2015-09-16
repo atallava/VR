@@ -1,12 +1,18 @@
 % how does performance vary with training data
 
 % load data
-in.source = 'sim-laser-gencal'; 
+in.source = 'neato-laser'; 
 in.tag = 'exp11-sensor-modeling-dreg-input';
-in.date = '150821'; 
-in.index = '2';
+in.date = '140906'; 
+in.index = '1';
 fileName = buildDataFileName(in);
 load(fileName);
+
+%%
+ntest = 1e3;
+idstest = randsample(1:size(XTest,1),ntest);
+XTest = XTest(idstest,:);
+ZTest = ZTest(idstest);
 
 %% specify sets of training data to use
 xc = getHistogramBins(sensor);
@@ -15,7 +21,7 @@ histDistance = @histDistanceMatch;
 nRandomDraws = 5; % can't afford more
 
 %% run parametric model
-NTrainSetPReg = ceil(linspace(size(XTest,1)+10,min(size(XTrain,1),1e4),4));
+NTrainSetPReg = ceil(linspace(size(XTest,1)+10,min(size(XTrain,1),5e3),4));
 errPReg = zeros(length(NTrainSetPReg),nRandomDraws);
 bwXMu = [0.5053 0.3252];
 bwXSigma = [0.2639 0.3514];
@@ -46,7 +52,7 @@ for i = 1:length(NTrainSetDReg)
     N = NTrainSetDReg(i);
     for j = 1:nRandomDraws
         trainIdsSub = randsample(1:length(ZTrain),N);
-        [bwXDreg,bwZDReg] = holdoutBwDRegFn(XTrain,ZTrain,XHold,ZHold,sensor,histDistance);
+%         [bwXDreg,bwZDReg] = holdoutBwDRegFn(XTrain,ZTrain,XHold,ZHold,sensor,histDistance);
         [hPredArray,xc] = estimateHistogram(XTrain(trainIdsSub,:),ZTrain(trainIdsSub),XTest,sensor,bwXDReg,bwZDReg);
         [errDReg(i,j),~] = evalHPred(hArrayGt,hPredArray,histDistance);
     end

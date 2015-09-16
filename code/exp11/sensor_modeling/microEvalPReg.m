@@ -1,11 +1,10 @@
 % when i don't have the time to write a structured evaluation
-in.pre = 'data';
 in.source = 'neato-laser'; 
 in.tag = 'exp11-sensor-modeling-dreg-input';
 in.date = '140906'; 
-in.index = '';
-fname = buildDataFileName(in);
-load(fname);
+in.index = '1';
+fileName = buildDataFileName(in);
+load(fileName);
 
 %% estimate at one pose only
 % CHECK PARAMETERS BEFORE ESTIMATING!
@@ -15,7 +14,8 @@ bwXSigma = [0.2639 0.3514];
 bwXList = {bwXMu bwXSigma};
 bwZ = 1e-3;
 
-n = 10000;
+% preg cannot handle more data
+n = 1000;
 ids = randsample(1:length(ZTrain),n);
 XTrain = XTrain(ids,:);
 ZTrain = ZTrain(ids);
@@ -48,7 +48,7 @@ movegui(hfPReg,'east');
 
 %% visualize histogram
 close all;
-hId = 56;%randsample(1:size(hGt,1),1);
+hId = randsample(1:size(hGt,1),1);
 h1 = hGt(hId,:);
 h2 = hPReg(hId,:);
 hf = vizHists(h1,h2,xc);

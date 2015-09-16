@@ -22,6 +22,8 @@ function [h,hCenters] = estimateHistogramGaussian(XTrain,ZTrain,X,sensor,bwXList
     sigmasTrain = zeros(1,N);
     for i = 1:N
         M = length(ZTrain{i});
+        z = ZTrain{i}; z(z < 0) = 0;
+        ZTrain{i} = z;
         if M == 0
             musTrain(i) = nan; sigmasTrain(i) = nan;
         elseif M == 1
