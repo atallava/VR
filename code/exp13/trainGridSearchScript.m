@@ -21,7 +21,8 @@ for i = 1:numA
 end
 
 %% Pick simulator.
-% Determine best simulator. Perhaps write to file
 [~,bestId] = min(max(metricValues,[],1));
-rmpath(['./algo_' algoName]);
 save(['algo_' algoName '/train_metric_values.mat'],'statReal','statSim','metricValues');
+
+%% Clear path
+rmpath(['./algo_' algoName]);

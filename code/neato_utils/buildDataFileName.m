@@ -12,8 +12,12 @@ function fileName = buildDataFileName(inputStruct)
 % fileName  - Output.
 
 % default, no prefix
-if isfield(inputStruct,'pre') && strcmp(inputStruct.pre(end),'/')
-    inputStruct.pre(end) = [];
+if isfield(inputStruct,'pre')
+	if isempty(inputStruct.pre)
+		
+	elseif strcmp(inputStruct.pre(end),'/')
+		inputStruct.pre(end) = [];
+	end
 end
 if ~isfield(inputStruct,'pre')
     inputStruct.pre = '';

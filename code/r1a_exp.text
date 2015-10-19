@@ -70,6 +70,8 @@
 
 ### exp12 ###
 
+* whoami?
+
 ### exp13 ###
 
 * running into some path issues here which you need to take care
@@ -79,6 +81,8 @@
   2. if you make a change in one file you need to make a change to all
   of them, which is undesirable.
 
+* algoStat(algoTemplate,algoParams,dataset)
+
 * sensorClass object. has bearings, max range, rangeres
 
 * cleanup neato_utils? or it's ok as a bunch of miscellaneous
@@ -86,16 +90,23 @@
 
 ### gt_factory ###
 
-* replace tLocalRelative with tOffset.
-
 * might want to downsample mocap poses.  
 
 * still need a better demarcation between gt_factory and who really
-has the scripts to run on the robot and generate the data.
+  has the scripts to run on the robot and generate the data.
 
 * now think about how you will get ranges for a map during mocap phase.
 
 * gt_factory seems married to trajectory generation.
+
+* now, the mocap pose can jump around. here's the bad thing that can
+  happen. sim1 is excellent, sim2 is reasonable. both have mostly
+  bounded errors. the gt pose jumps can act as outliers which you will
+  try to fit to.
+
+* therefore, a smoothPoseLog is being written. a bit odd to do it,
+  heuristic. using bounded variation in coordinates. this heuristic
+  follows some throwing, it is an unrobust process.
 
 ### mocap ###
 

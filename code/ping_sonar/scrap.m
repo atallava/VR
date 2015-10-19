@@ -1,9 +1,15 @@
-n = 5e2;
+n = 3e2;
 readings = cell(1,n);
 
 %%
 t1 = tic();
+% flush out old data
 fread(pingObj,pingObj.BytesAvailable);
+for i = 1:100
+	fscanf(pingObj);
+	pause(0.01);
+end
+
 for i = 1:n
 	readings{i} = fscanf(pingObj);
 	pause(0.01);
