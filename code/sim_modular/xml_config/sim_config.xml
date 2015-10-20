@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!-- Simulator configuration -->
+
+<configuration
+    robot="Neato"
+    >
+  <input_module 
+      add_delays="1"
+      t_delay="0.125">
+  </input_module>
+</configuration>

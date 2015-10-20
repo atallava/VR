@@ -1,23 +1,5 @@
-### exp1 ###
-* early trials, deleted.
-
-### exp2 ###
-* early trials, deleted.
-
-### exp3 ###
-* early trials, deleted.
-
 ### exp4 ###
 * icra 2015 workhorse.
-
-### exp5 ###
-* early state estimation with laser and encoder. deleted.
-
-### exp6 ###
-* hacked attempt at distribution regression, deleted.
-
-### exp7 ###
-* attempt at model collapsing, deleted.
 
 ### exp8 ###
 * filtering, for icra 2015. 
@@ -68,10 +50,6 @@
 * had to create a new script for converting data for ascension. this is because
   getting features was specific to laser geometric features.
 
-### exp12 ###
-
-* whoami?
-
 ### exp13 ###
 
 * running into some path issues here which you need to take care
@@ -107,6 +85,10 @@
 * therefore, a smoothPoseLog is being written. a bit odd to do it,
   heuristic. using bounded variation in coordinates. this heuristic
   follows some throwing, it is an unrobust process.
+
+### sim_factory ###
+
+* is it time to transfer offlineNeato to VR? will make things cleaner
 
 ### mocap ###
 
@@ -178,3 +160,33 @@ using 3x3 matrices.
 
 * it is very annoying that map.plot does so in its own handle. fix
   that.
+
+* at one point i took some files out of neato_utils and put them in
+  MATLAB/. The reasoning was that some files had more generic use than
+  neato_utils. i rescind. these files are hard to account for in VC
+  when tied with neato_matlab.
+
+- - - 
+
+## deleted folders ##
+
+mostly failed experiments. not all deleted folders may be documented
+
+### exp1 ###
+* early trials, deleted.
+
+### exp2 ###
+* early trials, deleted.
+
+### exp3 ###
+* early trials, deleted.
+
+### exp5 ###
+* early state estimation with laser and encoder. deleted.
+
+### exp6 ###
+* hacked attempt at distribution regression, deleted.
+
+### exp7 ###
+* attempt at model collapsing, deleted.
+
