@@ -5,16 +5,12 @@
 
 # folders
 writings/
-papers/
-rcr_2014/
-calibration/
-exp1/
-exp2/
-exp3/
-metrics/
+videos/
 images/
 figs/
 *build/
+**/ascension_tracker/data/
+**/pr2/bags2/
 
 # initialization scripts
 initLocal.m
@@ -37,3 +33,4 @@ initLocal.m
 
 # casual files
 scrap.*
+
