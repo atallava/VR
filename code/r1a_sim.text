@@ -1,0 +1,185 @@
+### simRobot2 ###
+
+* stopping after some-time behaviour should be in the simulator?
+
+* Say there are noisy encoders. Then those encoders will want
+information about other modules in the robot state. Where will it get
+that information from, if it doesn't have access to some simrobot
+object where all the information is stored? and if that is the design
+decision, why keep inputVlHistory in the encoders? ideal solution:
+have all information in the sim robot class, but the component classes
+can tweak those variables. that sounds awful!
+
+* Different versions of the modules will want access to different
+information.
+
+* What is private, what is public is one big question mark currently.
+
+* is a fireUp needed for all the modules? laser isn't currently fired
+  up
+
+* shift maxFifo to somewhere so that all modules can access it?
+
+* order of operations when writing a module:
+write a module,
+write interface in simRobot,
+write functions in neato,
+include options in simSpecifyOptions,
+write parser in componentsConstructor,
+write unit test for isolated module,
+test unit
+
+* when you delay the inputs, does anybody know where the robot is?
+  yes, sim_robot.state.
+
+* updateEncoderValues has become messy because encoder wants time
+  somewhere.
+
+* simRobot didn't have any laser. simRobot2 does.
+
+* repeating work again. sim robot has map, its lasers need map as
+  well.
+
+* the robot state and encoders etc are always being updated, but the
+laser is updated only on demand. this is because it is slow. no, this
+is still updated and broadcast at some rate. map being passed around
+many times. unfortunately neato does the plotting. is a viz module
+going to be a fix?
+
+* potentially, confusion between laserClass and laserModule
+ 
+* there's a clock in neato and a clock in simRobot. confusion? i don't
+  want to deal with timing issues.
+
+* should allow the filename of calibratedsim to be passed as an
+  argument.
+
+* should create a neatoPath file somewhere so that specifysimoptions
+saves its options there.
+
+* unable currently to specify both noise and delays in encoders or
+  inputs.
+
+* will eventually have to put laserSimulator in the utils of neato_sim
+
+* before releasing: make sure initLocal does not contain references to
+files specific to your computer.
+
+* currently separate classes for delay, noisy, delay + noisy
+
+* what was the trouble with trajectoryFollower?
+
+* the source cannot identify the sim type. sure, the data file itself
+will have the configuration specified, but have to be consistent with
+this. ahh, will want to collate dataset. each algo will want data on
+its own. hide this in a struct. or create a wrapper around basic
+algos. the consistency between data type and algo passed to is hidden
+from the stat calculator. the stat is a little strange. for example in
+the detection case it is the error of an algorithm.
+
+* updatestatestep is happening according to simRobot's internal clock.
+
+* somebody has to have a stat struct that counts how much time was spent
+in which part of communication.
+
+* neato2 can send commands to simRobot2 using its own clock, no worries
+there. so that is really taken care of. the other thing to do is be
+able to freeze the update step so that the time taken in computation
+can be logged. this will require a shift from a timer-based to an
+event-based update. damn: event-based will go into a while loop and
+freeze up. will still need a timer to operate underneath.
+
+* never use time as a variable name. duration is better. 
+
+* take a look at your playback tool, for the ticker tape stuff. some
+differences in playback tool and offlineNeato. playback tool has to
+allow arbitrary pausing and resuming of data stream. also once the
+tape has run out, the play stops. in contrast, offlineNeato runs for
+some duration, and zero velocities have to keep being input to
+sim_robot.
+
+* still running up against timer problems with simRobot2. One of the
+issues is that the history que in delayedInput is of insufficient
+length to contain information to provide velocity at the requested
+time.  
+
+* Another error: there are non-unique timestamps in the tHistory
+que. This has happened for periods of 1e-2. I don't know how to solve
+this problem. Seems like the interaction between the timer and the
+velocity send screws things up.
+
+* how do you write good error messages? whenever throwing an error
+message, use an identifier of fileName:errorType. then the identifier
+can be accessed by a catch. And you don't need to use caps for your
+errors.
+
+* check if real period matches with updatePeriod
+simple straight line path without noije
+longer curvy path
+check encoder, laser message periods and content
+timer stats
+
+* remember that obj.lastTime in simRobot is initialized at 0. So if you
+suddenly request a state update at a later time then state will
+jump. might also want to be set the start pose and velocities of the
+robot in offlineNeato. Note that the update period will affect the
+accuracy of calculated state.
+
+* look at all variables that have been generated! some might look like
+junk.
+
+* another interesting interp1 bug. often the velocities don't start at
+time 0. what do you do then? can either do preprocessing, where you
+snip away those parts of time. but offlineNeato should be robust to
+that. so, will send 0 velocities at earlier times.
+
+* hello laser simulation from an occupancy map. farthestPointOnRay can
+  be made faster, but i don't see the point.
+
+* when taking down computation time, be mindful of returns scattered in
+a function call.
+
+* the computation time calculation works weirdly when running it real
+time. further strange artefacts of matlab timer.
+
+### offline neato ###
+
+* the basic idea is that simulation update must be paused while the
+state computations are being chugged. this makes it
+non-real-time. this simulator is handed a tape of commands in advance
+and it plays them through. this simulator is a turing computer.
+
+* is there any way to bring simRobot inside offlineNeato? then all stats
+computations can be performed cleanly, in one place. every module is
+going to record its own computation time. then you can aggregate all.
+
+* how do you decide duration? 
+
+* beautiful bug in offlineNeato. velocity i has been pushed to robot. a
+state update step is attempted before i+1 is pushed. the delayed input
+module cannot extrapolate velocities, so it returns a nan. at each sim
+update then, velocity has to be sent.
+
+* a function version of offlineNeatoScript. get poses out of it as
+well. will also need a configuration file for offlineNeato! will also
+need a function version of specifySimOptions.
+
+* should offlineNeato be a function or a class? class would be very
+nice.
+
+* somehow the gt has to also be associated with a map which will be
+passed to offlineNeato, not sure how that will be worked in.
+
+### unit tests ###
+
+* most unit tests can be straight line tests. because of
+stochasticity there should also be thresholds on these. in other
+words, the unit test is a hypothesis test!
+
+* there is a script for each unit test. there is also data associated
+with normal behaviour of each unit test. there is one script which
+knows which version of neatosim to use, and which unit tests to run.
+
+* when running noisy/ delays, have to make sure that run with zero noise
+for parameters! else tests will fail.
+

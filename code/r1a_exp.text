@@ -67,6 +67,8 @@
 * cleanup neato_utils? or it's ok as a bunch of miscellaneous
   functions. tradeoff to organization.
 
+* for traj, gt might start only after 0s, take that into account
+
 ### exp14 ###
 * rss 16 workhorse. algodev work.
 
@@ -95,7 +97,12 @@
 
 ### sim_factory ###
 
-* is it time to transfer offlineNeato to VR? will make things cleaner
+* this is the sim equivalent of gt_factory       
+
+* shocker: how do you know what sim data is based only on file name?
+
+* do you run initLocal for another directory, or just add all paths
+  indiscriminately?
 
 ### mocap ###
 
@@ -172,8 +179,6 @@ using 3x3 matrices.
   MATLAB/. The reasoning was that some files had more generic use than
   neato_utils. i rescind. these files are hard to account for in VC
   when tied with neato_matlab.
-
-- - - 
 
 ## deleted folders ##
 

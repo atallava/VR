@@ -2,8 +2,8 @@ classdef simRobot2 < handle
     % Abhijeet's simRobot, built on Al's
 	    
     properties(Constant)
-        W  = robotKinematicModel.W;     % wheelTread in m
-        W2 = robotKinematicModel.W2;    % 1/2 wheelTread in m
+        W  = robotModel.W;     % wheelTread in m
+        W2 = robotModel.W*0.5;    % 1/2 wheelTread in m
         maxLogLen = 10000;              % max length of logging buffers
 	end
     
@@ -76,7 +76,7 @@ classdef simRobot2 < handle
 			obj.encodersModule.updateEncoderValues(obj.vl,obj.vr,dt,time);
 			obj.encoders = obj.encodersModule.getEncoderValues(time);
 
-			[obj.V,obj.w] = robotKinematicModel.vlvrToVw(obj.vl,obj.vr);
+			[obj.V,obj.w] = robotModel.vlvr2Vw(obj.vl,obj.vr);
 
 			% update pose
 			obj.pose(3) = obj.pose(3) + obj.w*dt;

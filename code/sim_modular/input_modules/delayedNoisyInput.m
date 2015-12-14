@@ -82,10 +82,10 @@ classdef delayedNoisyInput < abstractInputModule
 		function sendVelocity(obj,vl,vr,time)
 			compClock = tic();
 			% Add errors!
-			[V,w] = robotModel.vlvrToVw(vl,vr);
+			[V,w] = robotModel.vlvr2Vw(vl,vr);
 			V = V+obj.delV*V;
 			if (w > 0); w = w+obj.delW; end
-			[vl,vr] = robotModel.VwTovlvr(V,w);
+			[vl,vr] = robotModel.Vw2vlvr(V,w);
 			obj.tHistory.add(time);
 			obj.vlHistory.add(vl);
 			obj.vrHistory.add(vr);

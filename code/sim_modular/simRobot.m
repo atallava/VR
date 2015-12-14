@@ -26,7 +26,7 @@ classdef simRobot < handle
     
     properties(Constant)
         W  = robotModel.W;     % wheelTread in m
-        W2 = robotModel.W2*0.5;    % 1/2 wheelTread in m
+        W2 = robotModel.W*0.5;    % 1/2 wheelTread in m
         maxFifo = 100;                  % max length of command FIFOs
         maxLogLen = 10000;              % max length of logging buffers
 		% errors in commanded velocity
