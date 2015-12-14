@@ -1,15 +1,28 @@
-function genSimData(tag,dateStr,indices)
+function genSimData(gtPre,tag,dateStr,indices)
 
+inpBuildName.tag = tag;
+inpBuildName.date = dateStr;
+	
 for i = 1:length(indices)
-	index = indices(i);
-	fname = buildDataFileName('gt',tag,dateStr,index);
-	fname = ['data/' fname];
-	inputStruct = load(fname);
-	inputStruct.duration = inputStruct.tInputV(end)+1;
-	inputStruct.plotting = 1;
-	outputStruct = offlineNeato(inputStruct);
-	fname = buildDataFileName('sim',tag,dateStr,index);
-	fname = ['data/' fname];
-	save(fname,'-struct','outputStruct');
+	inpBuildName.pre = gtPre;
+	inpBuildName.source = 'gt';
+	
+	fprintf('Index: %d\n',i);
+	inpBuildName.index = indices(i);
+	fname = buildDataFileName(inpBuildName);
+	
+	inpNeato = load(fname);
+	inpNeato.duration = max([inpNeato.tPose(end),inpNeato.tInputV(end), ...
+		inpNeato.tEnc(end),inpNeato.tLzr(end)]);
+	if ~isfield(inpNeato,'map')
+		inpNeato.map = [];
+	end
+	inpNeato.plotting = 0;
+	outNeato = offlineNeato(inpNeato);
+	
+	inpBuildName.pre = 'data/';
+	inpBuildName.source = 'sim2';
+	fname = buildDataFileName(inpBuildName);
+	save(fname,'-struct','outNeato');
 end
 end

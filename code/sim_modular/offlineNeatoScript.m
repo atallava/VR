@@ -1,20 +1,23 @@
 % Note. Sometimes delay-based execution performs poorly without a pause().
 % But the pause should not be longer than the updatePeriod.
 
-% Construct sim_robot.
+% Construct robot.
 load sim_options
 components = constructComponentsFromOptions(options);
-sim_robot = constructSimRobotFromComponents(components);
-sim_robot.fireUpForRealTime();
+robot = constructSimRobotFromComponents(components);
+robot.fireUpForRealTime();
+
 % Map.
-% load('../examples/nsh1_corridor.mat','map');
-map = [];
-sim_robot.setMap(map);
+robot.setMap(map);
+
+% Initial pose.
+robot.pose = pose0;
 
 % Neato robot, for plotting.
-plotting = 0;
+plotting = 1;
 if plotting
 	plotRob = neato('sim');
+	plotRob.sim_robot.pose = robot.pose;
 end
 
 % Updator options.
@@ -65,33 +68,33 @@ while true
 		end
 		
 		clockComp = tic(); % Time spent in computation.
-		% Send input velocity to sim_robot.
+		% Send input velocity to robot.
 		if localTime > tInputV(1)
 			vl = interp1(tInputV,inputVlLog,localTime);
 			vr = interp1(tInputV,inputVrLog,localTime);
 		else
 			vl = 0; vr = 0;
 		end
-		sim_robot.inputModule.sendVelocity(vl,vr,localTime);
+		robot.inputModule.sendVelocity(vl,vr,localTime);
 		vlSent = [vlSent vl];
 				
-		% Update sim_robot state.
-		sim_robot.updateStateStep(localTime);
+		% Update robot state.
+		robot.updateStateStep(localTime);
 		% Some checks.
-		if any(isnan(sim_robot.pose))
-			me = MException('offlineNeato:poseError','sim robot pose is nan');
+		if any(isnan(robot.pose))
+			me = MException('offlineNeato:computationError','sim robot pose is nan');
 			throw(me);
 		end
 		
-		% Update plotted robot.
+		% Update plot robot.
 		if plotting
-			plotRob.sim_robot.pose = sim_robot.pose;
+			plotRob.sim_robot.pose = robot.pose;
 		end
 		
 		% Update encoder logs.
 		if localTime > nextEncMsgTime
-			encLog(countEncLog).left = sim_robot.encoders.data.left;
-			encLog(countEncLog).right = sim_robot.encoders.data.right;
+			encLog(countEncLog).left = robot.encoders.data.left;
+			encLog(countEncLog).right = robot.encoders.data.right;
 			tEnc(countEncLog) = localTime;
 			countEncLog = countEncLog+1;
 			nextEncMsgTime = nextEncMsgTime+1/encMsgFreq;
@@ -99,7 +102,7 @@ while true
 		
 		% Update laser logs.
 		if localTime > nextLzrMsgTime
-			lzrLog(countLzrLog).ranges = sim_robot.getLaserReadings();
+			lzrLog(countLzrLog).ranges = robot.getLaserReadings();
 			tLzr(countLzrLog) = localTime;
 			countLzrLog = countLzrLog+1;
 			nextLzrMsgTime = nextLzrMsgTime+1/lzrMsgFreq;
@@ -107,7 +110,7 @@ while true
 		
 		% Update pose logs.
 		if localTime > nextPoseMsgTime
-			poseLog(:,countPoseLog) = sim_robot.pose;
+			poseLog(:,countPoseLog) = robot.pose;
 			tPose(countPoseLog) = localTime;
 			countPoseLog = countPoseLog+1;
 			nextPoseMsgTime = nextPoseMsgTime+1/poseMsgFreq;

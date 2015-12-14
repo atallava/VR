@@ -1,3 +1,3 @@
-function simRobot = constructSimRobotFromComponents(components)
-simRobot = simRobot2(components);
+function robot = constructSimRobotFromComponents(components)
+robot = simRobot2(components);
 end
