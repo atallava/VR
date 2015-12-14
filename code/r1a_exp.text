@@ -51,6 +51,7 @@
   getting features was specific to laser geometric features.
 
 ### exp13 ###
+* testing modularized neato sim on algodev metric
 
 * running into some path issues here which you need to take care
   of. do you reference data files from other experiments or not? if
@@ -66,7 +67,13 @@
 * cleanup neato_utils? or it's ok as a bunch of miscellaneous
   functions. tradeoff to organization.
 
+### exp14 ###
+* rss 16 workhorse. algodev work.
+
+* dilemmas here about where to put data folders. track workflow carefully.
+
 ### gt_factory ###
+* collecting ground truth data from mocap
 
 * might want to downsample mocap poses.  
 

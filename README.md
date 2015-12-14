@@ -1,2 +1,2 @@
-# VR
-Repository for R1 (R1a and R1b).
+# R1
+Repository for R1.
