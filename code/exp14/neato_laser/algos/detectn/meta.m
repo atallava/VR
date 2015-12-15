@@ -1,1 +1,0 @@
-% params: nMin, errorThresh

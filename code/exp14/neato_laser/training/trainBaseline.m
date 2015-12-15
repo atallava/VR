@@ -1,6 +1,11 @@
-% train using raw data
+% train using baseline approach, on raw data
 
 % pick model parameter
-% generate simulated data
+
+% simulated data
+% flick switch
+
 % get risk for this parameter
+% norm loss
+
 % iterate till local minima
