@@ -72,7 +72,18 @@
 ### exp14 ###
 * rss 16 workhorse. algodev work.
 
-* dilemmas here about where to put data folders. track workflow carefully.
+* don't do a blanket addpath(genpath(pathToM)), since it has extensive
+  code (even after deleting unused folders) that can conflict.
+
+* why are some scripts named with a suffix 'Script'? because i think a function
+  version might be created in the future.
+
+* calcLoss, calcObjInsts independent of algo. 
+
+* train, holdout and test. let holdout be for in-algo generalization, test is
+  full-blown out-of-algo generalization.
+
+* creating a lot of variables along the way, write to file so they may be debugged.
 
 ### gt_factory ###
 * collecting ground truth data from mocap
