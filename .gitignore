@@ -12,7 +12,7 @@ figs/
 **/ascension_tracker/data/
 **/pr2/bags2/
 
-# initialization scripts
+# initialization script
 initLocal.m
 
 # saved data

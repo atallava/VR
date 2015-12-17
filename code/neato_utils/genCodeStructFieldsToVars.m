@@ -1,4 +1,12 @@
 function snippet = genCodeStructFieldsToVars(inputStruct)
+%GENCODESTRUCTFIELDSTOVARS
+%
+% snippet = GENCODESTRUCTFIELDSTOVARS(inputStruct)
+%
+% inputStruct - Structure with relevant fields.
+%
+% snippet     - String.
+
     f = fields(inputStruct);
     snippet = [];
     for i = 1:length(f)

@@ -1,6 +1,14 @@
-function snippet = genCodeVarsToStructFields(in)
-if iscell(in)
-	f = in;
+function snippet = genCodeVarsToStructFields(inputStruct)
+%GENCODEVARSTOSTRUCTFIELDS 
+% 
+% snippet = GENCODEVARSTOSTRUCTFIELDS(inputStruct)
+% 
+% inputStruct - Structure with relevant fields.
+% 
+% snippet     - String.
+
+if iscell(inputStruct)
+	f = inputStruct;
 else
 	f = fields(inputStruct);
 end
