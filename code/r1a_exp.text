@@ -78,12 +78,18 @@
 * why are some scripts named with a suffix 'Script'? because i think a function
   version might be created in the future.
 
-* calcLoss, calcObjInsts independent of algo. 
-
 * train, holdout and test. let holdout be for in-algo generalization, test is
   full-blown out-of-algo generalization.
 
 * creating a lot of variables along the way, write to file so they may be debugged.
+
+* should each algo_i have algoObj, or can it be called something unique?
+
+* may want to trim/ shear getPR. quite bulky now.
+
+* may want to standardize what kind of data structures X,Y are. so
+  that can use functions like partition data across cases. both are
+  cell arrays?
 
 ### gt_factory ###
 * collecting ground truth data from mocap

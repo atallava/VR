@@ -1,10 +1,10 @@
-function [loss,algoParams] = calcLossAlgodev(realData,simData,algoObj,algoParamsSamples)
+function [loss,algoParams] = calcLossAlgodev(dataReal,dataSim,algoObj,algoParamsSamples)
 %CALCLOSSALGODEV
 %
-% [loss,algoParams] = CALCLOSSALGODEV(realData,simData,algoObj,algoParamsSamples)
+% [loss,algoParams] = CALCLOSSALGODEV(dataReal,dataSim,algoObj,algoParamsSamples)
 %
-% realData          -
-% simData           -
+% dataReal          -
+% dataSim           -
 % algoObj           - Function handle.
 % algoParamsSamples - [nSamples,dimSamples] array.
 %
@@ -20,8 +20,8 @@ clockLocal = tic();
 % loop over samples
 for i = 1:nSamples
     algoParams = algoParamsSamples(i,:);
-    objReal = algoObj(realData,algoParams);
-    objSim = algoObj(simData,algoParams);
+    objReal = algoObj(dataReal,algoParams);
+    objSim = algoObj(dataSim,algoParams);
     algoObjDiffs(i) = abs(objReal-objSim);
 end
 tComp = toc(clockLocal);

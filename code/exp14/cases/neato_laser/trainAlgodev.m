@@ -1,19 +1,18 @@
 % train a simulator via algodev risk
 
 %% setup algos variables
-
-algosVars = struct('realData',{},'algoObj',{},'paramsSamples',{});
+algosVars = struct('dataReal',{},'algoObj',{},'paramsSamples',{});
 count = 1;
 
 % detection
-algosVars(count).realData = load('algos/detection/real_data.mat');
-algosVars(count).algoObj = 
+algosVars(count).dataReal = load('algos/detection/data_real_train.mat');
+algosVars(count).algoObj = @detectionObjWrapper;
 algosVars(count).paramsSamples = load('algos/detection/algo_params_samples.mat');
 count = count+1;
 
 % registration
-algosVars(count).realData = load('algos/registration/real_data.mat');
-algosVars(count).algoObj = 
+algosVars(count).dataReal = load('algos/registration/data_real_train.mat');
+algosVars(count).algoObj = @registrationObjWrapper;
 algosVars(count).paramsSamples = load('algos/detection/algo_params_samples.mat');
 
 %% setup model

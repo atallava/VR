@@ -7,7 +7,7 @@ if p1(1) == p2(1)
 elseif p1(2) == p2(2)
     params = [0;1;-p1(2)];
 else
-    [m,c] = ParametrizePts2MC(p1,p2);
+    [m,c] = parametrizePts2MC(p1,p2);
     params = [m;-1;c];
 end
 
