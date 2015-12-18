@@ -91,6 +91,11 @@
   that can use functions like partition data across cases. both are
   cell arrays?
 
+* bad code design coming to bite. i cannot use gencal sim without
+  putting exp4 on path.
+
+* time to organize everything in neato_utils into folders
+
 ### gt_factory ###
 * collecting ground truth data from mocap
 

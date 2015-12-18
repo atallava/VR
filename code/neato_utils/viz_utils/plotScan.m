@@ -1,6 +1,13 @@
 function hfig = plotScan(pose,ptsLocal,hfig)
-% pose is an object of class pose2D
-% ranges is array of length 360
+%PLOTSCAN 
+% 
+% hfig = PLOTSCAN(pose,ptsLocal,hfig)
+% 
+% pose     - pose2D object.
+% ptsLocal - 
+% hfig     - Figure handle.
+% 
+% hfig     - Figure handle.
 
 if nargin < 3
     hfig = figure;
