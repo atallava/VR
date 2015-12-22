@@ -17,7 +17,7 @@ dataCommVel = struct('startPose',{},'finalPose',{},'vlArray',{},'tArray',{});
 encLogs = struct('log',{},'tArray',{});
 
 localizer = lineMapLocalizer(map.objects);
-vizer = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser,'rob',rob,'rstate',rstate)); 
+vizer = vizRangesOnMap(struct('map',map,'laser',robotModel.laser,'rob',rob,'rstate',rstate)); 
 refiner = laserPoseRefiner(struct('localizer',localizer,'laser',robotModel.laser,'skip',5,'numIterations',30));
 
 %% collect data

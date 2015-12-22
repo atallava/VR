@@ -5,7 +5,7 @@ load sample_sensor_data_1
 % start pose
 
 refiner = laserPoseRefiner(struct('localizer',localizer,'laser',laser,'numIterations',40,'skip',4));
-vizRanges = vizRangesOnMap(struct('localizer',localizer,'laser',laser));
+vizRanges = vizRangesOnMap(struct('map',map,'laser',laser));
 
 ranges = laserArray(2).ranges;
 [success,startPose] = refiner.refine(ranges,[0.1;0.05;0]);

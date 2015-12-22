@@ -23,7 +23,7 @@ load roomLineMap;
 load processed_data_sep6
 localizer = lineMapLocalizer(map.objects);
 refiner = laserPoseRefiner(struct('localizer',localizer,'laser',robotModel.laser,'skip',5,'numIterations',100));
-vizer = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser));
+vizer = vizRangesOnMap(struct('map',map,'laser',robotModel.laser));
 obsId = 1;
 newPoses = [];
 for i = 1:size(poses,2)

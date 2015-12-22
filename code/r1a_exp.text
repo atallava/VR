@@ -222,10 +222,10 @@ using 3x3 matrices.
 * it is very annoying that map.plot does so in its own handle. fix
   that.
 
-* at one point i took some files out of neato_utils and put them in
+* at one point i took some files out of neato_\utils and put them in
   MATLAB/. The reasoning was that some files had more generic use than
-  neato_utils. i rescind. these files are hard to account for in VC
-  when tied with neato_matlab.
+  neato\_utils. i rescind. these files are hard to account for in VC
+  when tied with neato\_matlab.
 
 ## deleted folders ##
 

@@ -4,7 +4,7 @@ load motion_vars
 %%
 localizer = lineMapLocalizer(map.objects);
 rstate = robState(rob,'robot',ssp.startPose);
-vizer = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser,'rob',rob,'rstate',rstate));
+vizer = vizRangesOnMap(struct('map',map,'laser',robotModel.laser,'rob',rob,'rstate',rstate));
 count = 1;
 
 %% Position the robot 

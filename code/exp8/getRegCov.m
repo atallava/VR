@@ -6,7 +6,7 @@ load reg_cov_perturbations
 numScans = 50;
 nPoses = size(poses,2);
 localizer = lineMapLocalizer(map.objects);
-vizer = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser));
+vizer = vizRangesOnMap(struct('map',map,'laser',robotModel.laser));
 
 %% Compute covariance
 load reg_cov_real_scans

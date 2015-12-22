@@ -2,7 +2,7 @@ runId = 7;
 load('b100_padded_corridor','map');
 
 localizer = lineMapLocalizer(map.objects);
-vizer = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser));
+vizer = vizRangesOnMap(struct('map',map,'laser',robotModel.laser));
 
 choices = {'real','sim','baseline'};
 

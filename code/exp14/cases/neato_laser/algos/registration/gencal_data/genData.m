@@ -12,7 +12,7 @@ load l_map.mat
 rsim.setMap(map);
 
 %% sample poses
-nPoses = 3;
+nPoses = 15;
 xLims = [0.1 4];
 yLims = [0.1 4];
 thLims = [0 2*pi];
@@ -40,14 +40,16 @@ nStates = nPoses*nPerturbations;
 ranges = zeros(nStates,rsim.laser.nBearings);
 
 %% generate range readings
+clockLocal = tic();
 for i = 1:nStates
     ranges(i,:) = rsim.simulate(sensorPoses(:,i));
 end
+fprintf('genData:Computation time: %.2fs.\n',toc(clockLocal));
 
 X = struct('sensorPose',mat2cell(sensorPoses,3,ones(1,nStates)),...
     'perturbedPose',mat2cell(perturbedPoses,3,ones(1,nStates)),...
     'map',map);
-Y = struct('ranges',ranges);
+Y = struct('ranges',mat2cell(ranges,ones(1,nStates),size(ranges,2));
 
 %% write to file
 fname = 'data_gencal';

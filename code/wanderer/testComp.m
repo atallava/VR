@@ -24,7 +24,7 @@ wandererData(rob,map,poseStart,imagesDirName);
 %% test script
 % initialize objects
 localizer = lineMapLocalizer(map.objects);
-vizer = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser));
+vizer = vizRangesOnMap(struct('map',map,'laser',robotModel.laser));
 refiner = laserPoseRefiner(struct('localizer',localizer,'laser',robotModel.laser,'skip',5,'numIterations',30));
 ctrl = controllerClass(struct());
 ctrlBackup = controllerClass(struct('gainV',0.1));

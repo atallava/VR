@@ -2,7 +2,7 @@ classdef vizRangesOnMap < handle
     %VIZRANGESONMAP Visualize ranges overlaid on a map.
     %
     % Class properties.
-    %  localizer - lineMapLocalizer object.
+    %  map       - lineMap object.
     %  laser     - Caution: in robot mode use appropriate laser.
     %  rob       - Neato object.
     %  rstate    - robState object, attached to rob. 
@@ -13,7 +13,7 @@ classdef vizRangesOnMap < handle
     %  viz            - Does the visualization work.
     
     properties (SetAccess = private)
-        localizer
+        map; map_lines_p1; map_lines_p2;
         laser
         rob
         rstate
@@ -24,12 +24,13 @@ classdef vizRangesOnMap < handle
 
     methods
         function obj = vizRangesOnMap(inputStruct)
-            % inputStruct fields ('localizer','laser','rob','rstate')
+            % inputStruct fields ('map','laser','rob','rstate')
             % default (,laserClass(struct()))
-            if isfield(inputStruct,'localizer')
-                obj.localizer = inputStruct.localizer;
+            if isfield(inputStruct,'map')
+                obj.map = inputStruct.map;
+                obj.getLinesFromMap();
             else
-                error('LOCALIZER NOT INPUT.');
+                error('MAP NOT INPUT.');
             end
             if isfield(inputStruct,'laser')
                 obj.laser = inputStruct.laser;
@@ -50,6 +51,35 @@ classdef vizRangesOnMap < handle
             end
         end
         
+        function getLinesFromMap(obj)
+            lineObjArray = obj.map.objects;
+            if isempty(obj.map)
+                error('vizRangesFromMap:getLinesFromMap:emptyMap', ...
+                    'Function called without specifying map');
+            end
+            obj.map_lines_p1 = []; obj.map_lines_p2 = []; % 2 x n
+            for i = 1:length(lineObjArray)
+                if size(lineObjArray(i).lines,1) == 1
+                    error('LINE ON MAP SPECIFIED WITH SINGLE POINT.');
+                end
+                p1 = lineObjArray(i).lines(1:end-1,:);
+                p2 = lineObjArray(i).lines(2:end,:);
+                obj.map_lines_p1 = [obj.map_lines_p1 p1'];
+                obj.map_lines_p2 = [obj.map_lines_p2 p2'];
+            end
+        end
+        
+        function hf = drawLines(obj)
+            hf = figure;
+            hold on;
+            for i = 1:size(obj.map_lines_p1,2)
+               plot([obj.map_lines_p1(1,i) obj.map_lines_p2(1,i)],...
+                   [obj.map_lines_p1(2,i) obj.map_lines_p2(2,i)],'LineWidth',1); 
+            end
+            axis equal;
+            hold off;
+        end
+        
         function viz(obj,ranges,refPose)
             %VIZ Visualize ranges transformed by pose.
             %
@@ -62,7 +92,7 @@ classdef vizRangesOnMap < handle
             end
             lPose = obj.laser.refPoseToLaserPose(refPose);
             if  isempty(obj.hfig) || ~ishandle(obj.hfig)
-                obj.hfig = obj.localizer.drawLines();
+                obj.hfig = obj.drawLines();
 			end
             hchildren = get(obj.hfig,'children');
 			ha = hchildren(1); % assuming that first child is axes

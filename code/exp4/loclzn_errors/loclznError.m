@@ -3,7 +3,7 @@ load processed_data_sep13
 load('map_sep13','map');
 localizer = lineMapLocalizer(map.objects);
 refiner = laserPoseRefiner(struct('localizer',localizer,'laser',robotModel.laser,'skip',5,'numIterations',200));
-vizer = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser));
+vizer = vizRangesOnMap(struct('map',map,'laser',robotModel.laser));
 
 %% Make sure poses make sense
 

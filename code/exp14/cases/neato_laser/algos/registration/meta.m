@@ -1,6 +1,6 @@
 % data: struct with fields ('X','Y')
 % X: struct array with fields ('sensorPose','map')
-% Y: [nX,laser.nBearings] array
+% Y: struct array with fields ('ranges')
 
 %% mapping algo params
 % params: struct with fields ('maxErr','eps')

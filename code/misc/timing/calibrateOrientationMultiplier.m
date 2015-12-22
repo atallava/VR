@@ -4,7 +4,7 @@ load calibration_orientation_multiplier_data
 localizer = lineMapLocalizer(map.objects);
 inputStruct.localizer = localizer; inputStruct.numIterations = 10;
 refiner = laserPoseRefiner(inputStruct);
-visualizer = vizRangesOnMap(struct('localizer',localizer));
+visualizer = vizRangesOnMap(struct('map',map));
 
 posnNormArray = [0.01 0.05 0.1 0.5];
 posnIterArray = zeros(size(posnNormArray));

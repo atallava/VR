@@ -29,7 +29,7 @@ save('processed_data_peta_240215','obsArray','poses','trainPoseIds','testPoseIds
 load 5720_corner_map
 localizer = lineMapLocalizer(map.objects);
 refiner = laserPoseRefiner(struct('localizer',localizer,'laser',laserClass(struct()),'skip',5,'numIterations',300));
-vizer = vizRangesOnMap(struct('localizer',localizer,'laser',laserClass(struct())));
+vizer = vizRangesOnMap(struct('map',map,'laser',laserClass(struct())));
 
 %%
 obsId = 1;

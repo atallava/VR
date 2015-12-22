@@ -7,7 +7,7 @@ nPoses = size(poses,2);
 localizer = lineMapLocalizer(nsh1_corridor.objects);
 newPoses = zeros(size(poses));
 bearings = deg2rad(-130:0.25:129.75); laser = laserClass(struct('bearings',bearings));
-vizRanges = vizRangesOnMap(struct('localizer',localizer,'laser',laser));
+vizRanges = vizRangesOnMap(struct('map',map,'laser',laser));
 plot_option = 1;
 
 for i = 1:nPoses

@@ -11,8 +11,8 @@ end
 
 % initialize objects
 localizer = lineMapLocalizer(map.objects);
-vizer = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser,'rob',rob,'rstate',rstate)); pause(1); 
-vizerOD = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser));
+vizer = vizRangesOnMap(struct('map',map,'laser',robotModel.laser,'rob',rob,'rstate',rstate)); pause(1); 
+vizerOD = vizRangesOnMap(struct('map',map,'laser',robotModel.laser));
 refiner = laserPoseRefiner(struct('localizer',localizer,'laser',robotModel.laser,'skip',5,'numIterations',30));
 ctrlSt = controllerClass(struct());
 ctrlSw = swingController(struct('kp',0.4,'ki',0.05));

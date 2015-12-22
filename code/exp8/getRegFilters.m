@@ -4,7 +4,7 @@ load motion_vars
 load('motion_filter_object','mfl')
 load('b100_padded_corridor','map');
 localizer = lineMapLocalizer(map.objects);
-vizer = vizRangesOnMap(struct('localizer',localizer,'laser',robotModel.laser));
+vizer = vizRangesOnMap(struct('map',map,'laser',robotModel.laser));
 
 %% Real
 load real_sensor_data
