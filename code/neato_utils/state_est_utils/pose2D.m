@@ -7,8 +7,16 @@ classdef pose2D < handle
     
     methods(Static = true)
         function res = poseNorm(p1,p2)
-           % p1, p2 are [3,num_poses]
-           scale = 0.5/0.44;
+            %POSENORM Weighted euclidean norm in (x,y,\theta).
+            %
+            % res = POSENORM(p1,p2)
+            %
+            % p1  - [3,1] size array.
+            % p2  - [3,1] size array.
+            %
+            % res - Scalar.
+            
+            scale = 0.5/0.44;
            pd = pose2D.poseDiff(p1,p2);
 		   res = sqrt(pd(1,:).^2+pd(2,:).^2+scale.*pd(3,:).^2);
         end

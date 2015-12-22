@@ -1,18 +1,18 @@
-% generate data from the hifi gencal laser sim
+% generate sim data
 
-%% load the sim
-% add all exp4 path here, needed by sim. 
+%% load sim
 % an option is to use the lightweight sim
+someUsefulPaths;
 exp4Path = [pathToR1 '/code/exp4'];
 addpath(genpath(exp4Path));
-load sim_sep6_1.mat
+load([pathToR1 '/code/sim_modular/data/sim_sep6_2.mat']);
 
-%% specify the map
+%% load map
 load l_map.mat
 rsim.setMap(map);
 
 %% sample poses
-nPoses = 25;
+nPoses = 3;
 xLims = [0.1 4];
 yLims = [0.1 4];
 thLims = [0 2*pi];
@@ -33,7 +33,7 @@ perturbations(1,:) = range(dxLims)*perturbations(1,:)+dxLims(1);
 perturbations(2,:) = range(dyLims)*perturbations(2,:)+dyLims(1);
 perturbations(3,:) = range(dthLims)*perturbations(3,:)+dthLims(1);
 
-sensorPoses = repelem(poses,[1 nPerturbations]);
+sensorPoses = repelem(poses,1,nPerturbations);
 perturbedPoses = sensorPoses+perturbations;
 
 nStates = nPoses*nPerturbations;
@@ -45,12 +45,13 @@ for i = 1:nStates
 end
 
 X = struct('sensorPose',mat2cell(sensorPoses,3,ones(1,nStates)),...
-    'perturbedPose',mat2cell(perturbedPoses,3,ones(1,nStates)));
-Y = ranges;
+    'perturbedPose',mat2cell(perturbedPoses,3,ones(1,nStates)),...
+    'map',map);
+Y = struct('ranges',ranges);
 
 %% write to file
 fname = 'data_gencal';
-save(fname,'X',X,'Y',Y);
+save(fname,'X','Y');
 
 %% throw away everything on exp4 path
 rmpath(genpath(exp4Path));

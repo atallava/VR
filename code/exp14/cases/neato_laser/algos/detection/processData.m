@@ -13,13 +13,13 @@ load dataset_rangenorm
 load scans_real
 nStates = length(confList);
 X = struct('sensorPose',{},'map',{});
-Y = zeros(nStates,360);
+Y = struct('ranges',{});
 obsId = 1; % there are a number of range scans, picking one
 for i = 1:nStates
     X(i).sensorPose = sensorPose;
     confList(i).createMap();
     X(i).map = confList(i).map;
-    Y(i,:) = scans{i}(obsId,:);
+    Y(i).ranges = scans{i}(obsId,:);
 end
 
 %% 

@@ -10,8 +10,8 @@ function obj = f1Obj(data,params)
 
 targetLength = 0.61;
 load target_lines_by_conf
-nMin = params(1);
-errorThresh = params(2);
+nMin = params.nMin;
+errorThresh = params.errorThresh;
 lineCandAlgo = @(x1,x2,x3,x4) lineCand(x1,x2,x3,x4,nMin,errorThresh);
 
 nData = length(data.X);

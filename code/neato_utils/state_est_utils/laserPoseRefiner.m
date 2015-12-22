@@ -7,7 +7,7 @@ classdef laserPoseRefiner < handle
         timePerIter = 0.09;
     end
 
-    properties (SetAccess = private)
+    properties %(SetAccess = private)
         localizer
         skip = 5
         numIterations = 40

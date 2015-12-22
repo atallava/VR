@@ -1,7 +1,7 @@
 classdef lineMapLocalizer < handle
     %lineMapLocalizer localize by matching range points to line map
         
-    properties(Constant)        
+    properties %(Constant)        
         minPts = 5;
         % step increment when computing jacobian
         eps = [0.001,0.001,deg2rad(0.5)];
@@ -10,7 +10,7 @@ classdef lineMapLocalizer < handle
     
     end
     
-    properties (SetAccess = private)
+    properties %(SetAccess = private)
         maxErr = 0.05;
         lines_p1 = [];
         lines_p2 = [];

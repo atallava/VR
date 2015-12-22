@@ -2,6 +2,7 @@ classdef occupancyMap < abstractMap
 		
 	properties
 		scale % in m
+        mapSize
 		nX; nY
 		nElements
 		xMin; xMax
@@ -10,19 +11,32 @@ classdef occupancyMap < abstractMap
 		logOddsGrid
 		binaryGrid
 		lInit; lOcc; lFree
-		lzr
+		laser
         distThreshForAlpha = 0.02; % in cm
 	end
 	
 	methods
-		function obj = occupancyMap(lzr,mapSize)
+        function obj = occupancyMap(inputStruct)
             % mapSize = [xMin xMax; yMin yMax]
-			obj.scale = 0.01;
+            if isfield(inputStruct,'laser')
+                obj.laser = inputStruct.laser;
+            else
+                obj.laser = laserClass(struct());
+            end
+            if isfield(inputStruct,'scale')
+                obj.scale = inputStruct.scale;
+            else
+                obj.scale = 0.01;
+            end
+            if isfield(inputStruct,'mapSize')
+                obj.mapSize = inputStruct.mapSize;
+            else
+                obj.mapSize = [-5 5; -5 5];
+            end
 			obj.lInit = obj.prob2LogOdds(0.5);
 			obj.lOcc = obj.prob2LogOdds(0.8);
 			obj.lFree = obj.prob2LogOdds(0.1);
-			obj.lzr = lzr;
-			obj.gridUp(mapSize);
+            obj.gridUp(obj.mapSize);
 			obj.initLogOddsGrid();
 		end
 		
@@ -43,7 +57,7 @@ classdef occupancyMap < abstractMap
 		
 		function updateLogOdds(obj,pose,ranges,bearings)
 			if nargin < 4
-				bearings = obj.lzr.bearings;
+				bearings = obj.laser.bearings;
 			end
 			pts = zeros(2,length(bearings));
 			pts(1,:) = pose(1)+ranges.*cos(bearings+pose(3));
@@ -51,7 +65,7 @@ classdef occupancyMap < abstractMap
 			
 			[rStart,cStart] = obj.xy2rc(pose(1),pose(2));
 			for i = 1:size(pts,2)
-				if ranges(i) == obj.lzr.nullReading
+				if ranges(i) == obj.laser.nullReading
 					continue;
                 end
                 try
@@ -210,7 +224,7 @@ classdef occupancyMap < abstractMap
             pts(1,:) = pose(1)+ranges.*cos(pose(3)+thRange);
             pts(2,:) = pose(2)+ranges.*sin(pose(3)+thRange);
             for i = 1:numPts
-                if ranges(i) == obj.lzr.nullReading
+                if ranges(i) == obj.laser.nullReading
                     continue;
                 end
                 

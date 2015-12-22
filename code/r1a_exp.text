@@ -96,6 +96,31 @@
 
 * time to organize everything in neato_utils into folders
 
+* still need to figure out what params needed for registration. skip
+  is just for speed. as al mentioned before, we want to be looking at
+  the residual bias. even numiterations has to do with speed. 
+
+* lineMapLocalizer.throwOutliers uses maxErr. this is useful when the
+  map specified does not account for all range points in the
+  world. this is linked to maxErr parameter, can be a useful thing to
+  test.
+
+* lineMapLocalizer.refinePose. maxIters, speed issue really. break
+  after gradThresh reached, again speed issue. eta is important, that
+  is the step size. well, that is reduced
+  anyway. dPoseThresh. errThresh is also for terminating gradient
+  descent, again a speed issue. one way it isn't a speed issue. if
+  oscillatory behaviour, then want to terminate in that basin,
+  otherwise keep going on and on. minPts used to make a guess, i think
+  that is ok, won't matter much.
+
+* in jacobian calculation. eps is used, that is certainly important.
+
+* convert paramsSamples to struct
+
+* how much can partition be shared across scripts? completely, once
+  you lay down a discipline of X,Y. Done, both are struct arrays.
+
 ### gt_factory ###
 * collecting ground truth data from mocap
 

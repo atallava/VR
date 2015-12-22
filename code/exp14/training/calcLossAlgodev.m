@@ -19,7 +19,7 @@ algoObjDiffs = zeros(1,nSamples);
 clockLocal = tic();
 % loop over samples
 for i = 1:nSamples
-    algoParams = algoParamsSamples(i,:);
+    algoParams = algoParamsSamples(i);
     objReal = algoObj(dataReal,algoParams);
     objSim = algoObj(dataSim,algoParams);
     algoObjDiffs(i) = abs(objReal-objSim);
@@ -31,5 +31,5 @@ end
 
 % set loss to max algo objective difference
 [loss,id] = max(algoObjDiffs);
-algoParams = algoParamsSamples(id,:);
+algoParams = algoParamsSamples(id);
 end
