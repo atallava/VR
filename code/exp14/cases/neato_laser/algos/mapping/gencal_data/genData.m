@@ -5,7 +5,7 @@
 someUsefulPaths;
 exp4Path = [pathToR1 '/code/exp4'];
 addpath(genpath(exp4Path));
-load([pathToR1 '/code/sim_modular/data/sim_sep6_2.mat']);
+load rsim_sep6_2.mat;
 
 %% load map
 fNameMap = 'l_map.mat';
