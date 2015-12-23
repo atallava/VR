@@ -11,15 +11,15 @@ function risk = modelRiskBaseline(simModel,algosVars)
 
 risk = 0;
 nAlgos = length(algosVars);
-simDataLog = cell(1,nAlgos);
+dataSimLog = cell(1,nAlgos);
 lossLog = zeros(1,nAlgos);
 for i = 1:nAlgos
-    realData = load(algosVars(i).realDataFName);
-    simData = genSimData(simModel,realData);
-    loss = calcLossBaseline(realData,simData);
+    dataReal = algosVars(i).dataReal;
+    dataSim = genSimData(simModel,dataReal);
+    loss = calcLossBaseline(dataReal,dataSim);
     risk = risk+loss;
     
-    simDataLog{i} = simData;
+    dataSimLog{i} = dataSim;
     lossLog(i) = loss;
 end
 end

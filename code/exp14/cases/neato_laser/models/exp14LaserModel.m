@@ -3,13 +3,13 @@ classdef exp14LaserModel < handle
     % building off most of exp4 code
     
     properties
-        XTrain; YTrain
+        X; Y
+        rangesArray
+        laser
         maxTrainData = 300;
         numTrainData
         maxClearReading = 5.0; % in m. all distances in m
         minClearReading = 0.081;
-        bearings = deg2rad(0:359);
-        numBearings = 360;
         rArrayTrain; alphaArrayTrain;
         bearingRegressors;
         kernelParams;
@@ -18,41 +18,60 @@ classdef exp14LaserModel < handle
     
     methods
         function obj = exp14LaserModel(inputStruct)
-            % inputStruct fields ('XTrain','YTrain','kernelParams')
-            % XTrain is a struct array with fields ('sensorPose','map')
-            obj.XTrain = inputStruct.XTrain; 
-            % YTrain is [length(XTrain),360]. Range readings
-            obj.YTrain = inputStruct.YTrain;
-            % RBF kernel is fixed
+            % inputStruct fields ('X','Y','laser','kernelParams')
+            % X is a struct array with fields ('sensorPose','map')
+            if isfield(inputStruct,'X')
+                obj.X = inputStruct.X;
+            else
+                error('exp14LaserModel:constructor','X not input');
+            end
+            % Y is a struct array with fields ('ranges')
+            if isfield(inputStruct,'Y')
+                obj.Y = inputStruct.Y;
+            else
+                error('exp14LaserModel:constructor','Y not input');
+            end
+            
+            if isfield(inputStruct,'laser')
+                obj.laser = inputStruct.laser;
+            else
+                obj.laser = laserClass(struct());
+            end
+            
+            % extract rangesArray from obj.Y
+            obj.rangesArray = [obj.Y.ranges];
+            obj.rangesArray = reshape(obj.rangesArray,obj.laser.nBearings,length(obj.Y))';
+                        
+            % RBF kernel, fixed
             obj.kernelParams = inputStruct.kernelParams;
             
             % treat range readings
-            obj.YTrain(obj.YTrain > obj.maxClearReading) = obj.maxClearReading;
-            obj.YTrain(obj.YTrain < obj.minClearReading) = obj.minClearReading;
+            obj.rangesArray(obj.rangesArray > obj.maxClearReading) = obj.maxClearReading;
+            obj.rangesArray(obj.rangesArray < obj.minClearReading) = obj.laser.nullReading;
             
             % subsample, if needed
-            numTrainDataPre = length(obj.XTrain);
+            numTrainDataPre = length(obj.X);
             % regressor can't handle too many data points
             if numTrainDataPre > obj.maxTrainData
                 ids = randsample(numTrainDataPre,obj.maxTrainData);
-                obj.XTrain = obj.XTrain(ids);
-                obj.YTrain = obj.YTrain(ids,:);
+                obj.X = obj.X(ids);
+                obj.rangesArray = obj.rangesArray(ids,:);
             end
-            obj.numTrainData = length(obj.XTrain);
+            obj.numTrainData = length(obj.X);
             
             % generate data for each bearing
-            [obj.rArrayTrain, obj.alphaArrayTrain] = deal(zeros(obj.numTrainData,obj.numBearings));
+            [obj.rArrayTrain, obj.alphaArrayTrain] = deal(zeros(obj.numTrainData,obj.laser.nBearings));
             for i = 1:obj.numTrainData
                 [obj.rArrayTrain(i,:),obj.alphaArrayTrain(i,:)] = ...
-                    obj.XTrain(i).map.raycast(obj.XTrain(i).sensorPose,obj.maxClearReading,obj.bearings);
+                    obj.X(i).map.raycast(obj.X(i).sensorPose,obj.maxClearReading,obj.laser.bearings);
             end
             
             % create regressor instance for each bearing
-            obj.bearingRegressors = cell(obj.numBearings);
+            obj.bearingRegressors = cell(1,obj.laser.nBearings);
             inpStr.kernelParams = obj.kernelParams;
-            for i = 1:obj.numBearings
-                inpStr.XTrain = [obj.rArrayTrain(:,i) obj.alphaArrayTrain(:,i)];
-                inpStr.YTrain = obj.YTrain(:,i);
+            for i = 1:obj.laser.nBearings
+                inpStr.X = [obj.rArrayTrain(:,i) obj.alphaArrayTrain(:,i)];
+                inpStr.Y = obj.rangesArray(:,i);
                 obj.bearingRegressors{i} = exp14BearingRegressor(inpStr);
             end
         end
@@ -60,26 +79,37 @@ classdef exp14LaserModel < handle
         function updateKernelParams(obj,params)
             % only update the kernel params in the bearing regressors
             obj.kernelParams = params;
-            for i = 1:obj.numBearings
+            for i = 1:obj.laser.nBearings
                 obj.bearingRegressors{i}.kernelParams = obj.kernelParams;
             end
         end
         
-        function y = predict(obj,x)
-            nX = length(x);
-            y = zeros(nX,obj.numBearings);
-            [rArray,alphaArray] = deal(zeros(nX,obj.numBearings));
+        function YQuery = predict(obj,XQuery)
+            %PREDICT
+            %
+            % YQuery = PREDICT(obj,XQuery)
+            %
+            % XQuery - Struct array with fields ('sensorPose','map')
+            %
+            % YQuery - Struct array with fields ('ranges')
+            
+            nQuery = length(XQuery);
+            rangesQuery = zeros(nQuery,obj.laser.nBearings);
+            [rArray,alphaArray] = deal(zeros(nQuery,obj.laser.nBearings));
             % collect r, alpha for each x
-            for i = 1:nX
-                [rArray(i,:),alphaArray(i,:)] = x.map.raycast(x.sensorPose,obj.maxClearReading,obj.bearings);
+            for i = 1:nQuery
+                map = XQuery(i).map;
+                sensorPose = XQuery(i).sensorPose;
+                [rArray(i,:),alphaArray(i,:)] = map.raycast(sensorPose,obj.maxClearReading,obj.laser.bearings);
             end
             
             % loop predictions over bearings
-            for i = 1:obj.numBearings
-                x_i = [rArray(:,i) alphaArray(:,i)];
-                y(:,i) = obj.bearingRegressors{i}.predict(x_i);
+            for i = 1:obj.laser.nBearings
+                rAlphaQuery_i = [rArray(:,i) alphaArray(:,i)];
+                rangesQuery(:,i) = obj.bearingRegressors{i}.predict(rAlphaQuery_i);
             end
             
+            YQuery = struct('ranges',mat2cell(rangesQuery,ones(1,nQuery),obj.laser.nBearings)');
         end
     end
     

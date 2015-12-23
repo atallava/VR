@@ -8,7 +8,7 @@ epsScaleLims = [0.0005 0.05];
 eps0 = [1; 1; 8.726];
 algoParamsLims = {maxErrLims epsScaleLims};
 nAlgoParams = 2;
-nSamples = 25;
+nSamples = 2;
 
 %% uniform sampling
 maxErrSamples = range(maxErrLims).*rand(1,nSamples)+maxErrLims(1);

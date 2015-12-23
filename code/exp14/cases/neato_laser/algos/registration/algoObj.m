@@ -22,7 +22,7 @@ for i = 1:nData
     localizer.eps = params.eps;
     refiner.localizer = localizer;
     poseIn = data.X(i).perturbedPose;
-    poseOut = refiner(poseIn,data.Y(i,:),params);
+    poseOut = refiner.refine(poseIn,data.Y(i).ranges);
     errVec(i) = pose2D.poseNorm(poseIn,poseOut);
 end
 

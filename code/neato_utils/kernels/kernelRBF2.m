@@ -34,8 +34,6 @@ switch numel(h)
         error('INVALID BANDWIDTH INPUT');
 end
 
-Hsqrt = sqrtm(H);
-
 if iscolumn(x1)
     x1 = x1';
 end

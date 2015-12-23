@@ -74,7 +74,7 @@ classdef vizRangesOnMap < handle
             hold on;
             for i = 1:size(obj.map_lines_p1,2)
                plot([obj.map_lines_p1(1,i) obj.map_lines_p2(1,i)],...
-                   [obj.map_lines_p1(2,i) obj.map_lines_p2(2,i)],'LineWidth',1); 
+                   [obj.map_lines_p1(2,i) obj.map_lines_p2(2,i)],'b','LineWidth',1); 
             end
             axis equal;
             hold off;

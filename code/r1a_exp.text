@@ -116,10 +116,30 @@
 
 * in jacobian calculation. eps is used, that is certainly important.
 
-* convert paramsSamples to struct
+* how do you ensure everyone uses the same laser?
 
-* how much can partition be shared across scripts? completely, once
-  you lay down a discipline of X,Y. Done, both are struct arrays.
+* viz and debug tools
+
+* first, how did nan escape checks. second, how did the nans appear?
+
+* each case should implement its own lossbaseline
+
+* align M editor tab width on computers
+
+* it's possible that increasing data by a lot is what makes the difference to
+  the output of either procedure. except train2 will continue to be black-box.
+
+* new source of error: tempPoly can be nan. in this case, you are setting the
+  prediction to 0. something bad can happen here. maybe all the 0 predictions
+  perform better than predicting something meaningful.
+
+* model predictions look o-k. some gt data of the detection example is
+  corrupt. weed these out!
+
+* if readings are near-zero, since not doing deterministic prediction, might
+  wanna set these to nans.
+
+* already bungled up. process data, partition data, dataForModel
 
 ### gt_factory ###
 * collecting ground truth data from mocap

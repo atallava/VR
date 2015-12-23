@@ -1,5 +1,6 @@
-% viz some sim data
-load data_gencal
+% dataset
+fname = 'data_gencal/data_gencal';
+load(fname);
 
 %%
 nX = length(X);

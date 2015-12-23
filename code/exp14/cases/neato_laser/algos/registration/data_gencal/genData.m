@@ -49,7 +49,7 @@ fprintf('genData:Computation time: %.2fs.\n',toc(clockLocal));
 X = struct('sensorPose',mat2cell(sensorPoses,3,ones(1,nStates)),...
     'perturbedPose',mat2cell(perturbedPoses,3,ones(1,nStates)),...
     'map',map);
-Y = struct('ranges',mat2cell(ranges,ones(1,nStates),size(ranges,2));
+Y = struct('ranges',mat2cell(ranges,ones(1,nStates),size(ranges,2))');
 
 %% write to file
 fname = 'data_gencal';

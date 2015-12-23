@@ -1,4 +1,5 @@
 % useful if switching from one case to another
-rmpath([pwd '/algos_obj_wrappers']);
-rmpath([pwd '/models']);
-rmpath([pwd '/data']);
+addpath([pwd '/algos_obj_wrappers']);
+addpath([pwd '/model_obj_wrappers']);
+addpath([pwd '/models']);
+addpath([pwd '/data']);
