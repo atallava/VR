@@ -97,7 +97,7 @@ while true
             happy = false;
             while ~happy
                 ranges = rob.laser.data.ranges;
-                [refinerStats,pose] = refiner.refine(ranges,rstate.pose); 
+                [pose,refinerStats] = refiner.refine(ranges,rstate.pose); 
                 rstate.reset(pose);
                 happy = input('Happy? (1/0): ');
             end

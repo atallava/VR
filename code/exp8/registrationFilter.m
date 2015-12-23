@@ -64,7 +64,7 @@ classdef registrationFilter < handle
                 
                 K = obj.SArray{i+1}/(obj.SArray{i+1}+obj.Q);
                 
-                [stats,pEst] = refiner.refine(obj.scanArray{i},obj.poseArray(:,i+1));
+                [pEst,stats] = refiner.refine(obj.scanArray{i},obj.poseArray(:,i+1));
                 obj.poseArray(:,i+1) = obj.poseArray(:,i+1)+K*(pEst-obj.poseArray(:,i+1));
                 
                 obj.SArray{i+1} = (eye(3)-K)*obj.SArray{i+1};

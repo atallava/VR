@@ -11,7 +11,7 @@ nPoses = size(poses,2);
 obsId = 2;
 for i = 1:nPoses
     ranges = rangesFromObsArray(obsArray,i,obsId);
-    [~,poseEst] = refiner.refine(ranges,poses(:,i));
+    [poseEst,~] = refiner.refine(ranges,poses(:,i));
     vizer.viz(ranges,poseEst);
     %vizer.viz(ranges,poses(:,i));
     waitforbuttonpress;
@@ -34,7 +34,7 @@ for poseId = 1:nPoses
                 fprintf('Scan %d...\n',obsId);
             end
             ranges = rangesFromObsArray(obsArray,poseId,obsId);
-            [~,poseEst] = refiner.refine(ranges,posePerturbed);
+            [poseEst,~] = refiner.refine(ranges,posePerturbed);
             poseEsts(:,end+1) = poseEst;
         end
         fprintf('\n');

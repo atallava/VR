@@ -36,7 +36,7 @@ obsId = 1;
 for i = 1:size(poses,2)
     pose = poses(:,i);
     ranges = rangesFromObsArray(obsArray,i,obsId);
-    [~,pose] = refiner.refine(ranges,pose);
+    [pose,~] = refiner.refine(ranges,pose);
     ri = rangeImage(struct('ranges',ranges)); 
     hf = ri.plotXvsY(pose);
     set(hf,'visible','off');

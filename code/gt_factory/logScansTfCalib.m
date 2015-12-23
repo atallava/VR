@@ -28,7 +28,7 @@ for i = 1:numScans
 	ranges(i,:) = rob.laser.data.ranges;
 	happy = 0;
 	while ~happy
-		[refinerStats,poseIn] = refiner.refine(ranges(i,:),rstate.pose); 
+		[poseIn,refinerStats] = refiner.refine(ranges(i,:),rstate.pose); 
 		rstate.reset(poseIn);
 		happy = input('Happy? (1/0): ');
 	end

@@ -17,7 +17,7 @@ ranges = hk.ranges;
 vizer.viz(ranges,poseIn);
 
 %% refine pose
-[refinerStats,poseOut] = refiner.refine(ranges,poseIn);
+[poseOut,refinerStats] = refiner.refine(ranges,poseIn);
 vizer.viz(ranges,poseOut);
 poseIn = poseOut;
 

@@ -38,7 +38,7 @@ classdef laserPoseRefiner < handle
             end
         end
         
-        function [stats,poseOut] = refine(obj,ranges,poseIn)
+        function [poseOut,stats] = refine(obj,ranges,poseIn)
             %REFINE Refine pose estimate.
             % Transforms pose laser frame, cleans up ranges, throws
             % outliers and matches scans.

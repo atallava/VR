@@ -22,7 +22,7 @@ for i = 1:nSamples
     refiner.numIterations = randperm(25,1)*10;
     data(i).refinerIter = refiner.numIterations;
     data(i).errorIn = poseDiffNormError(pose,poseIn);
-    [success,poseOut] = refiner.refine(ranges,poseIn);
+    [poseOut,success] = refiner.refine(ranges,poseIn);
     data(i).errorOut = poseDiffNormError(pose,poseOut);
 end
 fprintf('Finished.\n');

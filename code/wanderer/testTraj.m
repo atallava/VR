@@ -62,7 +62,7 @@ while play
         numIterations = input('Set num iterations: ');
         refiner.setNumIterations(numIterations);
         ranges = rob.laser.data.ranges;
-        [refinerStats,pose] = refiner.refine(ranges,rstate.pose);
+        [pose,refinerStats] = refiner.refine(ranges,rstate.pose);
         vizerOD.viz(ranges,pose);
         happy = input('Happy? (1/0): ');
     end

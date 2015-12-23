@@ -4,7 +4,7 @@ classdef lineMapLocalizer < handle
     properties %(Constant)        
         minPts = 5;
         % step increment when computing jacobian
-        eps = [0.001,0.001,deg2rad(0.5)];
+        eps = [0.001; 0.001; deg2rad(0.5)];
         maxIters = 15;
         % step size in pose when optimizing
     
@@ -107,7 +107,7 @@ classdef lineMapLocalizer < handle
             r2(r2 == Inf) = [];
             err = sum(r2);
             num = length(r2);
-            if(num >= lineMapLocalizer.minPts)
+            if(num >= obj.minPts)
                 avgErr = sqrt(err)/num;
             else
                 % not enough points to make a guess
@@ -128,7 +128,7 @@ classdef lineMapLocalizer < handle
                 errMinus = obj.fitError(poseMinus,modelPts);
                 J(i) = (errPlus-errMinus);
             end
-            J = J./(2*obj.eps);
+            J = J./(2*obj.eps');
         end
         
         function [successStory, outPose] = refinePose(obj, inPose, ptsInModelFrame, maxIters)

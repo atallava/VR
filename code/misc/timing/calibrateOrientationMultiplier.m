@@ -24,7 +24,7 @@ for i = 1%:length(posnNormArray)
         count = 0;
         err = Inf; 
         while err > errThresh
-            [success,poseDummy] = refiner.refine(ranges,poseDummy);
+            [poseDummy,success] = refiner.refine(ranges,poseDummy);
             err = success.err;
             count = count+1;
         end
@@ -42,7 +42,7 @@ for i = 1:length(thArray);
     count = 0;
     err = Inf;
     while err > errThresh
-        [success,poseDummy] = refiner.refine(ranges,poseDummy);
+        [poseDummy,success] = refiner.refine(ranges,poseDummy);
         err = success.err;
         count = count+1;
     end

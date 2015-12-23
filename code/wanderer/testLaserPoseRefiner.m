@@ -8,7 +8,7 @@ refiner = laserPoseRefiner(struct('localizer',localizer,'laser',laser,'numIterat
 vizRanges = vizRangesOnMap(struct('map',map,'laser',laser));
 
 ranges = laserArray(2).ranges;
-[success,startPose] = refiner.refine(ranges,[0.1;0.05;0]);
+[startPose,success] = refiner.refine(ranges,[0.1;0.05;0]);
 hf = vizRanges.viz(ranges,startPose);
 
 %% test steady-state localization via laser
@@ -21,5 +21,5 @@ end
 ranges = laserArray(end).ranges;
 pose = rState.pose;
 hf1 = vizRanges.viz(ranges,pose); title('before scan matching.');
-[success,pose] = refiner.refine(ranges,pose);
+[pose,success] = refiner.refine(ranges,pose);
 hf2 = vizRanges.viz(ranges,pose); title('after scan matching.');

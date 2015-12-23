@@ -141,6 +141,14 @@
 
 * already bungled up. process data, partition data, dataForModel
 
+* ways to call functions which you don't want to put on the global matlab path.
+  * make the functions class methods. work then with objects.
+  * create a wrapper function. the wrapper cd/s into the relevant folder,
+    performs computation, and cd/s back to the original folder.
+  * create a subfolder called private/. then only the calling function will see
+    the helper functions in private/.
+  * put the functions in a package, which is the closest that matlab comes to namespaces.	
+
 ### gt_factory ###
 * collecting ground truth data from mocap
 
@@ -246,6 +254,14 @@ using 3x3 matrices.
   MATLAB/. The reasoning was that some files had more generic use than
   neato\_utils. i rescind. these files are hard to account for in VC
   when tied with neato\_matlab.
+
+### at_utils_m ###
+
+* once decided on keeping subfolder, should everything live in a subfolder? is
+  there no meaning to having code at the top level?
+
+* which subfolders are packages, and which subfolders are added to the path
+  directly?
 
 ## deleted folders ##
 

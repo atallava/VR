@@ -54,7 +54,7 @@ for i = 1:N
 			break;
 		end
 	end
-	[refinerStats,pose] = refiner.refine(ranges,rstate.pose);
+	[pose,refinerStats] = refiner.refine(ranges,rstate.pose);
 	rstate.reset(pose);
 	poseHistory(:,i) = pose;
 	pause(1);

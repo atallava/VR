@@ -40,7 +40,7 @@ for i = 1:length(trajectories)
 	while ~localized
 		ranges = rob.laser.data.ranges;
 		pause(0.5);
-		[refinerStats,pose] = refiner.refine(ranges,rstate.pose);
+		[pose,refinerStats] = refiner.refine(ranges,rstate.pose);
 		rstate.reset(pose);
 		pause(0.5);
 		localized = input('Localized? (0/1): ');
@@ -65,7 +65,7 @@ for i = 1:length(trajectories)
 	while ~localized
 		ranges = rob.laser.data.ranges;
 		pause(0.5);
-		[refinerStats,pose] = refiner.refine(ranges,rstate.pose);
+		[pose,refinerStats] = refiner.refine(ranges,rstate.pose);
 		rstate.reset(pose);
 		pause(0.5);
 		localized = input('Localized? (0/1): ');

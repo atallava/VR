@@ -34,7 +34,7 @@ lzrLog = laserHistory(rob);
 refinerLog = struct('stats',{});
 
 % initialize variables
-[~,pose] = refiner.refine(rob.laser.data.ranges,poseStart);
+[pose,~] = refiner.refine(rob.laser.data.ranges,poseStart);
 rstate = robState(rob,'robot',pose);
 pgen.addToPoseHist(pose);
 
@@ -64,7 +64,7 @@ for i = 1:nPoses
             fprintf('Backing up...\n');
             % execute traj, get pose and reset rstate
             trajFlrBackup.execute(rob,rstate);
-            [refinerStats,pose] = refiner.refine(rob.laser.data.ranges,rstate.pose);
+            [pose,refinerStats] = refiner.refine(rob.laser.data.ranges,rstate.pose);
             %pose = rob.sim_robot.pose; % PLACEHOLDER: read off exact state
             rstate.reset(pose);
             pause(robotModel.tPause);
@@ -94,7 +94,7 @@ for i = 1:nPoses
     trajFlr.execute(rob,rstate);
     
     fprintf('Performing scan match...\n');
-    [refinerStats,pose] = refiner.refine(rob.laser.data.ranges,rstate.pose);
+    [pose,refinerStats] = refiner.refine(rob.laser.data.ranges,rstate.pose);
     if refinerStats.numOutliers/length(rob.laser.data.ranges) > outlierFracnThreshold
         warning('NUMBER OF OUTLIERS IN SCAN EXCEEDS THRESHOLD. POSE ESTIMATE NO LONGER RELIABLE.');
         break;
