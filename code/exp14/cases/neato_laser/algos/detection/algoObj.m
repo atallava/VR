@@ -1,12 +1,14 @@
-function obj = f1Obj(data,params)
-%F1OBJ 
+function obj = algoObj(data,params)
+%ALGOOBJ F1 score.
 % 
-% obj = F1OBJ(data,params)
+% obj = ALGOOBJ(data,params)
 % 
 % data   - 
 % params - 
 % 
 % obj    - 
+
+debugFlag = true;
 
 targetLength = 0.61;
 load target_lines_by_conf
@@ -22,9 +24,29 @@ scans = [data.Y.ranges];
 scans = reshape(scans,nBearings,nData)';
 scans = mat2cell(scans,ones(1,nData),nBearings);
 
+clockLocal = tic;
 [nDetected,nCorrect,nTargets] = getPR(scans,targetLength,targetLinesByConf,lineCandAlgo);
-p = sum(nCorrect)/sum(nDetected);
+if (sum(nDetected) == 0) && (sum(nCorrect) == 0)
+    p = 0;
+else
+    p = sum(nCorrect)/sum(nDetected);
+end
 r = sum(nCorrect)/sum(nTargets);
-obj = 2*p*r/(p+r);
+if (p == 0) && (r == 0)
+    obj = 0;
+else
+    obj = 2*p*r/(p+r);
+end
+tComp = toc(clockLocal);
+
+if debugFlag
+    fprintf('algoObj:Computation time: %.2fs.\n',tComp);
+end
+if isnan(obj)
+    error('algoObj:invalidObjectiveValue','Objective is nan.');
+end
+if isinf(obj)
+    error('algoObj:invalidObjectiveValue','Objective is inf.');
+end
     
 end

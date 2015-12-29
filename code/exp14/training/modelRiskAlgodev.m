@@ -9,7 +9,7 @@ function risk = modelRiskAlgodev(simModel,algosVars)
 % 
 % risk      - Scalar.
 
-debugFlag = false;
+debugFlag = true;
 
 risk = 0;
 nAlgos = length(algosVars);
@@ -21,6 +21,9 @@ if debugFlag
 end
 clockLocal = tic();
 for i = 1:nAlgos
+    if debugFlag
+        fprintf('modelRiskAlgodev:Algo %d.\n',i);
+    end
     dataReal = algosVars(i).dataReal;
     algoObj = algosVars(i).algoObj;
     algoParamsSamples = algosVars(i).paramsSamples;

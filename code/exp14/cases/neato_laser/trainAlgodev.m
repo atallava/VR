@@ -21,6 +21,7 @@ algosVars(count).paramsSamples = algoParamsSamples;
 inputStructLaserModel = load('data/data_laser_model');
 inputStructLaserModel.kernelParams = [];
 laserModel = exp14LaserModel(inputStructLaserModel);
+laserModel.debugFlag = true;
 
 %% optimize
 fun = @(x) modelObjAlgodev(x,laserModel,algosVars);

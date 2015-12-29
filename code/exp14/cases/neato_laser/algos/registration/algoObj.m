@@ -8,6 +8,8 @@ function obj = algoObj(data,params)
 % 
 % obj    - 
 
+debugFlag = true;
+
 localizer = lineMapLocalizer([]);
 numIter = 200;
 skip = 3;
@@ -16,6 +18,7 @@ refiner = laserPoseRefiner(struct('localizer',localizer,'laser',robotModel.laser
 
 nData = length(data.X);
 errVec = zeros(1,nData);
+clockLocal = tic;
 for i = 1:nData
     localizer = lineMapLocalizer(data.X(i).map.objects);
     localizer.maxErr = params.maxErr;
@@ -27,5 +30,15 @@ for i = 1:nData
 end
 
 obj = mean(errVec);
-    
+tComp = toc(clockLocal);
+
+if debugFlag
+    fprintf('algoObj:Computation time: %.2fs.\n',tComp);
+end
+if isnan(obj)
+    error('algoObj:invalidObjectiveValue','Objective is nan.');
+end
+if isinf(obj)
+    error('algoObj:invalidObjectiveValue','Objective is inf.');
+end
 end

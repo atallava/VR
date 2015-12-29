@@ -11,7 +11,7 @@ function [loss,algoParams] = calcLossAlgodev(dataReal,dataSim,algoObj,algoParams
 % loss              - Scalar.
 % algoParams        - Corresponding to max objDifference.
 
-debugFlag = false;
+debugFlag = true;
 
 nSamples = size(algoParamsSamples,1);
 algoObjDiffs = zeros(1,nSamples);
@@ -22,6 +22,9 @@ end
 clockLocal = tic();
 % loop over samples
 for i = 1:nSamples
+    if debugFlag
+        fprintf('calcLossAlgodev:Algo params sample %d.\n',i);
+    end
     algoParams = algoParamsSamples(i);
     objReal = algoObj(dataReal,algoParams);
     objSim = algoObj(dataSim,algoParams);

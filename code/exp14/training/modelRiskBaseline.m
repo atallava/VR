@@ -22,7 +22,7 @@ end
 clockLocal = tic();
 for i = 1:nAlgos
     if debugFlag
-        fprintf('Algo %d.\n',i);
+        fprintf('modelRiskBaseline:Algo %d.\n',i);
     end
     dataReal = algosVars(i).dataReal;
     dataSim = genSimData(simModel,dataReal);
