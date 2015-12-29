@@ -13,6 +13,7 @@ classdef exp14LaserModel < handle
         rArrayTrain; alphaArrayTrain;
         bearingRegressors;
         kernelParams;
+        XQueryLast; YQueryLast;
         debugFlag = false;
     end
     
@@ -93,6 +94,7 @@ classdef exp14LaserModel < handle
             %
             % YQuery - Struct array with fields ('ranges')
             
+            clockLocal = tic();
             nQuery = length(XQuery);
             rangesQuery = zeros(nQuery,obj.laser.nBearings);
             [rArray,alphaArray] = deal(zeros(nQuery,obj.laser.nBearings));
@@ -110,6 +112,13 @@ classdef exp14LaserModel < handle
             end
             
             YQuery = struct('ranges',mat2cell(rangesQuery,ones(1,nQuery),obj.laser.nBearings)');
+            
+            obj.XQueryLast = XQuery;
+            obj.YQueryLast = YQuery;
+            tComp = toc(clockLocal);
+            if obj.debugFlag
+                fprintf('exp14LaserModel:Computation time: %.2fs.\n',tComp);
+            end
         end
     end
     

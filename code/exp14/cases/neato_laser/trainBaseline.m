@@ -15,11 +15,13 @@ algosVars(count).dataReal = load('algos/registration/data_gencal/data_gencal_tra
 inputStructLaserModel = load('data/data_laser_model');
 inputStructLaserModel.kernelParams = [];
 laserModel = exp14LaserModel(inputStructLaserModel);
+laserModel.debugFlag = true;
 
 %% optimize
 fun = @(x) modelObjBaseline(x,laserModel,algosVars);
 modelParams0 = [1 1].*1e-2;
 lb = [1 1]*eps; % theoretically zero
 ub = [1 1]*inf;
-modelParamsOptim = fmincon(fun,modelParams0,[],[],[],[],lb,ub);
-
+clockLocal = tic();
+[modelParamsOptim,objOptim,exitflag,output] = fmincon(fun,modelParams0,[],[],[],[],lb,ub);
+fprintf('trainBaseline:Computation took %.2fs.\n',toc(clockLocal));

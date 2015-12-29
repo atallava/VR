@@ -9,10 +9,17 @@ function risk = modelRiskAlgodev(simModel,algosVars)
 % 
 % risk      - Scalar.
 
+debugFlag = false;
+
 risk = 0;
 nAlgos = length(algosVars);
 dataSimLog = cell(1,nAlgos);
 lossLog = zeros(1,nAlgos);
+
+if debugFlag
+    fprintf('modelRiskAlgodev:Number of algos: %d.\n',nAlgos);
+end
+clockLocal = tic();
 for i = 1:nAlgos
     dataReal = algosVars(i).dataReal;
     algoObj = algosVars(i).algoObj;
@@ -23,5 +30,9 @@ for i = 1:nAlgos
     
     dataSimLog{i} = dataSim;
     lossLog(i) = loss;
+end
+tComp = toc(clockLocal);
+if debugFlag
+    fprintf('modelRiskAlgodev:Computation time: %.2fs.\n',tComp);
 end
 end

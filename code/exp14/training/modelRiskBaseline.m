@@ -9,11 +9,21 @@ function risk = modelRiskBaseline(simModel,algosVars)
 % 
 % risk      - Scalar.
 
+debugFlag = true;
+
 risk = 0;
 nAlgos = length(algosVars);
 dataSimLog = cell(1,nAlgos);
 lossLog = zeros(1,nAlgos);
+
+if debugFlag
+    fprintf('modelRiskBaseline:Number of algos: %d.\n',nAlgos);
+end
+clockLocal = tic();
 for i = 1:nAlgos
+    if debugFlag
+        fprintf('Algo %d.\n',i);
+    end
     dataReal = algosVars(i).dataReal;
     dataSim = genSimData(simModel,dataReal);
     loss = calcLossBaseline(dataReal,dataSim);
@@ -21,5 +31,9 @@ for i = 1:nAlgos
     
     dataSimLog{i} = dataSim;
     lossLog(i) = loss;
+end
+tComp = toc(clockLocal);
+if debugFlag
+    fprintf('modelRiskBaseline:Computation time: %.2fs.\n',tComp);
 end
 end

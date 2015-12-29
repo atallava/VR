@@ -16,6 +16,9 @@ debugFlag = false;
 nSamples = size(algoParamsSamples,1);
 algoObjDiffs = zeros(1,nSamples);
 
+if debugFlag
+    fprintf('calcLossAlgodev:Number of algo params samples: %d.\n',nSamples);
+end
 clockLocal = tic();
 % loop over samples
 for i = 1:nSamples
@@ -26,7 +29,7 @@ for i = 1:nSamples
 end
 tComp = toc(clockLocal);
 if debugFlag
-    fprintf('calcLoss:Computation time: %.2fs.\n',tComp);
+    fprintf('calcLossAlgodev:Computation time: %.2fs.\n',tComp);
 end
 
 % set loss to max algo objective difference

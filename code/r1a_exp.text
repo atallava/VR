@@ -147,7 +147,15 @@
     performs computation, and cd/s back to the original folder.
   * create a subfolder called private/. then only the calling function will see
     the helper functions in private/.
-  * put the functions in a package, which is the closest that matlab comes to namespaces.	
+  * put the functions in a package, which is the closest that matlab comes to
+    namespaces.
+
+* some parameters need to be checked when running system. debugflag should take
+  care of this. the debugflag should ideally be passed as an argument to a
+  function. arguments to functions themselves should be structs when they start
+  getting cumbersome.
+
+* hacks to be reverted: 
 
 ### gt_factory ###
 * collecting ground truth data from mocap

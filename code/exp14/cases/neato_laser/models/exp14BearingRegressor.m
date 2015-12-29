@@ -11,6 +11,7 @@ classdef exp14BearingRegressor < handle
         insufficientData = false;
         nullPrediction = 0;
         debugFlag = false;
+        XQueryLast; YQueryLast;
     end
     
     methods
@@ -49,6 +50,7 @@ classdef exp14BearingRegressor < handle
         end
         
         function YQuery = predict(obj,XQuery)
+            clockLocal = tic();
            nQuery = size(XQuery,1);
            YQuery = zeros(nQuery,1);
            if obj.insufficientData
@@ -64,7 +66,7 @@ classdef exp14BearingRegressor < handle
                W = diag(K(:,i));
                tempPoly = (obj.XBias'*W*obj.XBias)\(obj.XBias'*W*obj.Y);
                % matrix inversion failure
-               if any(isnan(tempPoly)) | any(isinf(tempPoly))
+               if any(isnan(tempPoly)) || any(isinf(tempPoly))
                    YQuery(i) = obj.nullPrediction;
                    continue;
                end
@@ -81,6 +83,13 @@ classdef exp14BearingRegressor < handle
            
            if any(isnan(YQuery))
                error('exp14BearingRegressor:invalidPrediction','NaN predicted');
+           end
+           
+           obj.XQueryLast = XQuery;
+           obj.YQueryLast = YQuery;
+           tComp = toc(clockLocal);
+           if obj.debugFlag
+              fprintf('exp14BearingRegressor:Computation time: %.2fs.\n',tComp);
            end
         end
     end
