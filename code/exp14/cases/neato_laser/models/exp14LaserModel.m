@@ -77,9 +77,9 @@ classdef exp14LaserModel < handle
             end
         end
         
-        function updateKernelParams(obj,params)
+        function updateKernelParams(obj,kernelParams)
             % only update the kernel params in the bearing regressors
-            obj.kernelParams = params;
+            obj.kernelParams = kernelParams;
             for i = 1:obj.laser.nBearings
                 obj.bearingRegressors{i}.kernelParams = obj.kernelParams;
             end

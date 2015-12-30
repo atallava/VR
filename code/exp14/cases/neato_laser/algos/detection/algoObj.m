@@ -1,5 +1,5 @@
 function obj = algoObj(data,params)
-%ALGOOBJ F1 score.
+%ALGOOBJ Negative F1 score.
 % 
 % obj = ALGOOBJ(data,params)
 % 
@@ -10,8 +10,7 @@ function obj = algoObj(data,params)
 
 debugFlag = true;
 
-targetLength = 0.61;
-load target_lines_by_conf
+load('data/target_length','targetLength');
 nMin = params.nMin;
 errorThresh = params.errorThresh;
 lineCandAlgo = @(x1,x2,x3,x4) lineCand(x1,x2,x3,x4,nMin,errorThresh);
@@ -23,6 +22,11 @@ nBearings = length(data.Y(1).ranges);
 scans = [data.Y.ranges];
 scans = reshape(scans,nBearings,nData)';
 scans = mat2cell(scans,ones(1,nData),nBearings);
+% getPR needs targetLines packaged
+targetLinesByConf = cell(1,nData);
+for i = 1:nData
+    targetLinesByConf{i} = data.X(i).targetLines;
+end
 
 clockLocal = tic;
 [nDetected,nCorrect,nTargets] = getPR(scans,targetLength,targetLinesByConf,lineCandAlgo);
@@ -35,7 +39,7 @@ r = sum(nCorrect)/sum(nTargets);
 if (p == 0) && (r == 0)
     obj = 0;
 else
-    obj = 2*p*r/(p+r);
+    obj = -2*p*r/(p+r);
 end
 tComp = toc(clockLocal);
 

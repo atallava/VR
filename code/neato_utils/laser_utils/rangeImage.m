@@ -62,7 +62,7 @@ classdef rangeImage < handle
             scatter(obj.thArray(ids), obj.rArray(ids), 10);
         end
         
-        function hf = plotXvsY(obj,pose,maxRange)
+        function [hf,x,y] = plotXvsY(obj,pose,maxRange)
             %PLOTXVSY
             %
             % hf = PLOTXVSY(obj,pose,maxRange)

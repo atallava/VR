@@ -9,9 +9,9 @@ function objSamples = algoObjOverSamples(data,algoObj,algoParamsSamples)
 % 
 % objSamples        - 
 
-debugFlag = false;
+debugFlag = true;
 
-nSamples = size(algoParamsSamples,1);
+nSamples = length(algoParamsSamples);
 objSamples = zeros(1,nSamples);
 
 clockLocal = tic();

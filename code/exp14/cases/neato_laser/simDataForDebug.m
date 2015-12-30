@@ -1,5 +1,4 @@
-% generate sim data corresponding to a model for debugging
-
+% generate sim data corresponding to model
 fnameIn = 'algos/detection/data_real_train';
 fnameOut = 'algos/detection/data_sim_train';
 

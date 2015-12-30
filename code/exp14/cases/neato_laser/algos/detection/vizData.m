@@ -1,7 +1,7 @@
 % dataset
-fname = 'data_sim_train';
+fname = 'data/data_sim_train';
 load(fname);
-load laser_class_object
+load data/laser_class_object
 
 %%
 xl = []; yl = []; setLims = false;

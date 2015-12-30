@@ -54,7 +54,7 @@ end
 
 p1 = [ri.xArray(left); ri.yArray(left)];
 p2 = [ri.xArray(right); ri.yArray(right)];
-line = ParametrizePts2ABC(p1,p2);
+line = parametrizePts2ABC(p1,p2);
 
 if showMsgs
     fprintf('middle: % d, left: % d, right: % d\n',middle,left,right);

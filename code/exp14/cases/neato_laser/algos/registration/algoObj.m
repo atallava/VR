@@ -24,9 +24,10 @@ for i = 1:nData
     localizer.maxErr = params.maxErr;
     localizer.eps = params.eps;
     refiner.localizer = localizer;
+    poseTrue = data.X(i).sensorPose;
     poseIn = data.X(i).perturbedPose;
     poseOut = refiner.refine(data.Y(i).ranges,poseIn);
-    errVec(i) = pose2D.poseNorm(poseIn,poseOut);
+    errVec(i) = pose2D.poseNorm(poseTrue,poseOut);
 end
 
 obj = mean(errVec);

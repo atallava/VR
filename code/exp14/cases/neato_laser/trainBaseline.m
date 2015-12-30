@@ -22,6 +22,7 @@ fun = @(x) modelObjBaseline(x,laserModel,algosVars);
 modelParams0 = [1 1].*1e-2;
 lb = [1 1]*eps; % theoretically zero
 ub = [1 1]*inf;
+options = optimoptions('fmincon','Display','iter','MaxIter',10);
 clockLocal = tic();
-[modelParamsOptim,objOptim,exitflag,output] = fmincon(fun,modelParams0,[],[],[],[],lb,ub);
+[modelParamsOptim,objOptim,exitflag,output] = fmincon(fun,modelParams0,[],[],[],[],lb,ub,[],options);
 fprintf('trainBaseline:Computation took %.2fs.\n',toc(clockLocal));

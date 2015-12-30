@@ -4,7 +4,7 @@ algosVars = struct('dataReal',{},'algoObj',{},'paramsSamples',{});
 count = 1;
 
 % detection
-algosVars(count).dataReal = load('algos/detection/data_real_train.mat');
+algosVars(count).dataReal = load('algos/detection/data/data_real_train.mat');
 count = count+1;
 
 % registration

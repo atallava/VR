@@ -13,10 +13,13 @@ function [loss,algoParams] = calcLossAlgodev(dataReal,dataSim,algoObj,algoParams
 
 debugFlag = true;
 
-nSamples = size(algoParamsSamples,1);
+paramNames = fieldnames(algoParamsSamples);
+nAlgoParams = length(paramNames);
+nSamples = length(algoParamsSamples);
 algoObjDiffs = zeros(1,nSamples);
 
 if debugFlag
+    fprintf('calcLossAlgodev:Number of algo params: %d.\n',nAlgoParams);
     fprintf('calcLossAlgodev:Number of algo params samples: %d.\n',nSamples);
 end
 clockLocal = tic();

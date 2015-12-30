@@ -1,6 +1,6 @@
 % partition data into train, holdout and test
 % load data
-fname = 'algos/detection/data_real';
+fname = 'algos/detection/data/data_real';
 data = load(fname);
 
 %% Partition.
