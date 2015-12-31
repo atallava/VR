@@ -10,5 +10,5 @@ function obj = algoObjParamsVec(data,paramsVec)
     
     params.nMin = paramsVec(1);
     params.errorThresh = paramsVec(2);
-    obj = 1+algoObj(data,params);
+    obj = algoObj(data,params);
 end

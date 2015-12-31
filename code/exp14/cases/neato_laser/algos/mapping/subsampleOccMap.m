@@ -1,6 +1,9 @@
 % create a finer-scale map from a coarse-scale map
 
-% omBig and omSmall exist in workspace
+cond = logical(exist('omBig','var'));
+assert(cond,('omBig must exist in workspace.'));
+cond = logical(exist('omSmall','var'));
+assert(cond,('omSmall must exist in workspace.'));
 
 %%
 [xSmall,ySmall] = omSmall.rc2xy(1:size(omSmall,1),1:size(omSmall,2));

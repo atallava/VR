@@ -15,6 +15,10 @@ function txt = tagPlotPointWithId(obj,eventObj,x,y)
     xId = find(x == xCoord);
     yId = find(y == yCoord);
     id = intersect(xId,yId);
+    % required for string concatenation
+    if iscolumn(id)
+        id = id';
+    end
     txt = {['x: ',num2str(xCoord)],...
         ['y: ',num2str(yCoord)],...
         ['id: ',num2str(id)]};

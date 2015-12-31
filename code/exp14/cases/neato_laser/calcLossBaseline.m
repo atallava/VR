@@ -1,4 +1,4 @@
-function loss = calcLossBaseline(dataReal,dataSim)
+function [loss,lossVec] = calcLossBaseline(dataReal,dataSim)
     %CALCLOSSBASELINE
     %
     % loss = CALCLOSSBASELINE(dataReal,dataSim)
@@ -7,6 +7,7 @@ function loss = calcLossBaseline(dataReal,dataSim)
     % dataSim  -
     %
     % loss     -
+    % lossVec  -
     
 debugFlag = true;
 
@@ -19,9 +20,11 @@ clockLocal = tic();
 rangesArrayReal = rangesArrayFromData(dataReal.Y);
 rangesArraySim = rangesArrayFromData(dataSim.Y);
 
-loss = rangesArrayReal(:)-rangesArraySim(:);
-loss = loss.^2;
-loss = sum(loss)/nData;
+lossMat = rangesArrayReal-rangesArraySim;
+lossMat = lossMat.^2;
+lossVec = sum(lossMat,2); % [nData,1] array. Losses on each datum.
+loss = sum(lossVec(:))/nData;
+
 tComp = clockLocal;
 if debugFlag
     fprintf('calcLossBaseline:Computation time: %.2fs.\n',toc(clockLocal))

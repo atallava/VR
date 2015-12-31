@@ -173,6 +173,8 @@
 * erred in data naming convention for registration. should have had poseSensor,
   posePerturbed etc, with the qualifier coming latter.
 
+* should there be a single compareRealAndSimData?
+
 ### gt_factory ###
 * collecting ground truth data from mocap
 

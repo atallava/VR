@@ -1,4 +1,5 @@
 exp14Path = [pwd '/../..'];
+addpath(pwd);
 addpath([pwd '/algos_obj_wrappers']);
 addpath([pwd '/model_obj_wrappers']);
 addpath([pwd '/models']);

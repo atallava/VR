@@ -1,7 +1,9 @@
-% assuming laserModel in workspace
+% probe laser model
+cond = logical(exist('laserModel','var'));
+assert(cond,('laserModel must exist in workspace.'));
 
-%%
-bId = 227;
+%% 
+bId = 264;
 bReg = laserModel.bearingRegressors{bId};
 
 %%

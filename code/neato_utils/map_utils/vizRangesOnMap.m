@@ -102,7 +102,7 @@ classdef vizRangesOnMap < handle
             hold(ha,'on');
             if isempty(obj.hquiver) || ~ishandle(obj.hquiver)
                 obj.hquiver = quiver(lPose(1),lPose(2),0.2*cos(lPose(3)),0.2*sin(lPose(3)),'k','LineWidth',2);
-                adjust_quiver_arrowhead_size(obj.hquiver,5);
+%                 adjust_quiver_arrowhead_size(obj.hquiver,5);
             else
                 set(obj.hquiver,'XData',lPose(1),'YData',lPose(2),'UData',0.2*cos(lPose(3)),'VData',0.2*sin(lPose(3)));
             end
