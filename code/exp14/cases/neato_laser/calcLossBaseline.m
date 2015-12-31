@@ -20,8 +20,14 @@ clockLocal = tic();
 rangesArrayReal = rangesArrayFromData(dataReal.Y);
 rangesArraySim = rangesArrayFromData(dataSim.Y);
 
+
 lossMat = rangesArrayReal-rangesArraySim;
 lossMat = lossMat.^2;
+
+% TODO: this is a hack
+nullIds = rangesArrayReal <= 0.081;
+lossMat(nullIds) = 0;
+
 lossVec = sum(lossMat,2); % [nData,1] array. Losses on each datum.
 loss = sum(lossVec(:))/nData;
 

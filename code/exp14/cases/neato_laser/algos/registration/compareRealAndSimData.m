@@ -8,10 +8,10 @@ dataSim = load(fnameSim);
 [loss,lossVec] = calcLossBaseline(dataReal,dataSim);
 
 %% viz
-steppingFlag = 1; % use with viz when stepping through data
+steppingFlag = 0; % use with viz when stepping through data
 
 nData = length(dataReal.X);
-for id = 1:nData
+for id = 15%1:nData
     map = dataReal.X(id).map;
     sensorPose = dataReal.X(id).sensorPose;
     rangesReal = dataReal.Y(id).ranges;

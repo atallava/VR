@@ -48,7 +48,8 @@ classdef exp14LaserModel < handle
             
             % treat range readings
             obj.rangesArray(obj.rangesArray > obj.maxClearReading) = obj.maxClearReading;
-            obj.rangesArray(obj.rangesArray < obj.minClearReading) = obj.laser.nullReading;
+%             obj.rangesArray(obj.rangesArray < obj.minClearReading) = obj.laser.nullReading;
+            obj.rangesArray(obj.rangesArray < obj.minClearReading) = nan; % TODO: this is a hack
             
             % subsample, if needed
             numTrainDataPre = length(obj.X);

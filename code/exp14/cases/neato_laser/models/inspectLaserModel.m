@@ -3,7 +3,7 @@ cond = logical(exist('laserModel','var'));
 assert(cond,('laserModel must exist in workspace.'));
 
 %% 
-bId = 264;
+bId = 26;
 bReg = laserModel.bearingRegressors{bId};
 
 %%
@@ -15,6 +15,6 @@ dcmObj = datacursormode(hf);
 set(dcmObj,'UpdateFcn',@(obj,eventObj) tagPlotPointWithId(obj,eventObj,x,y));
 
 %%
-dataId = 12;
+dataId = 9;
 vizer = vizRangesOnMap(struct('map',laserModel.X(dataId).map,'laser',laserModel.laser));
 vizer.viz(laserModel.Y(dataId).ranges,laserModel.X(dataId).sensorPose);

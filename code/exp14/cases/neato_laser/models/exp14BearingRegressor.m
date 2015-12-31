@@ -1,12 +1,11 @@
-classdef exp14BearingRegressor < handle
-    % Basically a LWL regressor, for each bearing.
+classdef exp14BearingRegressor < handle    % Basically a LWL regressor, for each bearing.
     
     properties
         X; Y
         XBias
         % kernel is fixed
         kernelFn = @kernelRBF2; kernelParams
-        maxTrainData = 300; minTrainData = 20;
+        maxTrainData = 300; minTrainData = 10;
         numTrainData
         insufficientData = false;
         nullPrediction = 0;
@@ -39,7 +38,7 @@ classdef exp14BearingRegressor < handle
             obj.XBias = [obj.X ones(obj.numTrainData,1)];
                         
             % if insufficient data, raise alarm
-            if obj.numTrainData <= obj.minTrainData
+            if obj.numTrainData < obj.minTrainData
                 obj.insufficientData = true;
                 
                 if obj.debugFlag
@@ -55,19 +54,28 @@ classdef exp14BearingRegressor < handle
            YQuery = zeros(nQuery,1);
            if obj.insufficientData
                YQuery = obj.nullPrediction*ones(nQuery,1);
+               obj.XQueryLast = XQuery;
+               obj.YQueryLast = YQuery;
                return;
            end
            
-           K = pdist2(obj.X,XQuery,@(x,y) obj.kernelFn(x,y,obj.kernelParams)); % [nX,nX]
+           K = pdist2(obj.X,XQuery,@(x,y) obj.kernelFn(x,y,obj.kernelParams)); % [nData,nData]
            
            warning('off'); % prevent matrix inversion warnings
            % unfortunately this isn't parallelized
            for i = 1:nQuery
+               % all kernel weights zero
+               if all(K(:,i) == 0)
+                   YQuery(i) = obj.nullPrediction;
+                   continue;
+               end
                W = diag(K(:,i));
                tempPoly = (obj.XBias'*W*obj.XBias)\(obj.XBias'*W*obj.Y);
-               % matrix inversion failure
+               
+               % if matrix inversion failure, weighted mean
                if any(isnan(tempPoly)) || any(isinf(tempPoly))
-                   YQuery(i) = obj.nullPrediction;
+                   w = K(:,i);
+                   YQuery(i) = sum(obj.Y.*w)/sum(w);
                    continue;
                end
                YQuery(i) = dot(tempPoly,[XQuery(i,:) 1]);
