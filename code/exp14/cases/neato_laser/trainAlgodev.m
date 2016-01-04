@@ -5,16 +5,16 @@ algosVars = struct('dataReal',{},'algoObj',{},'paramsSamples',{});
 count = 1;
 
 % detection
-algosVars(count).dataReal = load('algos/detection/data_real_hold.mat');
+algosVars(count).dataReal = load('algos/detection/data/data_real_hold.mat');
 algosVars(count).algoObj = @detectionObjWrapper;
-load('algos/detection/algo_params_samples.mat','algoParamsSamples');
+load('algos/detection/data/algo_params_samples.mat','algoParamsSamples');
 algosVars(count).paramsSamples = algoParamsSamples;
 count = count+1;
 
 % registration
 algosVars(count).dataReal = load('algos/registration/data_gencal/data_gencal_hold.mat');
 algosVars(count).algoObj = @registrationObjWrapper;
-load('algos/registration/algo_params_samples.mat','algoParamsSamples');
+load('algos/registration/data/algo_params_samples.mat','algoParamsSamples');
 algosVars(count).paramsSamples = algoParamsSamples;
 
 %% setup model

@@ -1,8 +1,8 @@
 % data: struct with fields ('X','Y')
-% X: struct array with fields ('sensorPose','perturbedPose','map')
-% Y: [nX,laser.nBearings] array
+% X: struct array with fields ('poses','map','mapSize')
+% Y: [nPoses,laser.nBearings] array
 
-%% registration algo params
-% params: struct with fields ('maxErr','eps')
+%% mapping algo params
+% params: struct with fields ('scale','pOcc')
 % maxErr, which decides number of outliers
 % eps, the step increment in computing the jacobian

@@ -10,6 +10,7 @@ classdef occupancyMap < abstractMap
 		xGrid; yGrid
 		logOddsGrid
 		binaryGrid
+        pInit; pOcc; pFree
 		lInit; lOcc; lFree
 		laser
         distThreshForAlpha = 0.02; % in cm
@@ -33,9 +34,25 @@ classdef occupancyMap < abstractMap
             else
                 obj.mapSize = [-5 5; -5 5];
             end
-			obj.lInit = obj.prob2LogOdds(0.5);
-			obj.lOcc = obj.prob2LogOdds(0.8);
-			obj.lFree = obj.prob2LogOdds(0.1);
+            if isfield(inputStruct,'pInit')
+                obj.pInit = inputStruct.pInit;
+            else
+                obj.pInit = 0.5;
+            end
+            if isfield(inputStruct,'pOcc')
+                obj.pOcc = inputStruct.pOcc;
+            else
+                obj.pOcc = 0.8;
+            end
+            if isfield(inputStruct,'pFree')
+                obj.pFree = inputStruct.pFree;
+            else
+                obj.pFree = 0.1;
+            end
+                        
+			obj.lInit = obj.prob2LogOdds(obj.pInit);
+			obj.lOcc = obj.prob2LogOdds(obj.pOcc);
+			obj.lFree = obj.prob2LogOdds(obj.pFree);
             obj.gridUp(obj.mapSize);
 			obj.initLogOddsGrid();
 		end
@@ -115,7 +132,7 @@ classdef occupancyMap < abstractMap
 		end
 		
 		function l = prob2LogOdds(obj,p)
-			l = log(p/(1-p));
+			l = log(p./(1-p));
 		end
 		
 		function hf = plotMap(obj)
@@ -171,6 +188,10 @@ classdef occupancyMap < abstractMap
 				obj.calcBinaryGrid();
 			end
 			p = obj.binaryGrid;
+        end
+        
+        function probMap = getProbMap(obj)
+           probMap = obj.ogOdds2Prob(obj.logOddsGrid);
         end
         
         function [ranges,incidenceAngles] = raycast(obj,pose,maxRange,thRange)
@@ -298,7 +319,23 @@ classdef occupancyMap < abstractMap
 				x2 = obj.xMax-del;
 				y2 = (x2-x1)*tan(th)+y1;
 			end
-		end
+        end
+        
+        function mapScaled = subscaleMap(obj,scaleQuery)
+            condn = scaleQuery < obj.scale;
+            assert(condn,'Query scale must be less than map scale: %.2f.\n',obj.scale);
+            inputStruct = struct('laser',obj.laser,'mapSize',obj.mapSize,...
+                'scale',scaleQuery);
+            mapScaled = occupancyMap(inputStruct);
+            
+            [xSmall,ySmall] = mapScaled.rc2xy(1:size(mapScaled.logOddsGrid,1),1:size(mapScaled.logOddsGrid,2));
+            [rSmall2Big,cSmall2Big] = obj.xy2rc(xSmall,ySmall);
+            % takes a cell in scaledMap to a cell in obj
+            idSmall2Big = sub2ind(size(obj.logOddsGrid),rSmall2Big,cSmall2Big);
+            
+            vec = obj.logOddsGrid(idSmall2Big);
+            mapScaled.logOddsGrid = reshape(vec,size(mapScaled.logOddsGrid));
+        end
 	end
 	
 end
