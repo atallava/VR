@@ -7,6 +7,12 @@ exp4Path = [pathToR1 '/code/exp4'];
 addpath(genpath(exp4Path));
 load rsim_sep6_2.mat;
 
+% load maps
+% for each map
+% sample poses. sampling machinery from exp10.
+% gencal ranges
+% write everything to file
+
 %% load map
 fNameMap = 'l_map.mat';
 load(fNameMap);

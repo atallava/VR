@@ -24,26 +24,18 @@ for i = 1:nData
     inputStruct = struct('laser',laser,'mapSize',mapSize,...
         'scale',params.scale,'pOcc',params.pOcc);
     om = occupancyMap(inputStruct);
-    nPoses = size(poses,1);
-    for i = 1:nPoses
-        om.updateLogOdds(poses(i,:),ranges(i,:));
-    end
+    om.processRanges(poses,ranges);
     
     % subscale to real map scale
     omScaled = om.subscaleMap(map.scale);
     
     % negloglikelihood of real map 
-    probGridOm = omScaled.getProbMap();
-    probGridMap = map.getProbMap();
-    occFlag = toleranceCheck(probGridMap,1,1e-4);
-    v1 = log(probGridOm(occFlag));
-    v2 = log(1-probGridOm(~occFlag));
-    nll = -(sum(v1)+sum(v2));
+    binaryGridMap = map.getBinaryGrid();
+    nll = omScaled.calcNegLogLike(binaryGridMap);
     obj = obj+nll;
     
     % log
     objLog(i) = nll;
 end
-endx
     
 end

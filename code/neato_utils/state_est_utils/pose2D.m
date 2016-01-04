@@ -69,8 +69,8 @@ classdef pose2D < handle
 				T = [cos(p(3)) -sin(p(3)) p(1); ...
 					sin(p(3)) cos(p(3)) p(2); ...
 					0 0 1];
-			else
-				numPoses = size(p,2);
+            else
+                numPoses = size(p,2);
 				T = cell(1,numPoses);
 				for i = 1:numPoses
 					T{i} = pose2D.poseToTransform(p(:,i));

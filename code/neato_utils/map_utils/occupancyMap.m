@@ -18,7 +18,8 @@ classdef occupancyMap < abstractMap
 	
 	methods
         function obj = occupancyMap(inputStruct)
-            % mapSize = [xMin xMax; yMin yMax]
+            % inputStruct fields
+            % ('laser','scale','mapSize','pInit','pOcc','pFree')
             if isfield(inputStruct,'laser')
                 obj.laser = inputStruct.laser;
             else
@@ -70,9 +71,17 @@ classdef occupancyMap < abstractMap
 		
 		function initLogOddsGrid(obj)
 			obj.logOddsGrid(:) = obj.lInit;
-		end
+        end
 		
-		function updateLogOdds(obj,pose,ranges,bearings)
+        function updateLogOdds(obj,pose,ranges,bearings)
+            %UPDATELOGODDS Update odds corresponding to single pose.
+            %
+            % UPDATELOGODDS(obj,pose,ranges,bearings)
+            %
+            % pose     - 
+            % ranges   - 
+            % bearings - 
+            
 			if nargin < 4
 				bearings = obj.laser.bearings;
 			end
@@ -105,7 +114,21 @@ classdef occupancyMap < abstractMap
 				% occupied space
 				obj.logOddsGrid(ids(end)) = obj.logOddsGrid(ids(end))+obj.lOcc-obj.lInit;
 			end
-		end
+        end
+        
+        function processRanges(obj,poses,ranges)
+            %PROCESSRANGES Update log odds for many poses.
+            %
+            % PROCESSRANGES(obj,poses,ranges)
+            %
+            % poses  -
+            % ranges -
+            
+            nPoses = size(poses,1);
+            for i = 1:nPoses
+                obj.updateLogOdds(poses(i,:),ranges(i,:));
+            end
+        end
 		
 		function [r,c] = xy2rc(obj,x,y)
 			assert(all(x >= obj.xMin) && all(x <= obj.xMax),'X NOT IN MAP RANGE');
@@ -190,8 +213,26 @@ classdef occupancyMap < abstractMap
 			p = obj.binaryGrid;
         end
         
-        function probMap = getProbMap(obj)
-           probMap = obj.ogOdds2Prob(obj.logOddsGrid);
+        function probGrid = getProbGrid(obj)
+           probGrid = obj.ogOdds2Prob(obj.logOddsGrid);
+        end
+        
+        function nll = calcNegLogLike(obj,binaryGrid)
+            %CALCNEGLOGLIKE
+            %
+            % nll = CALCNEGLOGLIKE(obj,binaryGrid)
+            %
+            % binaryGrid -
+            %
+            % nll       -
+            
+            condn = isequal(size(binaryGrid),size(obj.logOddsGrid));
+            assert(condn,'occupancyMap:sizeMismatch','binaryMap must be same size as occupancy map.');
+            occFlag = logical(binaryGrid);
+            probGrid = obj.getProbGrid();
+            v1 = log(probGrid(occFlag));
+            v2 = log(1-probGrid(~occFlag));
+            nll = -(sum(v1)+sum(v2));
         end
         
         function [ranges,incidenceAngles] = raycast(obj,pose,maxRange,thRange)
