@@ -2,7 +2,7 @@ classdef occupancyMap < abstractMap
 		
 	properties
 		scale % in m
-        mapSize
+        xyLims % [xMin xMax; yMin yMax]
 		nX; nY
 		nElements
 		xMin; xMax
@@ -19,7 +19,7 @@ classdef occupancyMap < abstractMap
 	methods
         function obj = occupancyMap(inputStruct)
             % inputStruct fields
-            % ('laser','scale','mapSize','pInit','pOcc','pFree')
+            % ('laser','scale','xyLims','pInit','pOcc','pFree')
             if isfield(inputStruct,'laser')
                 obj.laser = inputStruct.laser;
             else
@@ -30,10 +30,10 @@ classdef occupancyMap < abstractMap
             else
                 obj.scale = 0.01;
             end
-            if isfield(inputStruct,'mapSize')
-                obj.mapSize = inputStruct.mapSize;
+            if isfield(inputStruct,'xyLims')
+                obj.xyLims = inputStruct.xyLims;
             else
-                obj.mapSize = [-5 5; -5 5];
+                obj.xyLims = [-5 5; -5 5];
             end
             if isfield(inputStruct,'pInit')
                 obj.pInit = inputStruct.pInit;
@@ -54,17 +54,17 @@ classdef occupancyMap < abstractMap
 			obj.lInit = obj.prob2LogOdds(obj.pInit);
 			obj.lOcc = obj.prob2LogOdds(obj.pOcc);
 			obj.lFree = obj.prob2LogOdds(obj.pFree);
-            obj.gridUp(obj.mapSize);
+            obj.gridUp(obj.xyLims);
 			obj.initLogOddsGrid();
 		end
 		
-		function obj = gridUp(obj,mapSize)
-			obj.xMin = mapSize(1,1); obj.xMax = mapSize(1,2);
-			obj.yMin = mapSize(2,1); obj.yMax = mapSize(2,2);
+		function obj = gridUp(obj,xyLims)
+			obj.xMin = xyLims(1,1); obj.xMax = xyLims(1,2);
+			obj.yMin = xyLims(2,1); obj.yMax = xyLims(2,2);
 			obj.xGrid = obj.xMin:obj.scale:obj.xMax;
-            obj.nX = length(obj.xGrid);
+            obj.nX = length(obj.xGrid)-1;
             obj.yGrid = obj.yMin:obj.scale:obj.yMax;
-            obj.nY = length(obj.yGrid);
+            obj.nY = length(obj.yGrid)-1;
             obj.nElements = obj.nX*obj.nY;
 			obj.logOddsGrid = zeros(obj.nY,obj.nX);
 		end
@@ -73,66 +73,11 @@ classdef occupancyMap < abstractMap
 			obj.logOddsGrid(:) = obj.lInit;
         end
 		
-        function updateLogOdds(obj,pose,ranges,bearings)
-            %UPDATELOGODDS Update odds corresponding to single pose.
-            %
-            % UPDATELOGODDS(obj,pose,ranges,bearings)
-            %
-            % pose     - 
-            % ranges   - 
-            % bearings - 
-            
-			if nargin < 4
-				bearings = obj.laser.bearings;
-			end
-			pts = zeros(2,length(bearings));
-			pts(1,:) = pose(1)+ranges.*cos(bearings+pose(3));
-			pts(2,:) = pose(2)+ranges.*sin(bearings+pose(3));
-			
-			[rStart,cStart] = obj.xy2rc(pose(1),pose(2));
-			for i = 1:size(pts,2)
-				if ranges(i) == obj.laser.nullReading
-					continue;
-                end
-                try
-                    [rEnd,cEnd] = obj.xy2rc(pts(1,i),pts(2,i));
-                catch
-                    % ignore point if it happens to lie outside limits
-                    % fix this so it snaps to boundary of map
-                    continue;
-                end
-				% bresenham needs flipped rows
-				% also returns x,y in reverse order of array indexing
-				[~,~,~,c,r] = bresenham(zeros(size(obj.logOddsGrid)),[obj.nY-rStart+1 cStart; ...
-					obj.nY-rEnd+1 cEnd],0);
-				r = obj.nY-r+1;
-				if r(1) ~= rStart; r = fliplr(r); end
-				if c(1) ~= cStart; c = fliplr(c); end
-				ids = obj.rc2id(r,c);
-				% free space
-				obj.logOddsGrid(ids(1:end-1)) = obj.logOddsGrid(ids(1:end-1))+obj.lFree-obj.lInit;
-				% occupied space
-				obj.logOddsGrid(ids(end)) = obj.logOddsGrid(ids(end))+obj.lOcc-obj.lInit;
-			end
-        end
-        
-        function processRanges(obj,poses,ranges)
-            %PROCESSRANGES Update log odds for many poses.
-            %
-            % PROCESSRANGES(obj,poses,ranges)
-            %
-            % poses  -
-            % ranges -
-            
-            nPoses = size(poses,1);
-            for i = 1:nPoses
-                obj.updateLogOdds(poses(i,:),ranges(i,:));
-            end
-        end
-		
-		function [r,c] = xy2rc(obj,x,y)
-			assert(all(x >= obj.xMin) && all(x <= obj.xMax),'X NOT IN MAP RANGE');
-			assert(all(y >= obj.yMin) && all(y <= obj.yMax),'Y NOT IN MAP RANGE');
+        function [r,c] = xy2rc(obj,x,y)
+            condn = all(x >= obj.xMin) && all(x <= obj.xMax);
+			assert(condn,'occupancyMap:outOfMap','Query x out of map range.');
+            condn = all(y >= obj.yMin) && all(y <= obj.yMax);
+			assert(condn,'occupancyMap:outOfMap','Query y out of map range.');
 			c = ceil((x-obj.xMin)./obj.scale);
 			r = ceil((y-obj.yMin)./obj.scale);
 		end
@@ -147,15 +92,110 @@ classdef occupancyMap < abstractMap
 		end
 		
 		function [r,c] = id2rc(obj,id)
-			[r,c] = sub2ind([obj.nY obj.nX],id);
+			[r,c] = ind2sub([obj.nY obj.nX],id);
 		end
 		
+		function updateLogOdds(obj,pose,ranges,bearings)
+            %UPDATELOGODDS Update odds corresponding to single pose.
+            %
+            % UPDATELOGODDS(obj,pose,ranges,bearings)
+            %
+            % pose     - 
+            % ranges   - 
+            % bearings - 
+            
+			if nargin < 4
+				bearings = obj.laser.bearings;
+			end
+			pts = zeros(2,length(bearings));
+			pts(1,:) = pose(1)+ranges.*cos(bearings+pose(3));
+            pts(2,:) = pose(2)+ranges.*sin(bearings+pose(3));
+            
+            [rcStart(1),rcStart(2)] = obj.xy2rc(pose(1),pose(2));
+            for i = 1:size(pts,2)
+                if ranges(i) == obj.laser.nullReading
+                    continue;
+                end
+                try
+                    [rcEnd(1),rcEnd(2)] = obj.xy2rc(pts(1,i),pts(2,i));
+                catch
+                    % ignore point if it happens to lie outside limits
+                    % TODO: fix this so it snaps to boundary of map
+                    continue;
+                end
+                ids = obj.bresenhamWrapper(rcStart,rcEnd);
+                if isempty(ids)
+                    disp('x');
+                    continue;
+                end
+                % free space
+                obj.logOddsGrid(ids(1:end-1)) = obj.logOddsGrid(ids(1:end-1))+obj.lFree-obj.lInit;
+                % occupied space
+                obj.logOddsGrid(ids(end)) = obj.logOddsGrid(ids(end))+obj.lOcc-obj.lInit;
+            end
+        end
+        
+        function processRanges(obj,poses,ranges,bearings)
+            %PROCESSRANGES Update log odds for many poses.
+            %
+            % PROCESSRANGES(obj,poses,ranges)
+            %
+            % poses  -
+            % ranges -
+            % bearings -
+            
+            nPoses = size(poses,1);
+            for i = 1:nPoses
+                obj.updateLogOdds(poses(i,:),ranges(i,:),bearings);
+            end
+        end
+        
+        function ids = bresenhamWrapper(obj,rcStart,rcEnd)
+            %BRESENHAMWRAPPER Simple wrapper over file exchange bresenham.
+            %
+            % ids = BRESENHAMWRAPPER(obj,rcStart,rcEnd)
+            %
+            % rcStart - Length 2 array.Row and column of ray start.
+            % rcEnd   - Length 2 array.Row and column of ray end.
+            %
+            % ids     - Array of ids the ray passes through.
+            
+            rStart = rcStart(1); cStart = rcStart(2);
+            rEnd = rcEnd(1); cEnd = rcEnd(2);
+            % bresenham needs flipped rows
+            % also returns c,r in reverse order of array indexing
+            bresenhamPts = [obj.nY-rStart+1 cStart; ...
+                obj.nY-rEnd+1 cEnd];
+            bresenhamPts = fliplr(bresenhamPts);
+            [~,~,~,r,c] = bresenham(zeros(obj.nY,obj.nX),bresenhamPts,0);
+%             try
+%                 [~,~,~,r,c] = bresenham(zeros(obj.nY,obj.nX),bresenhamPts,0);
+%             catch
+%                 error;
+%                 % unknown failure
+%                 ids = [];
+%                 return;
+%             end
+            r = obj.nY-r+1;
+            if r(1) ~= rStart; r = fliplr(r); end
+            if c(1) ~= cStart; c = fliplr(c); end
+            ids = obj.rc2id(r,c);
+        end
+        
 		function p = logOdds2Prob(obj,l)
-			p = 1./(1+exp(-l));
+            p = 1./(1+exp(-l));
+            flag1 = isinf(l) & l > 0;
+            flag2 = isinf(l) & l < 0;
+            p(flag1) = 1;
+            p(flag2) = 0;
 		end
 		
 		function l = prob2LogOdds(obj,p)
 			l = log(p./(1-p));
+            flag1 = (p == 1);
+            flag2 = (p == 0);
+            l(flag1) = Inf;
+            l(flag2) = -Inf;
 		end
 		
 		function hf = plotMap(obj)
@@ -174,7 +214,11 @@ classdef occupancyMap < abstractMap
             ax.XTickLabel = x;
             r = ax.YTick;
             [~,y] = obj.rc2xy(r,[]);
-            ax.YTickLabel = flip(y);            
+            ax.YTickLabel = flip(y);
+            
+            % data cursor display
+            dcmObj = datacursormode(hf);
+            set(dcmObj,'UpdateFcn',@(src,evt) occupancyMap.tagPlotPointWithXY(src,evt,obj));
 		end
 		
 		function hf = plotBinaryMap(obj)
@@ -194,9 +238,13 @@ classdef occupancyMap < abstractMap
             ax.XTickLabel = x;
             r = ax.YTick;
             [~,y] = obj.rc2xy(r,[]);
-            ax.YTickLabel = flip(y);            
-		end
-		
+            ax.YTickLabel = flip(y);
+            
+            % data cursor display
+            dcmObj = datacursormode(hf);
+            set(dcmObj,'UpdateFcn',@(src,evt) occupancyMap.tagPlotPointWithXY(src,evt,obj));
+        end
+                 		
 		function hf = plot(obj)
 			hf = obj.plotBinaryMap();
 		end
@@ -241,9 +289,11 @@ classdef occupancyMap < abstractMap
         end
 		
 		function [ranges,incidenceAngles] = getRAlpha(obj,pose,maxRange,thRange)
-            assert(pose(1) >= obj.xMin && pose(1) <= obj.xMax,'X NOT IN MAP RANGE');
-			assert(pose(2) >= obj.yMin && pose(2) <= obj.yMax,'Y NOT IN MAP RANGE');
-			numPts = length(thRange);
+            condn = pose(1) >= obj.xMin && pose(1) <= obj.xMax;
+            assert(condn,'occupancyMap:outOfMap','Pose x out of map range.');
+            condn = pose(2) >= obj.yMin && pose(2) <= obj.yMax;
+            assert(condn,'occupancyMap:outOfMap','Pose y out of map range.');
+            numPts = length(thRange);
 
 			sweep = pose(3)+thRange;
 			x1 = pose(1)*ones(1,numPts);
@@ -324,15 +374,28 @@ classdef occupancyMap < abstractMap
             
         end
 		
-		function [x2,y2] = farthestPointOnRay(obj,x1,y1,th)
-			% shoot a ray from x1,y1 in the direction th. which is the
-			% farthest point on the map it reaches.
+        function [x2,y2] = farthestPointOnRay(obj,x1,y1,th)
+            %FARTHESTPOINTONRAY
+            % shoot a ray from x1,y1 in the direction th. which is the
+			% farthest point on the map it reaches?
+            %
+            % [x2,y2] = FARTHESTPOINTONRAY(obj,x1,y1,th)
+            %
+            % x1  -
+            % y1  -
+            % th  -
+            %
+            % x2  -
+            % y2  -
+
 			% this can be made faster using lineMap. but currently not
 			% needed since this isn't bottleneck.
 			
-			assert(all(x1 >= obj.xMin) && all(x1 <= obj.xMax),'X NOT IN MAP RANGE');
-			assert(all(y1 >= obj.yMin) && all(y1 <= obj.yMax),'Y NOT IN MAP RANGE');
-			
+            condn = all(x1 >= obj.xMin) && all(x1 <= obj.xMax);
+            assert(condn,'occupancyMap:outOfMap','x1 out of map range.');
+			condn = all(y1 >= obj.yMin) && all(y1 <= obj.yMax);
+			assert(condn,'occupancyMap:outOfMap','y1 out of map range.');
+						
 			th = mod(th,2*pi);
 			% angles with vertices
 			thVertices = zeros(1,4);
@@ -364,20 +427,35 @@ classdef occupancyMap < abstractMap
         
         function mapScaled = subscaleMap(obj,scaleQuery)
             condn = scaleQuery < obj.scale;
-            assert(condn,'Query scale must be less than map scale: %.2f.\n',obj.scale);
-            inputStruct = struct('laser',obj.laser,'mapSize',obj.mapSize,...
+            assert(condn,'occupancyMap:subscaleError','Query scale must be less than map scale: %.2f.\n',obj.scale);
+            inputStruct = struct('laser',obj.laser,'xyLims',obj.xyLims,...
                 'scale',scaleQuery);
             mapScaled = occupancyMap(inputStruct);
             
-            [xSmall,ySmall] = mapScaled.rc2xy(1:size(mapScaled.logOddsGrid,1),1:size(mapScaled.logOddsGrid,2));
+            [cSmall,rSmall] = meshgrid(1:mapScaled.nX,1:mapScaled.nY);
+            rSmall = flipud(rSmall);
+            cSmall = cSmall(:); rSmall = rSmall(:);
+            [xSmall,ySmall] = mapScaled.rc2xy(rSmall,cSmall);
             [rSmall2Big,cSmall2Big] = obj.xy2rc(xSmall,ySmall);
             % takes a cell in scaledMap to a cell in obj
+            % TODO: get rid of all this jugglery by being consistent with
+            % M's treatment of matrices.
+            rSmall2Big = obj.nY-rSmall2Big+1; 
             idSmall2Big = sub2ind(size(obj.logOddsGrid),rSmall2Big,cSmall2Big);
             
             vec = obj.logOddsGrid(idSmall2Big);
             mapScaled.logOddsGrid = reshape(vec,size(mapScaled.logOddsGrid));
         end
-	end
-	
+    end
+    
+    methods (Static)
+        function txt = tagPlotPointWithXY(src,evt,obj)
+            pos = get(evt,'Position');
+            c = pos(1); r = obj.nY-pos(2)+1;
+            [x,y] = obj.rc2xy(r,c);
+            txt = {['x: ',num2str(x)],...
+                ['y: ',num2str(y)]};
+        end
+    end
 end
 

@@ -1,5 +1,5 @@
 % data: struct with fields ('X','Y')
-% X: struct array with fields ('poses','map','mapSize')
+% X: struct array with fields ('poses','map','mapXyLims')
 % Y: struct array with fields ('ranges')
 
 %% mapping algo params

@@ -17,14 +17,18 @@ objLog = zeros(1,nData);
 for i = 1:nData
     poses = data.X(i).poses;
     map = data.X(i).map;
-    mapSize = data.X(i).mapSize;
+    xyLims = data.X(i).mapXyLims;
     ranges = data.Y(i).ranges;
     
     % get occupancy map
-    inputStruct = struct('laser',laser,'mapSize',mapSize,...
+    inputStruct = struct('laser',laser,'xyLims',xyLims,...
         'scale',params.scale,'pOcc',params.pOcc);
     om = occupancyMap(inputStruct);
-    om.processRanges(poses,ranges);
+    % should probably subsample ranges
+    skip = 10;
+    subsampledIds = 1:skip:laser.nBearings;
+    om.processRanges(poses,ranges(:,subsampledIds),...
+        laser.bearings(subsampledIds));
     
     % subscale to real map scale
     omScaled = om.subscaleMap(map.scale);

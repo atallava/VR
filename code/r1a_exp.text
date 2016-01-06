@@ -175,6 +175,21 @@
 
 * should there be a single compareRealAndSimData?
 
+* for most data, i am shifting to the matlab convention of nData x
+  dimData. a few like poses have been treated as dimData x nData for
+  long. what to do?
+
+* lineMapToOccupancyMap can be a function of occupancyMap?
+
+* while it is good practice to include a msgId with asserts and
+  errors, no coventions on the msgId are being followed.
+
+* better names for mapping algo variables?
+
+* check for displacement in occ map constructed and true map.
+
+* bad design: occ map should have respected matlab's matrix conventions
+
 ### gt_factory ###
 * collecting ground truth data from mocap
 
