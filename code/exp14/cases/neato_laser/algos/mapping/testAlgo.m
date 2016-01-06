@@ -1,22 +1,22 @@
-function obj = algoObj(data,params)
-%ALGOOBJ Mean negLogLike over maps in data.
-% 
-% obj = ALGOOBJ(data,params)
-% 
-% data   - Struct with fields ('X','Y')
-% params - Struct with fields ('scale','pOcc')
-% 
-% obj    - Objective
+% init
+% load data
+fname = 'data_gencal/data_gencal';
+data = load(fname);
 
-debugFlag = false;
-
-load('laser_class_object','laser');
+% algo params
 load('data/occupancy_map_default_params','pInit','pFree');
-nData = length(data.X);
+scale = 0.05;
+pOcc = 0.7;
 
+% laser
+load('laser_class_object','laser');
+
+%% test algo
+vizFlag = true;
+steppingFlag = 1; % use with viz when stepping through data
+nData = length(data.X);
 objLog = zeros(1,nData);
 
-clockLocal = tic;
 for i = 1:nData
     poses = data.X(i).poses;
     map = data.X(i).map;
@@ -25,7 +25,7 @@ for i = 1:nData
     
     % get occupancy map
     inputStruct = struct('laser',laser,'xyLims',xyLims,...
-        'scale',params.scale,'pOcc',params.pOcc,...
+        'scale',scale,'pOcc',pOcc,...
         'pInit',pInit,'pFree',pFree);
     om = occupancyMap(inputStruct);
     % should probably subsample ranges
@@ -37,23 +37,21 @@ for i = 1:nData
     % subscale to real map scale
     omScaled = om.subscaleMap(map.scale);
     
+    if vizFlag
+        hf1 = omScaled.plotGrid();
+        hf2 = map.plotGrid();
+        if steppingFlag
+            waitforbuttonpress;
+            close(hf1); close(hf2);
+        end
+    end
+    
     % negloglikelihood of real map 
     binaryGridMap = map.getBinaryGrid();
     nll = omScaled.calcNegLogLike(binaryGridMap);
-       
+      
     % log
     objLog(i) = nll;
 end
-obj = mean(objLog);
-tComp = toc(clockLocal);
 
-if debugFlag
-    fprintf('algoObj:Computation time: %.2fs.\n',tComp);
-end
-if isnan(obj)
-    error('algoObj:invalidObjectiveValue','Objective is nan.');
-end
-if isinf(obj)
-    error('algoObj:invalidObjectiveValue','Objective is inf.');
-end
-end
+obj = mean(objLog);

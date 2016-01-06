@@ -4,7 +4,7 @@
 % create occ map from line map
 
 %% scale of ground truth maps
-scaleGroundTruth = 0.05;
+scaleGroundTruth = 0.005;
 save('scale_ground_truth','scaleGroundTruth');
 
 %% box map
@@ -21,7 +21,7 @@ mapName = 'box';
 lmStruct.map = lm;
 lmStruct.walls = walls;
 save([mapName '_line_map'],'-struct','lmStruct');
-save([mapName '_support'],'support');
+save([mapName '_map_support'],'support');
 omStruct.map = om;
 omStruct.xyLims = omXyLims;
 save([mapName '_occupancy_map'],'-struct','omStruct');

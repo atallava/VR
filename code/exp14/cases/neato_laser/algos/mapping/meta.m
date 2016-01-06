@@ -4,5 +4,5 @@
 
 %% mapping algo params
 % params: struct with fields ('scale','pOcc')
-% maxErr, which decides number of outliers
-% eps, the step increment in computing the jacobian
+% scale: of occupancy map grid
+% pOcc: prob that cell hit is occupied

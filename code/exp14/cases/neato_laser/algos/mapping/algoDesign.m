@@ -1,23 +1,19 @@
 % algo design on data
 % load data
-fnameData = 'data_gencal/data_gencal_train.mat';
+fnameData = 'data_gencal/data_gencal.mat';
 data = load(fnameData);
 nData = length(data.X);
 
 %% max objective estimate
-% assuming zero pose refinement
-objVec = zeros(1,nData);
-for i = 1:nData
-    objVec(i) = pose2D.poseNorm(data.X(i).sensorPose,data.X(i).perturbedPose);
-end
-maxObjEst = mean(objVec);
+% maximum in theory
+maxObjEst = 0;
 fprintf('Maximum objective estimate: %.2f.\n',maxObjEst);
 
 %% objective local minimum
 fun = @(x) algoObjParamsVec(data,x);
-params0 = [1 1]*1e-2;
-lb = [1 1]*eps; % theoretically zero
-ub = [1 1]*inf;
+params0 = [0.01,0.8];
+lb = [0.005 0.5]; % theoretically zero
+ub = [0.08 1];
 clockLocal = tic();
 [paramsOptim,objOptim,exitflag,output] = fmincon(fun,params0,[],[],[],[],lb,ub);
 tComp = toc(clockLocal);

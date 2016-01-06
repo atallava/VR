@@ -190,6 +190,8 @@
 
 * bad design: occ map should have respected matlab's matrix conventions
 
+* might want to include linemap in data.
+
 ### gt_factory ###
 * collecting ground truth data from mocap
 

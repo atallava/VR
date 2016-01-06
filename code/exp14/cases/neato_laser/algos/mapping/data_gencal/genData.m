@@ -13,7 +13,7 @@ Y = struct('ranges',{});
 
 mapNames = {'box','l_corridor','s_corridor'};
 nMaps = length(mapNames);
-for i = 3%:nMaps
+for i = 1:nMaps
     % load map
     mapName = mapNames{i};
     lmStruct = load([mapName '_line_map']);

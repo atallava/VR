@@ -1,24 +1,22 @@
 % initialize
 
 % all length units are m
-% maximum error for inliers before refinement
-maxErrLims = [0.005 0.1]; 
-% delta for jacobian calculation
-epsScaleLims = [0.0005 0.05];
-eps0 = [1; 1; 8.726];
-algoParamsLims = {maxErrLims epsScaleLims};
+% scale for occupancy map
+scaleLims = [0.005 0.08];
+% probability of cell being occupied
+pOccLims = [0.5 1];
+algoParamsLims = {scaleLims pOccLims};
 nAlgoParams = 2;
-nSamples = 25;
+nSamples = 20;
 
 %% uniform sampling
-maxErrSamples = range(maxErrLims).*rand(1,nSamples)+maxErrLims(1);
-epsScaleSamples = range(epsScaleLims).*rand(1,nSamples,1)+epsScaleLims(1);
-epsSamples = bsxfun(@times,repmat(eps0,1,nSamples),epsScaleSamples);
+scaleSamples = range(scaleLims).*rand(1,nSamples)+scaleLims(1);
+pOccSamples = range(pOccLims).*rand(1,nSamples)+pOccLims(1);
 
-algoParamsSamples = struct('maxErr',num2cell(maxErrSamples),...
-    'eps',mat2cell(epsSamples,3,ones(1,nSamples)));
+algoParamsSamples = struct('scale',num2cell(scaleSamples),...
+    'pOcc',num2cell(pOccSamples));
 
 %% write to file
-save('algo_params_samples','algoParamsSamples','algoParamsLims','nSamples');
+save('data/algo_params_samples','algoParamsSamples','algoParamsLims','nSamples');
 
 

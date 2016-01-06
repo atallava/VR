@@ -78,8 +78,11 @@ classdef occupancyMap < abstractMap
 			assert(condn,'occupancyMap:outOfMap','Query x out of map range.');
             condn = all(y >= obj.yMin) && all(y <= obj.yMax);
 			assert(condn,'occupancyMap:outOfMap','Query y out of map range.');
-			c = ceil((x-obj.xMin)./obj.scale);
-			r = ceil((y-obj.yMin)./obj.scale);
+			c = ceil((x-obj.xMin)./obj.scale); 
+            % a tiny fraction of the map can spill over
+            c(c > obj.nX) = obj.nX;
+			r = ceil((y-obj.yMin)./obj.scale); 
+            r(r > obj.nY) = obj.nY;
 		end
 		
 		function [x,y] = rc2xy(obj,r,c)
@@ -111,8 +114,10 @@ classdef occupancyMap < abstractMap
 			pts(1,:) = pose(1)+ranges.*cos(bearings+pose(3));
             pts(2,:) = pose(2)+ranges.*sin(bearings+pose(3));
             
+            rcStart = zeros(1,2);
             [rcStart(1),rcStart(2)] = obj.xy2rc(pose(1),pose(2));
             for i = 1:size(pts,2)
+                rcEnd = zeros(1,2);
                 if ranges(i) == obj.laser.nullReading
                     continue;
                 end
@@ -198,7 +203,7 @@ classdef occupancyMap < abstractMap
             l(flag2) = -Inf;
 		end
 		
-		function hf = plotMap(obj)
+		function hf = plotGrid(obj)
 			hf = figure;
 			p = obj.logOdds2Prob(obj.logOddsGrid);
 			imagesc(flipud(1-p));
@@ -221,7 +226,7 @@ classdef occupancyMap < abstractMap
             set(dcmObj,'UpdateFcn',@(src,evt) occupancyMap.tagPlotPointWithXY(src,evt,obj));
 		end
 		
-		function hf = plotBinaryMap(obj)
+		function hf = plotBinaryGrid(obj)
 			hf = figure;
 			p = obj.logOdds2Prob(obj.logOddsGrid);
 			p = p > 0.5;
@@ -262,7 +267,7 @@ classdef occupancyMap < abstractMap
         end
         
         function probGrid = getProbGrid(obj)
-           probGrid = obj.ogOdds2Prob(obj.logOddsGrid);
+           probGrid = obj.logOdds2Prob(obj.logOddsGrid);
         end
         
         function nll = calcNegLogLike(obj,binaryGrid)
@@ -280,7 +285,9 @@ classdef occupancyMap < abstractMap
             probGrid = obj.getProbGrid();
             v1 = log(probGrid(occFlag));
             v2 = log(1-probGrid(~occFlag));
-            nll = -(sum(v1)+sum(v2));
+            % TODO: only considering positive obstacles
+            %nll = -(sum(v1)+sum(v2));
+            nll = -sum(v1);
         end
         
         function [ranges,incidenceAngles] = raycast(obj,pose,maxRange,thRange)
@@ -426,7 +433,15 @@ classdef occupancyMap < abstractMap
         end
         
         function mapScaled = subscaleMap(obj,scaleQuery)
-            condn = scaleQuery < obj.scale;
+            %SUBSCALEMAP
+            %
+            % mapScaled = SUBSCALEMAP(obj,scaleQuery)
+            %
+            % scaleQuery -
+            %
+            % mapScaled  -
+            
+            condn = scaleQuery <= obj.scale;
             assert(condn,'occupancyMap:subscaleError','Query scale must be less than map scale: %.2f.\n',obj.scale);
             inputStruct = struct('laser',obj.laser,'xyLims',obj.xyLims,...
                 'scale',scaleQuery);
