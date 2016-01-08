@@ -196,6 +196,8 @@
 
 * convention for function arguments
 
+* don't forget debugFlags in code
+
 ### gt_factory ###
 * collecting ground truth data from mocap
 

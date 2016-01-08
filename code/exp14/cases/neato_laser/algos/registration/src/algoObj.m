@@ -1,9 +1,10 @@
-function obj = algoObj(data,params)
+function obj = algoObj(X,Y,params)
 %ALGOOBJ 
 % 
 % obj = ALGOOBJ(data,params)
 % 
-% data   - Struct with fields ('X','Y')
+% X      - 
+% Y      - 
 % params - Struct with fields ('maxErr','eps')
 % 
 % obj    - 
@@ -16,17 +17,17 @@ skip = 3;
 refiner = laserPoseRefiner(struct('localizer',localizer,'laser',robotModel.laser,...
     'skip',skip,'numIter',numIter));
 
-nData = length(data.X);
+nData = length(X);
 errVec = zeros(1,nData);
 clockLocal = tic;
 for i = 1:nData
-    localizer = lineMapLocalizer(data.X(i).map.objects);
+    localizer = lineMapLocalizer(X(i).map.objects);
     localizer.maxErr = params.maxErr;
     localizer.eps = params.eps;
     refiner.localizer = localizer;
-    poseTrue = data.X(i).sensorPose;
-    poseIn = data.X(i).perturbedPose;
-    poseOut = refiner.refine(data.Y(i).ranges,poseIn);
+    poseTrue = X(i).sensorPose;
+    poseIn = X(i).perturbedPose;
+    poseOut = refiner.refine(Y(i).ranges,poseIn);
     errVec(i) = pose2D.poseNorm(poseTrue,poseOut);
 end
 

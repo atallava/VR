@@ -11,7 +11,7 @@ classdef thrunLaserModel < handle
     end
     
     methods
-        function obj = exp14LaserModel(inputStruct)
+        function obj = thrunLaserModel(inputStruct)
             % inputStruct fields ('laser','pZero','alpha','beta')
             % X is a struct array with fields ('sensorPose','map')
             if isfield('inputStruct','laser')
@@ -27,6 +27,21 @@ classdef thrunLaserModel < handle
             end
             if isfield('inputStruct','beta')
                 obj.beta = inputStruct.beta;
+            end
+        end
+        
+        function updateModelParams(obj,params)
+            if isstruct(params)
+               obj.pZero = params.pZero;
+               obj.alpha = params.alpha;
+               obj.beta = params.beta;
+            elseif isVec(params)
+                obj.pZero = params(1);
+                obj.alpha = params(2);
+                obj.beta = params(3);
+            else
+                error('thrunLaserModel:updateModelParams:invalidParams',...
+                    'params must be struct or vector.');
             end
         end
         

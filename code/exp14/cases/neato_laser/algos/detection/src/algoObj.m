@@ -1,9 +1,10 @@
-function obj = algoObj(data,params)
+function obj = algoObj(X,Y,params)
 %ALGOOBJ Negative F1 score.
 % 
 % obj = ALGOOBJ(data,params)
 % 
-% data   - 
+% X      - Struct array.
+% Y      - Struct array.
 % params - 
 % 
 % obj    - 
@@ -15,17 +16,17 @@ nMin = params.nMin;
 errorThresh = params.errorThresh;
 lineCandAlgo = @(x1,x2,x3,x4) lineCand(x1,x2,x3,x4,nMin,errorThresh);
 
-nData = length(data.X);
+nData = length(X);
 % getPR needs a cell of scans
 % here, scan{i} is one range reading only
-nBearings = length(data.Y(1).ranges);
-scans = [data.Y.ranges];
+nBearings = length(Y(1).ranges);
+scans = [Y.ranges];
 scans = reshape(scans,nBearings,nData)';
 scans = mat2cell(scans,ones(1,nData),nBearings);
 % getPR needs targetLines packaged
 targetLinesByConf = cell(1,nData);
 for i = 1:nData
-    targetLinesByConf{i} = data.X(i).targetLines;
+    targetLinesByConf{i} = X(i).targetLines;
 end
 
 clockLocal = tic;

@@ -1,9 +1,10 @@
-function obj = algoObj(data,params)
+function obj = algoObj(X,Y,params)
 %ALGOOBJ Mean negLogLike over maps in data.
 % 
 % obj = ALGOOBJ(data,params)
 % 
-% data   - Struct with fields ('X','Y')
+% X      - 
+% Y      - 
 % params - Struct with fields ('scale','pOcc')
 % 
 % obj    - Objective
@@ -12,16 +13,16 @@ debugFlag = false;
 
 load('laser_class_object','laser');
 load('data/occupancy_map_default_params','pInit','pFree');
-nData = length(data.X);
+nData = length(X);
 
 objLog = zeros(1,nData);
 
 clockLocal = tic;
 for i = 1:nData
-    poses = data.X(i).poses;
-    map = data.X(i).map;
-    xyLims = data.X(i).mapXyLims;
-    ranges = data.Y(i).ranges;
+    poses = X(i).poses;
+    map = X(i).map;
+    xyLims = X(i).mapXyLims;
+    ranges = Y(i).ranges;
     
     % get occupancy map
     inputStruct = struct('laser',laser,'xyLims',xyLims,...
