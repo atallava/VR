@@ -69,6 +69,52 @@ classdef laserClass < handle
             r = i+1:i+numNbrs/2;
             r(r>nPix) = r(r>nPix)-nPix+1;
         end
+        
+        function ySet = readingsSet(obj)
+            %READINGSSET Discrete set of possible laser readings.
+            %
+            % ySet = READINGSSET(obj)
+            %
+            %
+            % ySet - Vector with sorted values.
+            
+            nY = round(obj.maxRange/obj.rangeRes)+1;
+            ySet = linspace(0,obj.maxRange,nY);
+        end
+        
+        function projectedData = projectDataToReadingsSet(obj,data)
+            data(data < 0) = 0;
+            data(data > obj.maxRange) = obj.maxRange;
+            
+            dataIsVec = true;
+            if ~isVec(data)
+                dataIsVec = false;
+                originalSize = size(data);
+                data = data(:);
+            end
+            
+            [data,dataIsColumn] = flipVecToColumn(data);
+            nData = length(data);
+            ySet = obj.readingsSet();
+            yResn = ySet(2)-ySet(1);
+            ySet = flipVecToRow(ySet);
+            yMat = repmat(ySet,nData,1);
+            yDiff = bsxfun(@minus,yMat,data);
+            yDiff = abs(yDiff);
+            [~,minIds] = min(yDiff,[],2);
+            projectedData = ySet(minIds);
+            
+            % formatting
+            if dataIsColumn
+                projectedData = flipVecToColumn(projectedData);
+            else
+                projectedData = flipVecToRow(projectedData);
+            end
+            
+            if ~dataIsVec
+                projectedData = reshape(data,originalSize);
+            end
+        end
     end
 end
 

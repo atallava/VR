@@ -190,7 +190,11 @@
 
 * bad design: occ map should have respected matlab's matrix conventions
 
-* might want to include linemap in data.
+* might want to include linemap in mapping data.
+
+* shift sampleFromHistogram to neato_utils
+
+* convention for function arguments
 
 ### gt_factory ###
 * collecting ground truth data from mocap

@@ -18,7 +18,7 @@ laserModel = exp14LaserModel(inputStructLaserModel);
 laserModel.debugFlag = true;
 
 %% optimize
-fun = @(x) modelObjBaseline(x,laserModel,algosVars);
+fun = @(x) modelObjObs(dataset,laserModel,x);
 modelParams0 = [1 1].*1e-2;
 lb = [1 1]*eps; % theoretically zero
 ub = [1 1]*100;
