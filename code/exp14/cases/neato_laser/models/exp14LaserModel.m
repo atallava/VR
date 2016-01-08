@@ -78,6 +78,17 @@ classdef exp14LaserModel < handle
             end
         end
         
+        function updateModelParams(obj,params)
+            if isstruct(params)
+                obj.updateKernelParams(params);
+            elseif isVec(params)
+                obj.updateKernelParams(struct('h',params));
+            else
+                error('thrunLaserModel:updateModelParams:invalidParams',...
+                    'params must be struct or vector.');
+            end
+        end
+        
         function updateKernelParams(obj,kernelParams)
             % only update the kernel params in the bearing regressors
             obj.kernelParams = kernelParams;

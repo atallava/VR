@@ -7,6 +7,7 @@ classdef thrunLaserModel < handle
         % mu = (1+alpha)*r
         % sigma = beta*r
         XQueryLast; YQueryLast;
+        epsilonProb = 1e-6;
         debugFlag = false;
     end
     
@@ -54,7 +55,7 @@ classdef thrunLaserModel < handle
             %
             % probArray -
             
-            condn = length(XQuery == 1);
+            condn = length(XQuery) == 1;
             assert(condn,'thrunLaserModel:probArrayAtState:incorrectInput',...
                 'XQuery must be one element.');
             map = XQuery.map;
@@ -62,6 +63,15 @@ classdef thrunLaserModel < handle
             [rVec,~] = map.raycast(sensorPose,obj.laser.maxRange,obj.laser.bearings);
             muVec = (1+obj.alpha)*rVec;
             sigmaVec = obj.beta*rVec;
+            % out of range
+            flag = rVec > obj.laser.maxRange;
+            muVec(flag) = 0;
+            sigmaVec(flag) = 0;
+            % nan stuff
+            flag = isnan(rVec);
+            muVec(flag) = 0;
+            sigmaVec(flag) = 0;
+            
             probArray = obj.paramsToProbArray(muVec,sigmaVec);
         end
         
@@ -82,6 +92,10 @@ classdef thrunLaserModel < handle
             for i = 1:nQuery
                 probArray = obj.probArrayAtState(XQuery(i));
                 rangesQuery(i,:) = sampleFromHistogram(probArray,obj.laser.readingsSet,1);
+            end
+            
+            if any(isnan(rangesQuery(:)))
+                error('thrunLaserModel:predict','nan ranges predicted.');
             end
                         
             YQuery = struct('ranges',mat2cell(rangesQuery,ones(1,nQuery),obj.laser.nBearings)');
@@ -113,7 +127,7 @@ classdef thrunLaserModel < handle
             sigmaVec = flipVecToColumn(sigmaVec);
             
             nMu = length(muVec);
-            probArray = zeros(nMu,size(yValues));
+            probArray = zeros(nMu,length(yValues));
             if obj.pZero == 1
                 probArray(:,1) = 1;
                 return;
@@ -131,6 +145,7 @@ classdef thrunLaserModel < handle
             probArray = 0.5*(erf(x2./sqrt(2))-erf(x1./sqrt(2)));
             probArray = probArray*(1-obj.pZero);
             probArray(:,1) = probArray(:,1)+obj.pZero;
+            probArray = probArray+obj.epsilonProb; % avoiding zero probability
         end
         
         function nll = negLogLike(obj,probArray,ranges)

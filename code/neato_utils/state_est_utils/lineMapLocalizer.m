@@ -133,7 +133,7 @@ classdef lineMapLocalizer < handle
         
         function [successStory, outPose] = refinePose(obj, inPose, ptsInModelFrame, maxIters)
             if isempty(ptsInModelFrame)
-                warning('NO POINTS INPUT.');
+                warning('lineMapLocalizer:refinePose:illData','No points input.');
                 successStory = struct('success',{},'err',{});
                 outPose = inPose;
                 return;

@@ -13,6 +13,7 @@ function loss = lossDes(X,Y,model,algoObj,algoParamsSamples)
     
     debugFlag = false;
     
+    clockLocal = tic();
     nSamples = length(algoParamsSamples);
     lossVec = zeros(1,nSamples);
     for i = 1:nSamples
@@ -24,5 +25,8 @@ function loss = lossDes(X,Y,model,algoObj,algoParamsSamples)
     
     if debugFlag
         fprintf('lossDes:Computation time: %.2f.\n',tComp);
+    end
+    if isnan(loss)
+        error('lossDes:invalidOutput','loss is nan');
     end
 end

@@ -9,7 +9,7 @@ function obj = algoObj(X,Y,params)
 % 
 % obj    - 
 
-debugFlag = true;
+debugFlag = false;
 
 localizer = lineMapLocalizer([]);
 numIter = 200;

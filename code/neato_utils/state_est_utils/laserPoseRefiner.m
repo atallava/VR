@@ -74,7 +74,7 @@ classdef laserPoseRefiner < handle
             outIds = obj.localizer.throwOutliers(ptsLocal,laserPoseIn);
             ptsLocal(:,outIds) = [];
             if isempty(ptsLocal)
-                warning('NO INLIERS LEFT.');
+                warning('laserPoseRefiner:refine:illData','No inliers left.');
             end
             [stats, laserPoseOut] = obj.localizer.refinePose(laserPoseIn,ptsLocal,obj.numIterations);
             stats(1).numOutliers = sum(outIds);

@@ -11,6 +11,7 @@ function risk = modelRiskCross(lossFns,dataset,model)
 
     debugFlag = false;
     
+    clockLocal = tic();
     nAlgos = length(lossFns);
     nElements = length(dataset);
     condn = nAlgos == nElements;
@@ -20,13 +21,16 @@ function risk = modelRiskCross(lossFns,dataset,model)
     risk = 0;
     for i = 1:nElements
         lossFn = lossFns{i};
-        X = dataset.X(i);
-        Y = dataset.Y(i);
+        X = dataset(i).X;
+        Y = dataset(i).Y;
         risk = risk+lossFn(X,Y,model);
     end
     tComp = toc(clockLocal);
     
     if debugFlag
         fprintf('modelRiskCross:Computation time: %.2f.\n',tComp);
+    end
+    if isnan(risk)
+        error('modelRiskCross:invalidOutput','risk is nan');
     end
 end

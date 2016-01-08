@@ -13,7 +13,7 @@ function loss = lossVer(X,Y,model,algoObj,algoParams)
     
     debugFlag = false;
     
-    clockLocal = toc();
+    clockLocal = tic();
     objReal = algoObj(X,Y,algoParams);
     YSim = model.predict(X);
     objSim = algoObj(X,YSim,algoParams);
@@ -22,5 +22,8 @@ function loss = lossVer(X,Y,model,algoObj,algoParams)
     
     if debugFlag
         fprintf('lossVer:Computation time: %.2f.\n',tComp);
+    end
+    if isnan(loss)
+        error('lossVer:invalidOutput','loss is nan');
     end
 end
