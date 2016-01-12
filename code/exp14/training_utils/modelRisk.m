@@ -1,4 +1,4 @@
-function risk = modelRisk(lossFn,dataset,model)
+function [risk,losses] = modelRisk(lossFn,dataset,model)
     %MODELRISK
     %
     % risk = MODELRISK(lossFn,dataset,model)
@@ -8,6 +8,7 @@ function risk = modelRisk(lossFn,dataset,model)
     % model   - Model class object.
     %
     % risk    - Scalar.
+    % losses  - Vector of losses.
 
     debugFlag = true;
     if debugFlag
@@ -18,12 +19,13 @@ function risk = modelRisk(lossFn,dataset,model)
     
     clockLocal = tic();
     nElements = length(dataset);
-    risk = 0;
+    losses = zeros(1,nElements);
     for i = 1:nElements
         X = dataset(i).X;
         Y = dataset(i).Y;
-        risk = risk+lossFn(X,Y,model);
+        losses(i) = lossFn(X,Y,model);
     end
+    risk = mean(losses);
     tComp = toc(clockLocal);
     
     if debugFlag

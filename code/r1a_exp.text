@@ -198,7 +198,12 @@
 
 * don't forget debugFlags in code
 
-* where a clockLocal is started and stopped seems quite arbitrary
+* where in code a clockLocal is started and stopped seems quite arbitrary
+
+* how do you remind yourself of variables which need to be checked before
+  execing a script
+
+* should be a separation between src and test code? 
 
 ### gt_factory ###
 * collecting ground truth data from mocap

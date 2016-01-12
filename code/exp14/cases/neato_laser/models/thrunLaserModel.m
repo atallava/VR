@@ -116,7 +116,7 @@ classdef thrunLaserModel < handle
             % muVec     -
             % sigmaVec  -
             %
-            % probArray -
+            % probArray - [nVec,nBins] array.
             
             yValues = obj.laser.readingsSet();
             yValues = flipVecToRow(yValues);
@@ -148,13 +148,13 @@ classdef thrunLaserModel < handle
             probArray = probArray+obj.epsilonProb; % avoiding zero probability
         end
         
-        function nll = negLogLike(obj,probArray,ranges)
+        function [nll,rangesProb] = negLogLike(obj,probArray,ranges)
             %NEGLOGLIKE
             %
             % nll = NEGLOGLIKE(obj,probArray,ranges)
             %
-            % probArray -
-            % ranges    -
+            % probArray - [nRanges,nBins] array.
+            % ranges    - nRanges length vector.
             %
             % nll       -
 
@@ -162,14 +162,21 @@ classdef thrunLaserModel < handle
             ranges = obj.laser.projectDataToReadingsSet(ranges);
             
             nYSet = length(ySet);
-            nYSim = length(ranges);
+            nYRanges = length(ranges);
             ySet = flipVecToRow(ySet);
             ranges = flipVecToColumn(ranges);
-            ySetMat = repmat(ySet,nYSim,1);
-            ySimMat = repmat(ranges,1,nYSet);
-            flag = ySetMat == ySimMat;
+            ySetMat = repmat(ySet,nYRanges,1);
+            yRangesMat = repmat(ranges,1,nYSet);
+            flag = ySetMat == yRangesMat;
             [~,setIds] = max(flag,[],2); % get the setIds
-            nll = -sum(log(probArray(setIds)));
+            
+            % setIds are columns ids into probArray
+            columnSubs = setIds;
+            % sub2ind needs column and row subs same size
+            rowSubs = [1:nYRanges]';
+            probArrayIds = sub2ind(size(probArray),rowSubs,columnSubs);
+            rangesProb = probArray(probArrayIds);
+            nll = -sum(log(rangesProb));
         end
     end
     
