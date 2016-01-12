@@ -1,19 +1,22 @@
-function simData = genSimData(simModel,realData)
+function datasetSim = genSimData(simModel,datasetReal)
     %GENSIMDATA Wrapper around model prediction.
     %
-    % GENSIMDATA(simModel,realDataFName,simDataFName)
+    % GENSIMDATA(simModel,datasetReal)
     %
     % simModel      - 
-    % realDataFName - Needed for state.
-    % simDataFName  - Output file.
+    % datasetReal - Struct array with fields ('X','Y').
+    % datasetSim  - Struct array with fields ('X','Y').
     
     debugFlag = true;
     
-    simData = realData;
+    datasetSim = datasetReal;
     clockLocal = tic();
-    simData.Y = simModel.predict(simData.X);
+    nElements = length(datasetReal);
+    for i = 1:nElements
+        datasetSim(i).Y = simModel.predict(datasetSim(i).X);
+    end
     tComp = toc(clockLocal);
     if debugFlag
-        fprintf('genSimData:Computation time %.2fs.\n',tComp);
+        fprintf('genSimData:Computation time: %.2fs.\n',tComp);
     end
 end

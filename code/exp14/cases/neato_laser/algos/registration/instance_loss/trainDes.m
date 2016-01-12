@@ -1,4 +1,4 @@
-% train model on observation risk
+% train model on design risk
 debugFlag = false;
 
 %% setup variables
@@ -6,7 +6,7 @@ debugFlag = false;
 load('../src/data_gencal/data_gencal_train','dataset');
 
 if debugFlag 
-    fprintf('trainObs:nElements: %d.\n',length(dataset));
+    fprintf('trainDes:nElements: %d.\n',length(dataset));
 end
 
 % algo params samples

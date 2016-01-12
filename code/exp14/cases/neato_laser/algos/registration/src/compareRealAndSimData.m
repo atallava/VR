@@ -1,21 +1,23 @@
 % datasets
 fnameReal = 'data_gencal/data_gencal_train';
-dataReal = load(fnameReal);
-fnameSim = 'data_gencal/data_sim_train';
-dataSim = load(fnameSim);
-
-%% calc loss
-[loss,lossVec] = calcLossBaseline(dataReal,dataSim);
+realFile = load(fnameReal);
+datasetReal = realFile.dataset;
+fnameSim = 'data_gencal/data_sim_train_des';
+simFile = load(fnameSim);
+datasetSim = simFile.dataset;
 
 %% viz
-steppingFlag = 0; % use with viz when stepping through data
+steppingFlag = 1; % use with viz when stepping through data
 
-nData = length(dataReal.X);
-for id = 15%1:nData
-    map = dataReal.X(id).map;
-    sensorPose = dataReal.X(id).sensorPose;
-    rangesReal = dataReal.Y(id).ranges;
-    rangesSim = dataSim.Y(id).ranges;
+nElements = length(datasetReal);
+for id = 1:nElements
+    X = datasetReal(id).X;
+    YReal = datasetReal(id).Y;
+    YSim = datasetSim(id).Y;
+    map = X.map;
+    sensorPose = X.sensorPose;
+    rangesReal = YReal.ranges;
+    rangesSim = YSim.ranges;
         
     riReal = rangeImage(struct('ranges',rangesReal));
     ptsReal = [riReal.xArray; riReal.yArray];

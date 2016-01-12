@@ -1,15 +1,17 @@
 % dataset
-fname = 'data_gencal/data_sim_train';
-data = load(fname);
+fname = 'data_gencal/data_sim_train_obs';
+load(fname,'dataset');
 
 %%
-nX = length(X);
+nElements = length(dataset);
 while true
-    id = randsample(1:nX,1);
-    map = data.X(id).map;
-    sensorPose = data.X(id).sensorPose;
-    perturbedPose = data.X(id).perturbedPose;
-    ranges = data.Y(id).ranges;
+    id = randsample(1:nElements,1);
+    X = dataset(id).X;
+    Y = dataset(id).Y;
+    map = X.map;
+    sensorPose = X.sensorPose;
+    perturbedPose = X.perturbedPose;
+    ranges = Y.ranges;
     
     ri = rangeImage(struct('ranges',ranges));
     pts = [ri.xArray; ri.yArray];
@@ -22,7 +24,7 @@ while true
     plot(ptsPerturbed(1,:),ptsPerturbed(2,:),'r.');
     annotation(hf,'textbox',[.6,0.6,.1,.1], ...
         'String', {'blue: map','green: sensor pose','red: perturbed pose'});
-    title(sprintf('data id: %d',id));
+    title(sprintf('element id: %d',id));
     waitforbuttonpress
     close(hf);
 end

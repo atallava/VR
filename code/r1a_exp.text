@@ -198,6 +198,8 @@
 
 * don't forget debugFlags in code
 
+* where a clockLocal is started and stopped seems quite arbitrary
+
 ### gt_factory ###
 * collecting ground truth data from mocap
 
