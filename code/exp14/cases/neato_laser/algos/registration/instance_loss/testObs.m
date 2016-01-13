@@ -3,7 +3,7 @@ debugFlag = false;
 
 %% setup variables
 % dataset
-load('../src/data_gencal/data_gencal_train','dataset');
+load('../src/data_gencal/data_gencal_hold','dataset');
 
 if debugFlag 
     fprintf('testObs:nElements: %d.\n',length(dataset));
@@ -13,8 +13,8 @@ end
 lossFn = @lossObsThrunModel;
 
 %% setup model
-load('train_des_res','laserModel','modelParamsOptim');
+load('train_ver_res','laserModel','modelParamsOptim');
 
 %% evaluate
-risk = modelObj(lossFn,dataset,laserModel,modelParamsOptim);
-fprintf('Observation risk: %.2f.\n',risk);
+[risk,losses] = modelObj(lossFn,dataset,laserModel,modelParamsOptim);
+fprintf('Observation risk: %.4f. std: %.4f. \n',risk,std(losses));

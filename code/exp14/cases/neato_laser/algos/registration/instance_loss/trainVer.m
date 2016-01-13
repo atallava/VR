@@ -11,8 +11,8 @@ end
 
 % algo params
 load('../src/data/algo_param_eps_vector','eps0');
-algoParams.maxErr = 0.1;
-epsScale = 0.01;
+algoParams.maxErr = 0.05;
+epsScale = 0.001;
 algoParams.eps = eps0*epsScale;
 
 % algo objective

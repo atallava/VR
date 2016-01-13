@@ -1,4 +1,4 @@
-function risk = modelObj(lossFn,dataset,model,modelParams)
+function [risk,losses] = modelObj(lossFn,dataset,model,modelParams)
     %MODELOBJ Wrapper around modelRisk.
     %
     % risk = MODELOBJ(lossFn,dataset,model,modelParams)
@@ -9,7 +9,8 @@ function risk = modelObj(lossFn,dataset,model,modelParams)
     % modelParams - Vector or struct.
     %
     % risk        -
+    % losses      - 
 
     model.updateModelParams(modelParams);
-    risk = modelRisk(lossFn,dataset,model);
+    [risk,losses] = modelRisk(lossFn,dataset,model);
 end

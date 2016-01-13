@@ -24,5 +24,5 @@ lossFn = @(X,Y,model) lossVer(X,Y,model,algoObj,algoParams);
 load('train_des_res','laserModel','modelParamsOptim');
 
 %% evaluate
-risk = modelObj(lossFn,dataset,laserModel,modelParamsOptim);
-fprintf('Verification risk: %.2f.\n',risk);
+[risk,losses] = modelObj(lossFn,dataset,laserModel,modelParamsOptim);
+fprintf('Verification risk: %.4f. std: %.4f. \n',risk,std(losses));

@@ -10,7 +10,7 @@ datasetSim = simFile.dataset;
 steppingFlag = 0; % use with viz when stepping through data
 
 nElements = length(datasetReal);
-for id = 9%1:nElements
+for id = 4%1:nElements
     X = datasetReal(id).X;
     YReal = datasetReal(id).Y;
     YSim = datasetSim(id).Y;
@@ -27,13 +27,13 @@ for id = 9%1:nElements
     ptsSim = [riSim.xArray; riSim.yArray];
     ptsSim = pose2D.transformPoints(ptsSim,sensorPose);
     
-    %hf = map.plot();
+%     hf = map.plot();
     hf = figure; axis equal;
     hold on;
     plot(ptsReal(1,:),ptsReal(2,:),'g.');
     plot(ptsSim(1,:),ptsSim(2,:),'r.');
     annotation(hf,'textbox',[.6,0.6,.1,.1], ...
-        'String', {'blue: map','green: real ranges','red: sim ranges'});
+        'String', {'green: real ranges','red: sim ranges'});
     title(sprintf('data id: %d',id));
     if steppingFlag
         waitforbuttonpress;

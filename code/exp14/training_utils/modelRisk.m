@@ -10,7 +10,7 @@ function [risk,losses] = modelRisk(lossFn,dataset,model)
     % risk    - Scalar.
     % losses  - Vector of losses.
 
-    debugFlag = true;
+    debugFlag = false;
     if debugFlag
         fprintf('lossFn: %s.\n',func2str(lossFn));
         fprintf('nElements: %d.\n',length(dataset));

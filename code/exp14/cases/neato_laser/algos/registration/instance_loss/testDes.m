@@ -1,12 +1,12 @@
 % test model on design risk
-debugFlag = true;
+debugFlag = false;
 
 %% setup variables
 % dataset
 load('../src/data_gencal/data_gencal_hold','dataset');
 
 if debugFlag 
-    fprintf('testVer:nElements: %d.\n',length(dataset));
+    fprintf('testDes:nElements: %d.\n',length(dataset));
 end
 
 % algo params samples
@@ -25,9 +25,9 @@ load('train_des_res','laserModel','modelParamsOptim');
 
 %% evaluate
 clockLocal = tic();
-risk = modelObj(lossFn,dataset,laserModel,modelParamsOptim);
+[risk,losses] = modelObj(lossFn,dataset,laserModel,modelParamsOptim);
+fprintf('Design risk: %.4f. std: %.4f. \n',risk,std(losses));
 tComp = toc(clockLocal);
-fprintf('Design risk: %.2f.\n',risk);
 
 if debugFlag
     fprintf('testDes:Computation time: %.2fs.\n',tComp);

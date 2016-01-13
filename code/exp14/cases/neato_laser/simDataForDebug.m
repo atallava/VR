@@ -3,7 +3,7 @@ cond = logical(exist('laserModel','var'));
 assert(cond,('laserModel must exist in workspace.'));
 
 fnameIn = '../src/data_gencal/data_gencal_train';
-fnameOut = '../src/data_gencal/data_sim_train_des';
+fnameOut = '../src/data_gencal/data_sim_train_obs';
 
 %%
 clockLocal = tic();
