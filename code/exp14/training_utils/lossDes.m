@@ -16,7 +16,7 @@ function loss = lossDes(X,Y,model,algoObj,algoParamsSamples)
     clockLocal = tic();
     nSamples = length(algoParamsSamples);
     lossVec = zeros(1,nSamples);
-    for i = 1:nSamples
+    parfor i = 1:nSamples
         algoParams = algoParamsSamples(i);
         lossVec(i) = lossVer(X,Y,model,algoObj,algoParams);
     end

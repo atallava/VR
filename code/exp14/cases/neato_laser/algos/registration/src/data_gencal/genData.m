@@ -12,7 +12,7 @@ load l_map.mat
 rsim.setMap(map);
 
 %% sample poses
-nPoses = 15;
+nPoses = 150;
 xLims = [0.1 4];
 yLims = [0.1 4];
 thLims = [0 2*pi];
@@ -52,7 +52,7 @@ X = struct('sensorPose',mat2cell(sensorPoses,3,ones(1,nStates)),...
 Y = struct('ranges',mat2cell(ranges,ones(1,nStates),size(ranges,2))');
 
 %% write to file
-fname = 'data_gencal';
+fname = 'data_gencal_2';
 save(fname,'X','Y');
 
 %% throw away everything on exp4 path

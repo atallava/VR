@@ -16,5 +16,5 @@ lossFn = @lossObsThrunModel;
 load('train_ver_res','laserModel','modelParamsOptim');
 
 %% evaluate
-[risk,losses] = modelObj(lossFn,dataset,laserModel,modelParamsOptim);
-fprintf('Observation risk: %.4f. std: %.4f. \n',risk,std(losses));
+[risk,losses] = modelRisk(lossFn,dataset,laserModel);
+fprintf('Observation risk: %.4f. std(losses): %.4f. \n',risk,std(losses));

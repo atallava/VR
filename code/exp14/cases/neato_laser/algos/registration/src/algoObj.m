@@ -21,7 +21,12 @@ nData = length(X);
 errVec = zeros(1,nData);
 clockLocal = tic;
 for i = 1:nData
-    localizer = lineMapLocalizer(X(i).map.objects);
+    if isfield(X(i),'refMap')
+        map = X(i).refMap;
+    else
+        map = X(i).map;
+    end
+    localizer = lineMapLocalizer(map.objects);
     localizer.maxErr = params.maxErr;
     localizer.eps = params.eps;
     refiner.localizer = localizer;

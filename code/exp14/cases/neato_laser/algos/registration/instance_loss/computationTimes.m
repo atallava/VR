@@ -5,7 +5,7 @@ timeThrunModelNllPerInstance = 0.04;
 timeAlgoObj = 0.15; % estimated avg
 
 %% variables
-nElements = 9;
+nElements = 27;
 nInstancesPerElement = 1;
 nAlgoParamsSamples = 20;
 

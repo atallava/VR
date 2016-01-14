@@ -21,8 +21,8 @@ warning('off','lineMapLocalizer:refinePose:illData');
 lossFn = @(X,Y,model) lossVer(X,Y,model,algoObj,algoParams);
 
 %% setup model
-load('train_des_res','laserModel','modelParamsOptim');
+load('train_ver_res','laserModel','modelParamsOptim');
 
 %% evaluate
-[risk,losses] = modelObj(lossFn,dataset,laserModel,modelParamsOptim);
+[risk,losses] = modelRisk(lossFn,dataset,laserModel);
 fprintf('Verification risk: %.4f. std: %.4f. \n',risk,std(losses));

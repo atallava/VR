@@ -1,5 +1,7 @@
 % data: struct with fields ('X','Y')
-% X: struct array with fields ('sensorPose','map')
+% X: struct array with fields ('sensorPose','map','refMap')
+% map is the true generating map, and ref map is what is passed to the
+% localizer
 % Y: struct array with fields ('ranges')
 
 %% mapping algo params

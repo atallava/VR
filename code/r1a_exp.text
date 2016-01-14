@@ -7,13 +7,6 @@
 ### exp9 ###
 * mobility error parameter recovery.
 
-### exp10 ###
-* indoor implementation of vaneSim. didn't work well.
-* occupancy mapping code here.
-* when you plot map, should show x and y in m.
-* speedup: can slash fine-grainig factor in estimateHistogram
-* check operation of snap2PMF.
-
 ### exp11 ###
 * dReg stuff.
 
@@ -340,4 +333,7 @@ mostly failed experiments. not all deleted folders may be documented
 
 ### exp7 ###
 * attempt at model collapsing, deleted.
+
+### exp10 ###
+* indoor implementation of vaneSim. didn't work well.
 
