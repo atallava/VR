@@ -1,35 +1,36 @@
 % init
 % load data
-fname = 'data_gencal/data_gencal_train';
-data = load(fname);
+fname = 'data/data_sim_2_train_02';
+% fname = 'data/data_gencal_2_train';
+load(fname,'dataset');
 
 % algo params
 load('data/algo_param_eps_vector','eps0');
-maxErr = 4.85;
-epsScale = 0.0021;
+maxErr = 0.05;
+epsScale = 0.001;
 eps = epsScale*eps0;
 
 %% test algo
+load('data/algo_misc_params','numIter','skip');
+load('laser_class_object','laser');
 vizFlag = true;
 steppingFlag = 0; % use with viz when stepping through data
 localizer = lineMapLocalizer([]);
-numIter = 200;
-skip = 3;
-nData = length(data.X);
-errVec = zeros(1,nData);
+nElements = length(dataset);
+errVec = zeros(1,nElements);
 
-refiner = laserPoseRefiner(struct('localizer',localizer,'laser',robotModel.laser,...
-    'skip',skip,'numIter',numIter));
+refiner = laserPoseRefiner(struct('localizer',localizer,'laser',laser,...
+    'skip',skip,'numIterations',numIter));
 
-for i = 1%:nData
-    map = data.X(i).map;
+for i = 73%1:nElements
+    map = dataset(i).X.map;
     localizer = lineMapLocalizer(map.objects);
     localizer.maxErr = maxErr;
     localizer.eps = eps;
     refiner.localizer = localizer;
-    poseTrue = data.X(i).sensorPose;
-    poseIn = data.X(i).perturbedPose;
-    ranges = data.Y(i).ranges;
+    poseTrue = dataset(i).X.sensorPose;
+    poseIn = dataset(i).X.perturbedPose;
+    ranges = dataset(i).Y.ranges;
     poseOut = refiner.refine(ranges,poseIn);
     errVec(i) = pose2D.poseNorm(poseTrue,poseOut);
     

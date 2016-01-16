@@ -9,7 +9,7 @@ classdef robotModel < handle
         Tlaser = [1 0 -0.1; ...
             0 1 0; ...
             0 0 1];
-        laser = laserClass(struct('maxRange',5,'rangeRes',0.001,'bearings',deg2rad(0:359),'nullReading',0,'Tsensor',robotModel.Tlaser));
+        laser = laserClass(struct('maxRange',4.5,'rangeRes',0.001,'bearings',deg2rad(0:359),'nullReading',0,'Tsensor',robotModel.Tlaser));
     end
     
     methods (Static = true)

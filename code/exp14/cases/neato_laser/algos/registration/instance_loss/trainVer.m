@@ -3,7 +3,7 @@ debugFlag = false;
 
 %% setup variables
 % dataset
-load('../src/data_gencal/data_gencal_1_train','dataset');
+load('../src/data/data_gencal_2_train','dataset');
 
 if debugFlag 
     fprintf('trainVer:nElements: %d.\n',length(dataset));
@@ -30,13 +30,13 @@ laserModel = thrunLaserModel(struct('laser',laser));
 %% optimize
 % x = [pZero alpha beta]
 fun = @(modelParams) modelObj(lossFn,dataset,laserModel,modelParams);
-lb = [1 1 1]*eps;
+lb = [1 1 1]*0;
 ub = [1 0.5 0.5];
-modelParams0 = [0.3 0.01 0.2];
+modelParams0 = [0.4 0.1 0.05];
 options = optimoptions('fmincon','Algorithm','sqp');
 clockLocal = tic();
-% [modelParamsOptim,objOptim,exitflag,output] = fmincon(fun,modelParams0,[],[],[],[],lb,ub,[]);
-[modelParamsOptim,objOptim,exitflag,output] = patternsearch(fun,modelParams0,[],[],[],[],lb,ub,[]);
+[modelParamsOptim,objOptim,exitflag,output] = fmincon(fun,modelParams0,[],[],[],[],lb,ub,[]);
+% [modelParamsOptim,objOptim,exitflag,output] = patternsearch(fun,modelParams0,[],[],[],[],lb,ub,[]);
 
 if debugFlag
     fprintf('trainObs:Computation took %.2fs.\n',toc(clockLocal));

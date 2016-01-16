@@ -1,8 +1,8 @@
 % datasets
-fnameReal = '../src/data_gencal/data_gencal_train';
+fnameReal = '../src/data_gencal/data_gencal_1_train';
 realFile = load(fnameReal);
 datasetReal = realFile.dataset;
-fnameSim = '../src/data_gencal/data_sim_train_des';
+fnameSim = '../src/data_gencal/data_sim_1_train_0';
 simFile = load(fnameSim);
 datasetSim = simFile.dataset;
 
@@ -10,7 +10,7 @@ datasetSim = simFile.dataset;
 steppingFlag = 0; % use with viz when stepping through data
 
 nElements = length(datasetReal);
-for id = 4%1:nElements
+for id = 7%1:nElements
     X = datasetReal(id).X;
     YReal = datasetReal(id).Y;
     YSim = datasetSim(id).Y;

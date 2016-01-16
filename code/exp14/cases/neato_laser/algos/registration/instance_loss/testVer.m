@@ -3,7 +3,7 @@ debugFlag = false;
 
 %% setup variables
 % dataset
-load('../src/data_gencal/data_gencal_hold','dataset');
+load('../src/data_gencal/data_gencal_1_hold','dataset');
 
 if debugFlag 
     fprintf('testVer:nElements: %d.\n',length(dataset));

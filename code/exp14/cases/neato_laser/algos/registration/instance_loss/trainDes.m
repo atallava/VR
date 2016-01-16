@@ -3,7 +3,7 @@ debugFlag = false;
 
 %% setup variables
 % dataset
-load('../src/data_gencal/data_gencal_train','dataset');
+load('../src/data_gencal/data_gencal_1_train','dataset');
 
 if debugFlag 
     fprintf('trainDes:nElements: %d.\n',length(dataset));

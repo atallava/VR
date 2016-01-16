@@ -1,4 +1,4 @@
-function loss = lossDes(X,Y,model,algoObj,algoParamsSamples)
+function [loss,sampleId] = lossDes(X,Y,model,algoObj,algoParamsSamples)
     %LOSSDES
     %
     % loss = LOSSDES(X,Y,model,algoObj,algoParamsSamples)
@@ -10,6 +10,7 @@ function loss = lossDes(X,Y,model,algoObj,algoParamsSamples)
     % algoParamsSamples -
     %
     % loss              -
+    % sampleId          - That which achieves max loss.
     
     debugFlag = false;
     
@@ -20,7 +21,7 @@ function loss = lossDes(X,Y,model,algoObj,algoParamsSamples)
         algoParams = algoParamsSamples(i);
         lossVec(i) = lossVer(X,Y,model,algoObj,algoParams);
     end
-    loss = max(lossVec);
+    [loss,sampleId] = max(lossVec);
     tComp = toc(clockLocal);
     
     if debugFlag

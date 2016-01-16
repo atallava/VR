@@ -129,13 +129,22 @@ classdef lineMap < handle
             %
             % [ranges,incidence_angles] = RAYCAST(obj, pose, max_range, ang_range)
             %
-            %  pose            - Length 3 array.
-            %  max_range       - In m.
-            %  ang_range       - Vector in radian.
+            %  pose            - Length 3 array. Default: [0;0;0].
+            %  max_range       - In m. Default: 4.5. 
+            %  ang_range       - Vector in radian. Default: deg2rad(0:359).
             %
             % ranges           - Vector in m.
             % incidence_angles - Vector in rad.
             
+            if nargin < 4
+                ang_range = deg2rad(0:359);
+            end
+            if nargin < 3
+                max_range = 4.5;
+            end
+            if nargin < 2
+                pose = [0;0;0];
+            end
            [ranges,incidence_angles] = obj.getRAlpha(pose,max_range,ang_range);
 		   ranges(isnan(ranges)) = 0;
         end
@@ -144,6 +153,7 @@ classdef lineMap < handle
             % wrapper around raycast to introduce noise
             % add gaussian noise with stddev based on range and angle of
             % incidence
+            
             [ranges,angles] = raycast(lm, pose, max_range, ang_range);
             
             K = 2e-3;

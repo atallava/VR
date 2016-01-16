@@ -3,19 +3,23 @@ function obj = algoObj(X,Y,params)
 % 
 % obj = ALGOOBJ(data,params)
 % 
-% X      - 
-% Y      - 
-% params - Struct with fields ('maxErr','eps')
+% X      - State.
+% Y      - Observation.
+% params - Struct with fields ('maxErr','eps') or vector.
 % 
 % obj    - 
 
 debugFlag = false;
 
+if isnumeric(params)
+   params = paramsVecToStruct(params); 
+end
+
+load('data/algo_misc_params','numIter','skip');
+load('laser_class_object','laser');
 localizer = lineMapLocalizer([]);
-numIter = 200;
-skip = 3;
-refiner = laserPoseRefiner(struct('localizer',localizer,'laser',robotModel.laser,...
-    'skip',skip,'numIter',numIter));
+refiner = laserPoseRefiner(struct('localizer',localizer,'laser',laser,...
+    'skip',skip,'numIterations',numIter));
 
 nData = length(X);
 errVec = zeros(1,nData);

@@ -1,6 +1,6 @@
 % partition data into train, holdout and test
 % load data
-fname = 'data_gencal';
+fname = 'data_gencal_2';
 load(fname,'dataset');
 
 %% partition

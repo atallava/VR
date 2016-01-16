@@ -23,11 +23,11 @@ poses(3,:) = range(thLims)*poses(3,:)+thLims(1);
 poses(3,:) = mod(poses(3,:),2*pi);
 
 %% sample perturbations
-nPerturbations = 3; % per pose
+nPerturbations = 1; % per pose
 % what are good perturbation limits
-dxLims = [0.005 0.1];
-dyLims = [0.005 0.1];
-dthLims = deg2rad([3 15]);
+dxLims = [0.005 0.05];
+dyLims = [0.005 0.05];
+dthLims = deg2rad([-5 5]);
 perturbations = rand(3,nPoses*nPerturbations);
 perturbations(1,:) = range(dxLims)*perturbations(1,:)+dxLims(1);
 perturbations(2,:) = range(dyLims)*perturbations(2,:)+dyLims(1);
@@ -46,14 +46,18 @@ for i = 1:nStates
 end
 fprintf('genData:Computation time: %.2fs.\n',toc(clockLocal));
 
-X = struct('sensorPose',mat2cell(sensorPoses,3,ones(1,nStates)),...
-    'perturbedPose',mat2cell(perturbedPoses,3,ones(1,nStates)),...
-    'map',map);
-Y = struct('ranges',mat2cell(ranges,ones(1,nStates),size(ranges,2))');
+for i = 1:nStates
+    X.sensorPose = sensorPoses(:,i);
+    X.perturbedPose = perturbedPoses(:,i);
+    X.map = map;
+    X.refMap = map;
+    dataset(i).X = X;
+    dataset(i).Y = ranges(i,:);
+end
 
 %% write to file
 fname = 'data_gencal_2';
-save(fname,'X','Y');
+save(fname,'dataset');
 
 %% throw away everything on exp4 path
 rmpath(genpath(exp4Path));

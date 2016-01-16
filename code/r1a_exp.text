@@ -219,6 +219,8 @@
   heuristic. using bounded variation in coordinates. this heuristic
   follows some throwing, it is an unrobust process.
 
+* all those extra algo parameters, they should be stored somewhere.
+
 ### sim_factory ###
 
 * this is the sim equivalent of gt_factory       
