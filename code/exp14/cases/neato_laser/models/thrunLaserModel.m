@@ -46,6 +46,35 @@ classdef thrunLaserModel < handle
             end
         end
         
+        function paramsVec = modelParamsStructToVec(obj,paramsStruct)
+            %MODELPARAMSSTRUCTTOVEC
+            %
+            % paramsVec = MODELPARAMSSTRUCTTOVEC(paramsStruct)
+            %
+            % paramsStruct - Struct with fields ('pZero','alpha','beta).
+            %
+            % paramsVec    - [1,3] array.
+            
+            paramsVec = zeros(1,3);
+            paramsVec(1) = paramsStruct.pZero;
+            paramsVec(2) = paramsStruct.alpha;
+            paramsVec(3) = paramsStruct.beta;
+        end
+        
+        function paramsStruct = algoParamsVecToStruct(obj,paramsVec)
+            %MODELPARAMSVECTOSTRUCT
+            %
+            % paramsStruct = MODELPARAMSVECTOSTRUCT(paramsVec)
+            %
+            % paramsVec    - [1,3] array.
+            %
+            % paramsStruct - Struct with fields ('pZero','alpha','beta').
+            
+            paramsStruct.pZero = paramsVec(1);
+            paramsStruct.alpha = paramsVec(2);
+            paramsStruct.beta = paramsVec(3);
+        end
+        
         function probArray = probArrayAtState(obj,XQuery)
             %PROBARRAYATSTATE
             %

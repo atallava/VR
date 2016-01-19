@@ -1,6 +1,6 @@
 % algo design on data
 % load data
-fnameData = 'data_gencal/data_gencal_l_near_clutter.mat';
+fnameData = 'data_gencal/data_gencal_l_near_clear.mat';
 load(fnameData,'dataset');
 nElements = length(dataset);
 

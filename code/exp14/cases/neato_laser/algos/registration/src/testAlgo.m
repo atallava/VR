@@ -1,7 +1,6 @@
 % init
 % load data
-fname = 'data/data_sim_2_train_02';
-% fname = 'data/data_gencal_2_train';
+fname = 'data_gencal/data_gencal_l_near_clear';
 load(fname,'dataset');
 
 % algo params
@@ -14,7 +13,7 @@ eps = epsScale*eps0;
 load('data/algo_misc_params','numIter','skip');
 load('laser_class_object','laser');
 vizFlag = true;
-steppingFlag = 0; % use with viz when stepping through data
+steppingFlag = 1; % use with viz when stepping through data
 localizer = lineMapLocalizer([]);
 nElements = length(dataset);
 errVec = zeros(1,nElements);
@@ -22,7 +21,7 @@ errVec = zeros(1,nElements);
 refiner = laserPoseRefiner(struct('localizer',localizer,'laser',laser,...
     'skip',skip,'numIterations',numIter));
 
-for i = 73%1:nElements
+for i = 1:nElements
     map = dataset(i).X.map;
     localizer = lineMapLocalizer(map.objects);
     localizer.maxErr = maxErr;

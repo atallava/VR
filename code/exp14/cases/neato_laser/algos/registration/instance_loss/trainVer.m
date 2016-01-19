@@ -3,7 +3,8 @@ debugFlag = false;
 
 %% setup variables
 % dataset
-load('../src/data/data_gencal_1_train','dataset');
+datasetFilename = '../src/data_gencal/data_gencal_l_far_clutter';
+load(datasetFilename,'dataset');
 
 if debugFlag 
     fprintf('trainVer:nElements: %d.\n',length(dataset));
@@ -31,12 +32,11 @@ laserModel = thrunLaserModel(struct('laser',laser));
 % x = [pZero alpha beta]
 fun = @(modelParams) modelObj(lossFn,dataset,laserModel,modelParams);
 lb = [1 1 1]*0;
-ub = [1 0.5 0.5];
-modelParams0 = [0.4 0.1 0.05];
-options = optimoptions('fmincon','Algorithm','sqp');
+ub = [0.3 0.05 0.01];
+modelParams0 = [0.1 0.01 0.005];
 clockLocal = tic();
-[modelParamsOptim,objOptim,exitflag,output] = fmincon(fun,modelParams0,[],[],[],[],lb,ub,[]);
-% [modelParamsOptim,objOptim,exitflag,output] = patternsearch(fun,modelParams0,[],[],[],[],lb,ub,[]);
+% [modelParamsOptim,objOptim,exitflag,output] = fmincon(fun,modelParams0,[],[],[],[],lb,ub,[]);
+[modelParamsOptim,objOptim,exitflag,output] = patternsearch(fun,modelParams0,[],[],[],[],lb,ub,[]);
 
 if debugFlag
     fprintf('trainObs:Computation took %.2fs.\n',toc(clockLocal));
@@ -44,5 +44,6 @@ end
 
 %% save
 fname = 'train_ver_res';
-save(fname,'algoParams','laserModel','lb','ub','modelParams0','modelParamsOptim','objOptim','exitflag','output');
+save(fname,'datasetFilename','algoParams','laserModel',...
+    'lb','ub','modelParams0','modelParamsOptim','objOptim','exitflag','output');
 

@@ -12,7 +12,7 @@ function obj = algoObj(X,Y,params)
 debugFlag = false;
 
 if isnumeric(params)
-   params = paramsVecToStruct(params); 
+   params = algoParamsVecToStruct(params); 
 end
 
 load('data/algo_misc_params','numIter','skip');

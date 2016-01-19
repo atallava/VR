@@ -1,9 +1,9 @@
-function paramsStruct = paramsVecToStruct(paramsVec)
-    %PARAMSVECTOSTRUCT
+function paramsStruct = algoParamsVecToStruct(paramsVec)
+    %ALGOPARAMSVECTOSTRUCT
     %
-    % paramsStruct = PARAMSVECTOSTRUCT(paramsVec)
+    % paramsStruct = ALGOPARAMSVECTOSTRUCT(paramsVec)
     %
-    % paramsVec    - [2,1] array.
+    % paramsVec    - [1,2] array.
     %
     % paramsStruct - Struct with fields ('maxErr','eps').
     
