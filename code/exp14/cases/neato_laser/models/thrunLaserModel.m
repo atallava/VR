@@ -7,7 +7,7 @@ classdef thrunLaserModel < handle
         % mu = (1+alpha)*r
         % sigma = beta*r
         XQueryLast; YQueryLast;
-        epsilonProb = 1e-6;
+        epsilonProb = 1e-8;
         debugFlag = false;
     end
     

@@ -12,7 +12,7 @@ function [risk,losses] = modelObj(lossFn,dataset,model,modelParams)
     % losses      - 
 
     model.updateModelParams(modelParams);
-    nSamples = 1;
+    nSamples = 10;
     for i = 1:nSamples
         [riskSamples(i),lossesSamples(i,:)] = modelRisk(lossFn,dataset,model);
     end

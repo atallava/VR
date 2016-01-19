@@ -221,6 +221,11 @@
 
 * all those extra algo parameters, they should be stored somewhere.
 
+* do you name data files by number? in that case, store info about that. but i
+  have noticed that i will delete some file number and move on. in that case,
+  there will be crazy high file numbers. alternate is to give data file some
+  mnemonic name.
+
 ### sim_factory ###
 
 * this is the sim equivalent of gt_factory       

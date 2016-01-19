@@ -156,6 +156,11 @@ Typically after ground calibration, the floor is x-z coordinates. The transform 
 ### exp13/ ###
 testing ideas of simulator adaptation on the detection domain.
 
+### exp14/ ###
+* situation\_l\_map\_<id>.mat
+Situations with l map. 1 is uncluttered, close support. 2 is cluttered, close
+support. 3 is uncluttered, far support. 4 is cluttered, far support.
+
 ### misc/ ###
 #### kde/ ####
 * scores  

@@ -1,13 +1,12 @@
 % for miscellaneous data transformations
-fname = 'data_gencal_2';
+fname = 'data_gencal_l_far_clear';
 load(fname);
 
 %%
 nElements = length(dataset);
 for i = 1:nElements
-    ranges = dataset(i).Y;
-    Y.ranges = ranges;
-    dataset(i).Y = Y;
+    dataset(i).X.sensorPose = dataset(i).X.sensorPose';
+    dataset(i).X.perturbedPose = dataset(i).X.perturbedPose';
 end
 
 %%
