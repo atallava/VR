@@ -1,9 +1,9 @@
 % train model on verification risk
-debugFlag = false;
+debugFlag = true;
 
 %% setup variables
 % dataset
-datasetFilename = '../src/data_gencal/data_gencal_l_far_clutter';
+datasetFilename = '../src/data_gencal/data_gencal_ver_trial_train';
 load(datasetFilename,'dataset');
 
 if debugFlag 
@@ -29,21 +29,37 @@ load('laser_class_object','laser');
 laserModel = thrunLaserModel(struct('laser',laser));
 
 %% optimize
-% x = [pZero alpha beta]
+% modelParams = [pZero alpha beta]
 fun = @(modelParams) modelObj(lossFn,dataset,laserModel,modelParams);
 lb = [1 1 1]*0;
 ub = [0.3 0.05 0.01];
 modelParams0 = [0.1 0.01 0.005];
-clockLocal = tic();
-% [modelParamsOptim,objOptim,exitflag,output] = fmincon(fun,modelParams0,[],[],[],[],lb,ub,[]);
-[modelParamsOptim,objOptim,exitflag,output] = patternsearch(fun,modelParams0,[],[],[],[],lb,ub,[]);
+logFilename = 'optim_log';
 
+% specify solver and options
+solverStr = 'patternsearch';
+if strcmp(solverStr,'fmincon')
+    options = optimoptions(solverStr);
+    options.OutputFcn = @(x,optimValues,state) optimLog(x,optimValues,state,logFilename);
+    solver = str2func(solverStr);
+elseif strcmp(solverStr,'patternsearch')
+    options = psoptimset();
+    options.OutputFcn = @(optimvalues,options,flag) optimLog(optimvalues,options,flag,logFilename);
+    solver = str2func(solverStr);
+else
+    error('Invalid solver string.');
+end
+
+clockLocal = tic();
+[modelParamsOptim,objOptim,exitflag,output] = solver(fun,modelParams0,[],[],[],[],lb,ub,[],options);
+tComp = toc(clockLocal);
 if debugFlag
-    fprintf('trainObs:Computation took %.2fs.\n',toc(clockLocal));
+    fprintf('trainObs:Computation took %.2fs.\n',tComp);
 end
 
 %% save
-fname = 'train_ver_res';
+fname = 'train_ver_trial';
 save(fname,'datasetFilename','algoParams','laserModel',...
-    'lb','ub','modelParams0','modelParamsOptim','objOptim','exitflag','output');
+    'lb','ub','modelParams0','logFilename','options','solver',...
+    'modelParamsOptim','objOptim','exitflag','output','tComp');
 

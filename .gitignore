@@ -12,9 +12,6 @@ figs/
 **/ascension_tracker/data/
 **/pr2/bags2/
 
-# initialization script
-initLocal.m
-
 # saved data
 *.mat
 *.csv
@@ -34,3 +31,6 @@ initLocal.m
 # casual files
 scrap.*
 
+# optimization log
+# should be more general
+optim_log.txt
