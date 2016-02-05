@@ -25,31 +25,33 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/log/sources/severity_logger.hpp>
 
-#include <geometry/primitives/Point2D.h>
+#include <support_at/Point2D.h>
 
+/* NREC code 
 #include <Simple3DSim/Simple3DSim.h>
-#include <VehicleState/VehicleState.h>
+*/
+#include <support_at/VehicleState.h>
 
-#include "PathLocalizer.h"
+#include <ades/PathLocalizer.h>
 
 
 //-------------------------------------------------------------------------------
 namespace vmi
 {
 
-  //-----------------------------------------------------------------------------
+ //-----------------------------------------------------------------------------
   struct LocVel_T
   {
     // the default constructor
     LocVel_T():
-      loc(nrec::geometry::Point2D_d(0.0, 0.0)),
+      loc(support_at::Point2D_d(0.0, 0.0)),
       speed(0.0),
       yawRate(0.0)
     {
     };
 
     // the 2D Location
-    nrec::geometry::Point2D_d loc;
+    support_at::Point2D_d loc;
 
     // the longitudinal speed (m/sec)
     double speed;
@@ -82,8 +84,8 @@ namespace vmi
     bool setDesiredPath(const std::vector<LocVel_T>& desiredPath);
 
     //---------------------------------------------------------------------------
-    bool getClosestPoint(const ddt::VehicleState& vs, 
-                         nrec::geometry::Point2D_d& closestPt);
+    bool getClosestPoint(const support_at::VehicleState& vs, 
+                         support_at::Point2D_d& closestPt);
 
     //---------------------------------------------------------------------------
     // param [in] currentState - the current state of the vehicle
@@ -91,7 +93,7 @@ namespace vmi
     //                             some look ahead distance
     // param [out] desiredSpeed  - the desired speed to execute the  
     // returns true on success and false otherwise
-    bool computeControls(const ddt::VehicleState& vs,
+    bool computeControls(const support_at::VehicleState& vs,
                          double& desiredRadius,
                          double& desiredSpeed);
 

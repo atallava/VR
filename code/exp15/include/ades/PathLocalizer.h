@@ -29,7 +29,7 @@
 #include <boost/log/trivial.hpp>
 #include <boost/log/sources/severity_logger.hpp>
 
-#include <geometry/primitives/Point2D.h>
+#include <support_at/Point2D.h>
 
 //-------------------------------------------------------------------------------
 namespace vmi
@@ -53,22 +53,22 @@ namespace vmi
     
     // constructor with start, end and the cumulative distance of this segment's
     // start location from the beginning of the path
-    WPSegment(const nrec::geometry::Point2D_d& start,
-              const nrec::geometry::Point2D_d& end,
+    WPSegment(const support_at::Point2D_d& start,
+              const support_at::Point2D_d& end,
               const double& cumDistFromPathStart,
               const double speed);
 
     // "progress" along the path segment
-    double progress(const nrec::geometry::Point2D_d& pt) const;
+    double progress(const support_at::Point2D_d& pt) const;
 
     
     //@}
     
     // the start location of the segment
-    nrec::geometry::Point2D_d m_start;
+    support_at::Point2D_d m_start;
     
     // the end location of the segment
-    nrec::geometry::Point2D_d m_end;
+    support_at::Point2D_d m_end;
     
     // the cumulative distance from the start of the path
     double m_cumDistFromPathStart;
@@ -91,7 +91,7 @@ namespace vmi
     double m_distToSegment;
     
     // the closest point
-    nrec::geometry::Point2D_d m_closestPt;
+    support_at::Point2D_d m_closestPt;
   };
 
   //-------------------------------------------------------------------------------
@@ -149,18 +149,18 @@ namespace vmi
 
     //-----------------------------------------------------------------------------
     //! add a point to the "end" of the path
-    bool addPoint(const nrec::geometry::Point2D_d& pt,
+    bool addPoint(const support_at::Point2D_d& pt,
                   const double speed);
 
     //-----------------------------------------------------------------------------
     //! given a point, find the closest point on the path and the distance to the
     //! closest point on the path
-    bool localize(const nrec::geometry::Point2D_d& pt,
-                  nrec::geometry::Point2D_d& closestPt,
+    bool localize(const support_at::Point2D_d& pt,
+                  support_at::Point2D_d& closestPt,
                   double& closestPtDist,
                   std::size_t& closestSegmentIdx,
                   const double& lookAheadDistance,
-                  nrec::geometry::Point2D_d& lookAheadPoint,
+                  support_at::Point2D_d& lookAheadPoint,
                   const bool searchEntirePath = false,
                   const double searchWindowSize = 10.0 // meters
                   );
@@ -181,23 +181,23 @@ namespace vmi
     void addSegmentToPath(const WPSegment& segment);
 
     // find the closest segment
-    void findClosestSegment(const nrec::geometry::Point2D_d& pt,
+    void findClosestSegment(const support_at::Point2D_d& pt,
                             const std::size_t& startIdx,
                             const std::size_t& endIdx,
-                            nrec::geometry::Point2D_d& closestPt,
+                            support_at::Point2D_d& closestPt,
                             double& closestPtDist);
 
     // find the look-ahead point
     void findLookAheadPoint(const double& lookAheadDistance,
-			    const nrec::geometry::Point2D_d& loc,
-                            const nrec::geometry::Point2D_d& closestPt,
-                            nrec::geometry::Point2D_d& lookAheadPoint);
+			    const support_at::Point2D_d& loc,
+                            const support_at::Point2D_d& closestPt,
+                            support_at::Point2D_d& lookAheadPoint);
 
     // the collection of segments that makeup the desired path
     std::vector<WPSegment> m_path;
 
     // the first point
-    nrec::geometry::Point2D_d m_firstPoint;
+    support_at::Point2D_d m_firstPoint;
 
     // has the first point been added
     bool m_firstPointAdded;

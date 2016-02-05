@@ -6,15 +6,6 @@ project (ADES)
 
 set (CMAKE_BUILD_TYPE "Debug")
 
-if( NOT DEFINED CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE STREQUAL "" )
-  message( STATUS "No build type selected, default to Release" )
-  set( CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE )
-endif()
-
-message( STATUS "Build configuration: ${CMAKE_BUILD_TYPE}" )
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
-
 set( LIBRARY_OUTPUT_PATH "${PROJECT_SOURCE_DIR}/lib" CACHE PATH
     "Target directory for all libraries." )
 set( EXECUTABLE_OUTPUT_PATH "${PROJECT_SOURCE_DIR}/bin" CACHE PATH
@@ -22,43 +13,19 @@ set( EXECUTABLE_OUTPUT_PATH "${PROJECT_SOURCE_DIR}/bin" CACHE PATH
 
 add_definitions( -Wall -std=c++0x )
 
-# Find packages we will be using
-
-# Eigen for linear algebra and matrices
-find_package( Eigen REQUIRED )
-message( STATUS "Eigen found at: ${EIGEN_INCLUDE_DIRS}" )
-include_directories( ${EIGEN_INCLUDE_DIRS} )
-
-# Threading and Boost utilities
-find_package( Threads REQUIRED )
-list( APPEND ADES_LIBRARIES ${CMAKE_THREAD_LIBS_INIT} )
-
-find_package( Boost REQUIRED )
-include_directories( ${Boost_INCLUDE_DIRS} )
-list( APPEND ADES_LIBRARIES ${Boost_LIBRARIES} )
-list( APPEND ADES_LIBRARIES "-lboost_thread" ) # Need to force linking against threads
-
 set( ADES_INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/include" )
 include_directories(${ADES_INCLUDE_DIRECTORIES})
 
-# # Add files here to compile them
-# add_library(ades SHARED 	
-#   src/ControlGenerator.cpp
-#   src/ForwardSimulator.cpp
-#   src/PathLocalizer.cpp
-#   src/PathTracker.cpp
-#   )
+# Add files here to compile them
+add_library(ades SHARED 	
+  # TODO: support_at, own library
+  src/Point2D.cpp
 
-# ?
-#Set_target_properties(ades PROPERTIES OUTPUT_NAME ades)
-
-# ?
-#target_link_libraries(ades ${ADES_LIBRARIES})
+  src/Scrap.cpp
+  src/DataProcessor.cpp
+  src/Test.cpp
+  )
 
 # Add files here to make executables out of them
-add_executable(hello_world src/hello_world.cpp)
-#target_link_libraries(hello_world ades ${ADES_LIBRARIES})
-
-# add_subdirectory( src )
-
-# add_subdirectory( app )
+add_executable(run_tests src/run_tests.cpp)
+target_link_libraries(run_tests ades ${ADES_LIBRARIES})

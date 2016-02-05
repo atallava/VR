@@ -196,7 +196,7 @@ namespace vmi
   }
 
   //-----------------------------------------------------------------------------
-  bool PathTracker::getClosestPoint(const ddt::VehicleState& vs,
+  bool PathTracker::getClosestPoint(const support_at::VehicleState& vs,
                                     nrec::geometry::Point2D_d& closestPt)
   {
     double distToClosestPt(0.0);
@@ -204,7 +204,7 @@ namespace vmi
     nrec::geometry::Point2D_d lookAheadPoint;
 
     nrec::geometry::Point2D_d vehicleLoc;
-    const ddt::NavState& navState = vs.getNavState();
+    const support_at::NavState& navState = vs.getNavState();
 
     vehicleLoc.x() = navState.m_tranAbsY; // easting
     vehicleLoc.y() = navState.m_tranAbsX; // northing
@@ -226,7 +226,7 @@ namespace vmi
   }
   
   //-----------------------------------------------------------------------------
-  bool PathTracker::computeControls(const ddt::VehicleState& vs,
+  bool PathTracker::computeControls(const support_at::VehicleState& vs,
                                     double& desiredRadius,
                                     double& desiredSpeed)
   {
@@ -249,7 +249,7 @@ namespace vmi
     nrec::geometry::Point2D_d lookAheadPoint;
 
     nrec::geometry::Point2D_d vehicleLoc;
-    const ddt::NavState& navState = vs.getNavState();
+    const support_at::NavState& navState = vs.getNavState();
 
     vehicleLoc.x() = navState.m_tranAbsX; // northing
     vehicleLoc.y() = navState.m_tranAbsY; // easting

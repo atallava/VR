@@ -1,0 +1,13 @@
+// header files
+// format: (MPC code), (at code)
+geometry/primitives/Point2D.h, support_at/Point2D.h
+VehicleState/VehicleState.h, support_at/VehicleState.h
+
+// variable types
+// format: (MPC code), (at code)
+nrec::geometry::Point2D_d, support_at::Point2D_d
+ddt::VehicleState, support_at::VehicleState
+ddt::NavState, support_at::NavState
+
+// this could break when using namespace happens, eliminate possibility
+
