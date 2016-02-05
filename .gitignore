@@ -3,14 +3,18 @@
 *#
 *.asv
 
-# folders
+# directories
 writings/
 videos/
 images/
 figs/
-*build/
 **/ascension_tracker/data/
 **/pr2/bags2/
+
+*build/
+*lib/
+*bin/
+
 
 # saved data
 *.mat
@@ -28,7 +32,7 @@ figs/
 # compressed files
 *.zip
 
-# casual files
+# scrap files
 scrap.*
 
 # optimization log
