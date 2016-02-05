@@ -63,8 +63,6 @@
 * for traj, gt might start only after 0s, take that into account
 
 ### exp14 ###
-* rss 16 workhorse. algodev work.
-
 * don't do a blanket addpath(genpath(pathToM)), since it has extensive
   code (even after deleting unused folders) that can conflict.
 
@@ -300,6 +298,10 @@ using 3x3 matrices.
 
 * assumption broken. marker names have changed during the course of a
   run.
+
+### exp14 ###
+
+* similar to exp13, but working with husky.
 
 ### neato_utils ###
 
