@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <ades/DataProcessor.h>
+#include <support_at/NavState.h>
 
 using namespace ades;
 
@@ -99,4 +100,19 @@ bool DataProcessor::loadPath(const std::string fileName,
     ifp.close();
 
     return !desiredPath.empty();
+}
+
+bool DataProcessor::saveVehicleStateLog(std::vector<support_at::VehicleState> vsLog, 
+					std::string fileName)
+{
+    support_at::NavState ns;
+    std::ofstream ofp(fileName.c_str());
+    for(std::size_t idx = 0; idx < vsLog.size(); idx++) {
+	ns = vsLog[idx].getNavState();
+	// x,y,yaw
+	ofp << ns.m_tranAbsX << "," << ns.m_tranAbsY << ","
+	    << ns.m_tranAbsYaw << std::endl;
+    }
+    ofp.close();
+    return true;
 }

@@ -18,7 +18,7 @@
 #include <boost/log/trivial.hpp>
 
 
-#include "PathTracker.h"
+#include <ades/PathTracker.h>
 
 //-------------------------------------------------------------------------------
 using namespace boost::log::trivial;
@@ -113,7 +113,7 @@ namespace vmi
                       {
                       case 0: 
                         {
-                          locVel.loc.x() = value;
+                         locVel.loc.x() = value;
                           break;
                         }
                       case 1:
@@ -167,9 +167,10 @@ namespace vmi
         // add the current point to the path localizer object
         if(!m_localizer.addPoint(iter->loc, iter->speed))
           {
-            BOOST_LOG_SEV(m_logger, error) << "Could not add the point"
-                                           << iter->loc
-                                           << " to the localizer!!";
+	      // MPC version
+            // BOOST_LOG_SEV(m_logger, error) << "Could not add the point"
+            //                                << iter->loc
+            //                                << " to the localizer!!";
             return false;
           }
       }
@@ -197,18 +198,18 @@ namespace vmi
 
   //-----------------------------------------------------------------------------
   bool PathTracker::getClosestPoint(const support_at::VehicleState& vs,
-                                    nrec::geometry::Point2D_d& closestPt)
+                                    support_at::Point2D_d& closestPt)
   {
     double distToClosestPt(0.0);
     std::size_t closestSegmentIdx(0);
-    nrec::geometry::Point2D_d lookAheadPoint;
+    support_at::Point2D_d lookAheadPoint;
 
-    nrec::geometry::Point2D_d vehicleLoc;
+    support_at::Point2D_d vehicleLoc;
     const support_at::NavState& navState = vs.getNavState();
+
 
     vehicleLoc.x() = navState.m_tranAbsY; // easting
     vehicleLoc.y() = navState.m_tranAbsX; // northing
-
     
     if(!m_localizer.localize(vehicleLoc,
                              closestPt, 
@@ -243,19 +244,22 @@ namespace vmi
       }
 
     // localize to the desired path
-    nrec::geometry::Point2D_d closestPt;
+    support_at::Point2D_d closestPt;
     double distToClosestPt(0.0);
     std::size_t closestSegmentIdx(0);
-    nrec::geometry::Point2D_d lookAheadPoint;
+    support_at::Point2D_d lookAheadPoint;
 
-    nrec::geometry::Point2D_d vehicleLoc;
+    support_at::Point2D_d vehicleLoc;
     const support_at::NavState& navState = vs.getNavState();
 
     vehicleLoc.x() = navState.m_tranAbsX; // northing
     vehicleLoc.y() = navState.m_tranAbsY; // easting
-
+    
+    /* MPC version
     const double currentYawRad = nrec::geometry::Angle_d::degToRad * 
       navState.m_tranAbsYaw.getDegrees();
+    */
+    const double currentYawRad = navState.m_tranAbsYaw;
     
     if(!m_localizer.localize(vehicleLoc,
                              closestPt, 
@@ -273,14 +277,15 @@ namespace vmi
     if(distToClosestPt >= ms_maxDistanceThreshold)
       {
         std::cout.setf(std::ios_base::fixed);
-        std::cout << "Vehicle loc: " << vehicleLoc
-                  << " closestPt: " << closestPt
-                  << "distance to closest point:  "
-                  << distToClosestPt
-                  << " is greater than the maximum "
-                  << "distance threshold of: " 
-                  << ms_maxDistanceThreshold
-                  << std::endl;
+	std::cout << "Path too far off, bailing" << std::endl;
+        // std::cout << "Vehicle loc: " << vehicleLoc
+        //           << " closestPt: " << closestPt
+        //           << "distance to closest point:  "
+        //           << distToClosestPt
+        //           << " is greater than the maximum "
+        //           << "distance threshold of: " 
+        //           << ms_maxDistanceThreshold
+        //           << std::endl;
         return false;
       }
 

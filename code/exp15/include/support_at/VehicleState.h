@@ -1,13 +1,13 @@
 #pragma once
-#include "NavState.h"
+#include <support_at/NavState.h>
 
 namespace support_at {
     class VehicleState {
     public:
 	VehicleState();
-	NavState getNavState();
+	inline NavState getNavState() const { return m_navState; }
 	void setNavState(NavState ns);
     private:
-	m_navState;
+	NavState m_navState;
     };
 }

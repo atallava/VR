@@ -20,7 +20,7 @@
 #include <boost/foreach.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
 
-#include "PathLocalizer.h"
+#include <ades/PathLocalizer.h>
 
 //-------------------------------------------------------------------------------
 using namespace boost::log::trivial;
@@ -47,8 +47,8 @@ namespace vmi
   //-------------------------------------------------------------------------------
   // WPSegment - constructor with args
   //-------------------------------------------------------------------------------
-  WPSegment::WPSegment(const nrec::geometry::Point2D_d& start,
-                       const nrec::geometry::Point2D_d& end,
+  WPSegment::WPSegment(const support_at::Point2D_d& start,
+                       const support_at::Point2D_d& end,
                        const double& cumDistFromPathStart,
                        const double speed):
     m_start(start),
@@ -60,10 +60,10 @@ namespace vmi
   }
 
   //-------------------------------------------------------------------------------
-  double WPSegment::progress(const nrec::geometry::Point2D_d& pt) const
+  double WPSegment::progress(const support_at::Point2D_d& pt) const
   {
     double x_d = 0.0, y_d = 0.0, x_s_p = 0.0, y_s_p = 0.0, alpha = 0.0;
-    
+
     // the x component of the vector m_path[idx]
     x_d = m_end.x() - m_start.x();
     
@@ -125,7 +125,7 @@ namespace vmi
   //-------------------------------------------------------------------------------
   // PathLocalizer - addPoint method
   //-------------------------------------------------------------------------------
-  bool PathLocalizer::addPoint(const nrec::geometry::Point2D_d& pt,
+  bool PathLocalizer::addPoint(const support_at::Point2D_d& pt,
                                const double speed)
   {
     // sanity check on pt
@@ -210,12 +210,12 @@ namespace vmi
   //-----------------------------------------------------------------------------
   // PathLocalizer - localize method
   //-----------------------------------------------------------------------------
-  bool PathLocalizer::localize(const nrec::geometry::Point2D_d& pt,
-                               nrec::geometry::Point2D_d& closestPt,
+  bool PathLocalizer::localize(const support_at::Point2D_d& pt,
+                               support_at::Point2D_d& closestPt,
                                double& closestPtDist,
                                std::size_t& closestSegmentIdx,
                                const double& lookAheadDistance,
-                               nrec::geometry::Point2D_d& lookAheadPoint,
+                               support_at::Point2D_d& lookAheadPoint,
                                const bool searchEntirePath,
                                const double searchWindowSize)
   {
@@ -489,10 +489,10 @@ namespace vmi
   //-----------------------------------------------------------------------------
   // PathLocalizer - findClosestSegment
   //-----------------------------------------------------------------------------
-  void PathLocalizer::findClosestSegment(const nrec::geometry::Point2D_d& pt,
+  void PathLocalizer::findClosestSegment(const support_at::Point2D_d& pt,
                                          const std::size_t& startIdx,
                                          const std::size_t& endIdx,
-                                         nrec::geometry::Point2D_d& closestPt,
+                                         support_at::Point2D_d& closestPt,
                                          double& closestPtDist)
   {
 
@@ -575,9 +575,9 @@ namespace vmi
 
   //-----------------------------------------------------------------------------
   void PathLocalizer::findLookAheadPoint(const double& lookAheadDistance,
-					 const nrec::geometry::Point2D_d& pt,
-                                         const nrec::geometry::Point2D_d& closestPt,
-                                         nrec::geometry::Point2D_d& lookAheadPoint)
+					 const support_at::Point2D_d& pt,
+                                         const support_at::Point2D_d& closestPt,
+                                         support_at::Point2D_d& lookAheadPoint)
   {
     double cumulativeDist(0.0);
     double dist(0.0);
