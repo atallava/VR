@@ -1,13 +1,23 @@
 classdef trajPlanner < handle
         
     properties (SetAccess = private)
+        tablesFname 
         tables
     end
     
     methods
         function obj = trajPlanner(inputData)
-            % inputData fields ('file')
-            load(inputData.file);
+            if nargin < 1
+                someUsefulPaths;
+                obj.tablesFname = [pathToM '/neato_utils/trajectory_utils/trajectory_table.mat'];
+            else
+                if isfield(inputData,'tablesFname')
+                    obj.tablesFname = inputData.tablesFname;
+                else
+                    error('tablesFname not input');
+                end
+            end
+            load(obj.tablesFname);
             obj.tables = tt;
         end
         

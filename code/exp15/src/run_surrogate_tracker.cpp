@@ -3,13 +3,14 @@
 #include <ades/PathTracker.h>
 #include <support_at/FlatSim.h>
 #include <support_at/VehicleState.h>
+#include <support_at/NavState.h>
 
 using namespace ades;
 
 int main(int argv, char** argc) {
     // load path
     DataProcessor dap;
-    std::string pathFileName = "data/straight_line_path.txt";
+    std::string pathFileName = "data/path_1.txt";
     std::vector<vmi::LocVel_T> desiredPath;
     dap.loadPath(pathFileName,desiredPath);
 
@@ -23,13 +24,19 @@ int main(int argv, char** argc) {
 
     int controlScale = 5;
     
-    double duration = 50.0;
+    // just a large enough number
+    double duration = 200.0;
     int simSteps = (int)duration/sim.getUpdatePeriod() + 1;
 
     int controlCount = 1;
 
-    // // initialize vehicle state
+    // initialize vehicle state
     support_at::VehicleState vs;
+    support_at::NavState startNs;
+    startNs.m_tranAbsX = desiredPath[0].loc.x();
+    startNs.m_tranAbsY = desiredPath[0].loc.y();
+    vs.setNavState(startNs);
+    sim.setInitVehicleState(vs);
     
     // initialize desired radius
     double desiredRadius(1.0E06);
@@ -55,7 +62,7 @@ int main(int argv, char** argc) {
     for(std::size_t step = 1; step <= (unsigned)simSteps; step++) {
     	// update controls
     	if(controlCount%controlScale == 0) {
-            pt.computeControls(vs, desiredRadius, desiredSpeed);
+	    pt.computeControls(vs, desiredRadius, desiredSpeed);
 
 	    // print controls
 	    // std::cout << "Commanded radius: " << desiredRadius 
@@ -98,11 +105,11 @@ int main(int argv, char** argc) {
     }
 
     // print nav state
-    support_at::NavState ns = vs.getNavState();
-    std::cout << "Vehicle x: " << ns.m_tranAbsX
-    	  << " y: " << ns.m_tranAbsY
-    	  << " yaw: " << ns.m_tranAbsYaw
-    	  << std::endl;
+    // support_at::NavState ns = vs.getNavState();
+    // std::cout << "Vehicle x: " << ns.m_tranAbsX
+    // 	  << " y: " << ns.m_tranAbsY
+    // 	  << " yaw: " << ns.m_tranAbsYaw
+    // 	  << std::endl;
 
     // write poses to file
     std::string resFileName("data/surrogate_tracker_res.txt");

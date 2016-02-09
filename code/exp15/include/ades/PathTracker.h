@@ -117,6 +117,9 @@ namespace vmi
     // the computed desired longitudinal velocity
     double m_desiredSpeed;
 
+    // for ades, tunable lookahead distance
+    double m_lADist;
+
     // the logging object for this class
     static boost::log::sources::severity_logger<> m_logger;
 
@@ -130,8 +133,6 @@ namespace vmi
     // a fixed look ahead distance of xx.xxx meters
     // MPC version
     /* static const double ms_fixedLADist; */
-    // for ades, tunable lookahead distance
-    double m_lADist;
     
     // maximum distance beyond which the algorithm will
     // refuse to do pure-pursuit

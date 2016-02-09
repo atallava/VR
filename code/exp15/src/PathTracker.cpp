@@ -38,7 +38,8 @@ namespace vmi
   //-----------------------------------------------------------------------------
   PathTracker::PathTracker(): 
     m_desiredRadius(1.0E06),
-    m_desiredSpeed(0.0)
+    m_desiredSpeed(0.0),
+    m_lADist(1.0)
   {
   }
 
