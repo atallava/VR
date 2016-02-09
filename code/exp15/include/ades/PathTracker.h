@@ -100,6 +100,9 @@ namespace vmi
     //---------------------------------------------------------------------------
     void purgeOldSegments();
 
+    inline const double getLADist() const { return m_lADist; }
+    void setLADist(double laDist);
+
   private:
     
     // the "localizer" object for this class
@@ -125,7 +128,10 @@ namespace vmi
 
     // for the Husky, it will be sufficient to setup 
     // a fixed look ahead distance of xx.xxx meters
-    static const double ms_fixedLADist;
+    // MPC version
+    /* static const double ms_fixedLADist; */
+    // for ades, tunable lookahead distance
+    double m_lADist;
     
     // maximum distance beyond which the algorithm will
     // refuse to do pure-pursuit

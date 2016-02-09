@@ -31,7 +31,6 @@ namespace vmi
   //-----------------------------------------------------------------------------
   const double PathTracker::ms_maxDecel(-2.0);
   const double PathTracker::ms_maxAccel(1.0);
-  const double PathTracker::ms_fixedLADist(1.0);
   const double PathTracker::ms_maxDistanceThreshold(15.0);
   const double PathTracker::ms_progressForDone(0.8);
   boost::log::sources::severity_logger<> PathTracker::m_logger;
@@ -214,7 +213,7 @@ namespace vmi
                              closestPt, 
                              distToClosestPt,
                              closestSegmentIdx,
-                             ms_fixedLADist,
+                             m_lADist,
                              lookAheadPoint))
       {
         BOOST_LOG_SEV(m_logger, error) << "Could not localize the vehicle "
@@ -263,7 +262,7 @@ namespace vmi
                              closestPt, 
                              distToClosestPt,
                              closestSegmentIdx,
-                             ms_fixedLADist,
+                             m_lADist,
                              lookAheadPoint))
       {
         BOOST_LOG_SEV(m_logger, error) << "Could not localize the vehicle "
@@ -348,5 +347,10 @@ namespace vmi
   {
     m_localizer.purgeOldSegments();
   }
+
+  void PathTracker::setLADist(double lADist)
+  {
+      m_lADist = lADist;
+  }    
   
 }
