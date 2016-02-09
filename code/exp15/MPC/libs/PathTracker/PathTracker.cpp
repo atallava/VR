@@ -310,18 +310,18 @@ namespace vmi
         const double x_la = cos_yaw * x_d + sin_yaw * y_d;
         const double y_la = -sin_yaw * x_d + cos_yaw * y_d;
 
-        // std::cout.setf(std::ios_base::fixed);
-        // std::cout.precision(5);
-        // std::cout << "current yaw: " 
-	// 	  << nrec::geometry::Angle_d::radToDeg * currentYawRad 
-        //           << " P: (" << vehicleLoc.x()
-        //           << ", " << vehicleLoc.y() << ") " 
-        //           << " LA: (" << lookAheadPoint.x()
-        //           <<  ", " << lookAheadPoint.y() << ")"
-        //           << " x_d: " << x_d << ", y_d: "  << y_d 
-        //           << " distance: " << sqrt(x_d*x_d + y_d*y_d)
-        //           << " TLA: (" << x_la << ", " << y_la
-        //           << ")" << std::endl;
+        std::cout.setf(std::ios_base::fixed);
+        std::cout.precision(5);
+        std::cout << "current yaw: " 
+		  << nrec::geometry::Angle_d::radToDeg * currentYawRad 
+                  << " P: (" << vehicleLoc.x()
+                  << ", " << vehicleLoc.y() << ") " 
+                  << " LA: (" << lookAheadPoint.x()
+                  <<  ", " << lookAheadPoint.y() << ")"
+                  << " x_d: " << x_d << ", y_d: "  << y_d 
+                  << " distance: " << sqrt(x_d*x_d + y_d*y_d)
+                  << " TLA: (" << x_la << ", " << y_la
+                  << ")" << std::endl;
 
         // sanity on the x_la
         if(0.0 == x_la)

@@ -10,6 +10,7 @@ namespace ades {
 	bool loadPath(const std::string fileName, 
 		      std::vector<vmi::LocVel_T>& desiredPath);
 	bool saveVehicleStateLog(std::vector<support_at::VehicleState> vsLog,
+				 std::vector<double> tLog,
 				 std::string fileName);
     };
 } // end of namespace

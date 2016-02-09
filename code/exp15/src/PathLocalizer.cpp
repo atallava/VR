@@ -155,13 +155,13 @@ namespace vmi
             if((segment.m_length < ms_smallestSegmentLength) ||
                (segment.m_length > ms_largestSegmentLength))
               {
-                // BOOST_LOG_SEV(m_logger, warning)
-                //   << "Segment length: " << segment.m_length
-                //   << " is not in the range ["
-                //   << ms_smallestSegmentLength
-                //   << ", "
-                //   << ms_largestSegmentLength
-                //   << "]";
+                BOOST_LOG_SEV(m_logger, warning)
+                  << "Segment length: " << segment.m_length
+                  << " is not in the range ["
+                  << ms_smallestSegmentLength
+                  << ", "
+                  << ms_largestSegmentLength
+                  << "]";
                 return false;
               }
             else // segment length is in a reasonable range
@@ -189,13 +189,13 @@ namespace vmi
         if((segment.m_length < ms_smallestSegmentLength) ||
            (segment.m_length > ms_largestSegmentLength))
           {
-            // BOOST_LOG_SEV(m_logger, warning)
-            //   << "Segment length: " << segment.m_length
-            //   << " is not in the range ["
-            //   << ms_smallestSegmentLength
-            //   << ", "
-            //   << ms_largestSegmentLength
-            //   << "]";
+            BOOST_LOG_SEV(m_logger, warning)
+              << "Segment length: " << segment.m_length
+              << " is not in the range ["
+              << ms_smallestSegmentLength
+              << ", "
+              << ms_largestSegmentLength
+              << "]";
             return false;
           }
         else // segment length is in a reasonable range

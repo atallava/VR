@@ -167,10 +167,9 @@ namespace vmi
         // add the current point to the path localizer object
         if(!m_localizer.addPoint(iter->loc, iter->speed))
           {
-	      // MPC version
-            // BOOST_LOG_SEV(m_logger, error) << "Could not add the point"
-            //                                << iter->loc
-            //                                << " to the localizer!!";
+            BOOST_LOG_SEV(m_logger, error) << "Could not add the point"
+                                           << iter->loc
+                                           << " to the localizer!!";
             return false;
           }
       }
@@ -231,7 +230,6 @@ namespace vmi
                                     double& desiredRadius,
                                     double& desiredSpeed)
   {
-    
     // start off with a clean slate
     desiredRadius = 1.0E06;
     desiredSpeed = 0.0;
@@ -277,15 +275,14 @@ namespace vmi
     if(distToClosestPt >= ms_maxDistanceThreshold)
       {
         std::cout.setf(std::ios_base::fixed);
-	std::cout << "Path too far off, bailing" << std::endl;
-        // std::cout << "Vehicle loc: " << vehicleLoc
-        //           << " closestPt: " << closestPt
-        //           << "distance to closest point:  "
-        //           << distToClosestPt
-        //           << " is greater than the maximum "
-        //           << "distance threshold of: " 
-        //           << ms_maxDistanceThreshold
-        //           << std::endl;
+        std::cout << "Vehicle loc: " << vehicleLoc
+                  << " closestPt: " << closestPt
+                  << " distance to closest point: "
+                  << distToClosestPt
+                  << " is greater than the maximum "
+                  << "distance threshold of: " 
+                  << ms_maxDistanceThreshold
+                  << std::endl;
         return false;
       }
 
@@ -297,6 +294,7 @@ namespace vmi
     if((closestSegmentIdx == path.size()-1) && 
        (path.back().progress(vehicleLoc) >= ms_progressForDone))
       {
+        std::cout << "Vehicle at last segment." << std::endl; 
         desiredRadius = 1.0E06;
         desiredSpeed = 0.0;
       }

@@ -4,7 +4,7 @@
 
 using namespace support_at;
 
-FlatSim::FlatSim() : m_updatePeriod(1/10),
+FlatSim::FlatSim() : m_updatePeriod(1/10.0),
 		     m_speed(0.0),
 		     m_curvature(1/1.0E06)
 {
@@ -22,8 +22,8 @@ bool FlatSim::step()
     NavState ns = m_vs.getNavState();
     double ds = m_speed*m_updatePeriod;
     ns.m_tranAbsYaw += m_curvature*ds;
-    ns.m_tranAbsX += ns.m_tranAbsX + cos(ns.m_tranAbsYaw)*ds;
-    ns.m_tranAbsY += ns.m_tranAbsY + sin(ns.m_tranAbsYaw)*ds;
+    ns.m_tranAbsX += cos(ns.m_tranAbsYaw)*ds;
+    ns.m_tranAbsY += sin(ns.m_tranAbsYaw)*ds;
     m_vs.setNavState(ns);
 
     return true;

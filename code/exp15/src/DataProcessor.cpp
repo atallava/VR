@@ -103,6 +103,7 @@ bool DataProcessor::loadPath(const std::string fileName,
 }
 
 bool DataProcessor::saveVehicleStateLog(std::vector<support_at::VehicleState> vsLog, 
+					std::vector<double> tLog,
 					std::string fileName)
 {
     support_at::NavState ns;
@@ -111,7 +112,9 @@ bool DataProcessor::saveVehicleStateLog(std::vector<support_at::VehicleState> vs
 	ns = vsLog[idx].getNavState();
 	// x,y,yaw
 	ofp << ns.m_tranAbsX << "," << ns.m_tranAbsY << ","
-	    << ns.m_tranAbsYaw << std::endl;
+	    << ns.m_tranAbsYaw << ","
+	    << tLog[idx] 
+	    << std::endl;
     }
     ofp.close();
     return true;

@@ -14,6 +14,7 @@ figs/
 *build/
 *lib/
 *bin/
+*data/
 
 
 # saved data

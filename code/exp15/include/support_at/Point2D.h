@@ -10,9 +10,13 @@ namespace support_at {
 	inline double y() const { return m_y; }
 	inline double& x() { return m_x; }
 	inline double& y() { return m_y; }
-	/* friend std::ostream& operator<<(std::ostream& os,  */
-	/* 				const Point2D_d& pt); */
 	double m_x;
 	double m_y;
     };
+    static std::ostream& operator<<(std::ostream& os,
+				    const Point2D_d& pt)
+    {
+	os << "x: " << pt.m_x << ", y: " << pt.m_y;
+	return os;
+    }
 }

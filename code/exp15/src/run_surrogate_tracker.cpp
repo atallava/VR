@@ -9,7 +9,7 @@ using namespace ades;
 int main(int argv, char** argc) {
     // load path
     DataProcessor dap;
-    std::string pathFileName = "data/dummy_path.txt";
+    std::string pathFileName = "data/straight_line_path.txt";
     std::vector<vmi::LocVel_T> desiredPath;
     dap.loadPath(pathFileName,desiredPath);
 
@@ -23,12 +23,12 @@ int main(int argv, char** argc) {
 
     int controlScale = 5;
     
-    double duration = 100.0;
+    double duration = 50.0;
     int simSteps = (int)duration/sim.getUpdatePeriod() + 1;
 
     int controlCount = 1;
 
-    // initialize vehicle state
+    // // initialize vehicle state
     support_at::VehicleState vs;
     
     // initialize desired radius
@@ -40,44 +40,73 @@ int main(int argv, char** argc) {
     // initialize desired speed
     double desiredSpeed(0.0);
 
-    // set sim initial commands
+    // // set sim initial commands
     sim.setCommandCurvature(desiredSpeed, desiredCurvature);
 
     // vehicle state log
-    std::vector<support_at::VehicleState> vsLog (simSteps);
+    std::vector<support_at::VehicleState> vsLog;
+    vsLog.reserve(simSteps);
+
+    // time log
+    std::vector<double> tLog;
+    tLog.reserve(simSteps);
 
     // loop through sim
     for(std::size_t step = 1; step <= (unsigned)simSteps; step++) {
-	// update controls
-	if(controlCount%controlScale == 0) {
+    	// update controls
+    	if(controlCount%controlScale == 0) {
             pt.computeControls(vs, desiredRadius, desiredSpeed);
-	    desiredCurvature = 1.0/desiredRadius;
-	    sim.setCommandCurvature(desiredSpeed, desiredCurvature);
 
-	    // reset control count
-	    controlCount = 1;
-	}
+	    // print controls
+	    // std::cout << "Commanded radius: " << desiredRadius 
+	    // 	      << " speed: " << desiredSpeed
+	    // 	      << std::endl;
+
+	    // end of the line
+	    if(desiredSpeed == 0.0) {
+		std::cout << "End of tracking, sim step: " << step << std::endl;
+		break;
+	    }
+
+    	    desiredCurvature = 1.0/desiredRadius;
+    	    sim.setCommandCurvature(desiredSpeed, desiredCurvature);
+
+    	    // reset control count
+    	    controlCount = 0;
+    	}
 	
-	// step 
-	sim.step();
+    	// step 
+    	sim.step();
 
-	// update vehicle state
-	vs = sim.getVehicleState();
+    	// update vehicle state
+    	vs = sim.getVehicleState();
 
-	// update vehicle state log
-	vsLog.push_back(vs);
+	// print nav state
+	// support_at::NavState ns = vs.getNavState();
+	// std::cout << "Vehicle x: " << ns.m_tranAbsX
+	// 	  << " y: " << ns.m_tranAbsY
+	// 	  << " yaw: " << ns.m_tranAbsYaw
+	// 	  << std::endl;
 
-	// update control count
-	controlCount += 1;
+    	// update vehicle state log
+    	vsLog.push_back(vs);
 
-	// end of the line
-	if(desiredSpeed == 0.0) {
-	    std::cout << "End of the line." << std::endl;
-	    break;
-	}
+	tLog.push_back((step-1)*sim.getUpdatePeriod());
+
+    	// update control count
+    	controlCount += 1;
     }
 
+    // print nav state
+    support_at::NavState ns = vs.getNavState();
+    std::cout << "Vehicle x: " << ns.m_tranAbsX
+    	  << " y: " << ns.m_tranAbsY
+    	  << " yaw: " << ns.m_tranAbsYaw
+    	  << std::endl;
+
     // write poses to file
-    std::string resFileName("surrogate_tracker_res.txt");
-    dap.saveVehicleStateLog(vsLog, resFileName);
+    std::string resFileName("data/surrogate_tracker_res.txt");
+    dap.saveVehicleStateLog(vsLog, tLog, resFileName);
+
+    return 1;
 }
