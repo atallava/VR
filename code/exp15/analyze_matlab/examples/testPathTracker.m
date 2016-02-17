@@ -17,7 +17,7 @@ pathFname = '../data/path_1.txt';
 desiredPath = loadPath(pathFname);
 
 %% run tracker
-vehicleState = [desiredPath.pts(1,:) 0];
+vehicleState = [desiredPath.pts(1,:) -3.14];
 
 [vehicleStateLog,tLog] = executeTracker(desiredPath,vehicleState,simParams,pathTrackerParams);
 

@@ -35,6 +35,7 @@ int main(int argv, char** argc) {
     support_at::NavState startNs;
     startNs.m_tranAbsX = desiredPath[0].loc.x();
     startNs.m_tranAbsY = desiredPath[0].loc.y();
+    startNs.m_tranAbsYaw = -3.14;
     vs.setNavState(startNs);
     sim.setInitVehicleState(vs);
     

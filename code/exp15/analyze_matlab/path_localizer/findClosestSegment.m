@@ -22,7 +22,8 @@ function [closestPt,closestPtDist,segmentId] = findClosestSegment(pathPts,pt)
     % else, on segment
     flag3 = ~(flag1 | flag2);
     th = atan2(segmentVecs(:,2),segmentVecs(:,1));
-    closestPts(flag3,:) = startPts(flag3,:)+bsxfun(@times,[cos(th(flag3)) sin(th(flag3))],th(flag3));
+    closestPts(flag3,:) = startPts(flag3,:)+...
+        bsxfun(@times,[cos(th(flag3)) sin(th(flag3))],alphas(flag3).*th(flag3));
     
     % pick closest point
     closestPtDists = closestPts-repmat(pt,nSegments,1);
