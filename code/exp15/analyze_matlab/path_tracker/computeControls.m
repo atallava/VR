@@ -1,13 +1,24 @@
-function [desiredSpeed,desiredRadius] = computeControls(desiredPath,vehicleState,params)
-    pt = vehicleState(1:2);
-    pt = flipVecToRow(pt);
+function [desiredRadius,desiredSpeed] = computeControls(desiredPathSegments,vehicleState,params)
+    %COMPUTECONTROLS
+    %
+    % [desiredRadius,desiredSpeed] = COMPUTECONTROLS(desiredPathSegments,vehicleState,params)
+    %
+    % desiredPathSegments -
+    % vehicleState        -
+    % params              -
+    %
+    % desiredRadius       -
+    % desiredSpeed        -
     
-    % get closest segment
-    [minDist,closestPt,segmentId] = findClosestSegment(desiredPath,pt);
+    pt.x = vehicleState.x;
+    pt.y = vehicleState.y;
+    
+    % localize
+    [closestPt,closestPtDist,closestSegmentId,lookaheadPt] = localizer(desiredPathSegments,pt,params.lookaheadDist);
     
     % too far from path
-    if minDist > params.maxMinDist
-        fprintf('Distance to desired path exceeds %.2f, bailing.\n',params.maxMinDist);
+    if closestPtDist > params.maxDistanceThreshold
+        fprintf('Distance to desired path exceeds %.2f, bailing.\n',params.maxDistanceThreshold);
         desiredSpeed = 0.0;
         desiredRadius = 1e6;
         return;
@@ -15,22 +26,20 @@ function [desiredSpeed,desiredRadius] = computeControls(desiredPath,vehicleState
     
     % sanity on proximity to current location if at last segment
     % progressForDone depends on resolution. not checking resolution here
-    if segmentId == length(desiredPath.segments) && ...
-            progressAlongSegment(desiredPath.segments(segmentId),pt) >= params.progressForDone
+    if closestSegmentId == length(desiredPathSegments) && ...
+            progressAlongSegment(desiredPathSegments(end),pt) >= params.progressForDone
         fprintf('Vehicle at last segment.\n');
         desiredSpeed = 0.0;
         desiredRadius = 1e6;
         return;
     end
     
-    % walk along segment for lookahead distance
-    lookaheadPt = findLookaheadPt(desiredPath,segmentId,closestPt,params.lookaheadDist);
     % vec1 is from vehicle to lookahead 
-    vec1 = lookaheadPt-pt;
-    th = vehicleState(3);
+    vec1 = [lookaheadPt.x-pt.x lookaheadPt.y-pt.y];
+    yaw = vehicleState.yaw;
     % vec2 is vec1 in vehicle frame
-    vec2(1) = vec1(1)*cos(th)+vec1(2)*sin(th);
-    vec2(2) = -vec1(1)*sin(th)+vec1(2)*cos(th);
+    vec2(1) = vec1(1)*cos(yaw)+vec1(2)*sin(yaw);
+    vec2(2) = -vec1(1)*sin(yaw)+vec1(2)*cos(yaw);
     
     % sanity on x_la
     if vec2(1) == 0.0
@@ -38,5 +47,5 @@ function [desiredSpeed,desiredRadius] = computeControls(desiredPath,vehicleState
     else
         desiredRadius = sum(vec2.^2)/(2*vec2(2));
     end
-    desiredSpeed = desiredPath.segments(segmentId).speed;
+    desiredSpeed = desiredPathSegments(closestSegmentId).speed;
 end
