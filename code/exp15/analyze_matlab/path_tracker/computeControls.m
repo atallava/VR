@@ -1,4 +1,4 @@
-function [desiredRadius,desiredSpeed] = computeControls(desiredPathSegments,vehicleState,params)
+function [desiredRadius,desiredSpeed] = computeControls(desiredPath,vehicleState,params)
     %COMPUTECONTROLS
     %
     % [desiredRadius,desiredSpeed] = COMPUTECONTROLS(desiredPathSegments,vehicleState,params)
@@ -10,11 +10,12 @@ function [desiredRadius,desiredSpeed] = computeControls(desiredPathSegments,vehi
     % desiredRadius       -
     % desiredSpeed        -
     
-    pt.x = vehicleState.x;
-    pt.y = vehicleState.y;
+    pt = vehicleState(1:2);
+    pt = flipVecToRow(pt);
+    nSegments = size(desiredPath.pts,1)-1;
     
     % localize
-    [closestPt,closestPtDist,closestSegmentId,lookaheadPt] = localizer(desiredPathSegments,pt,params.lookaheadDist);
+    [closestPt,closestPtDist,closestSegmentId,lookaheadPt] = localizer(desiredPath.pts,pt,params.lookaheadDist);
     
     % too far from path
     if closestPtDist > params.maxDistanceThreshold
@@ -26,17 +27,17 @@ function [desiredRadius,desiredSpeed] = computeControls(desiredPathSegments,vehi
     
     % sanity on proximity to current location if at last segment
     % progressForDone depends on resolution. not checking resolution here
-    if closestSegmentId == length(desiredPathSegments) && ...
-            progressAlongSegment(desiredPathSegments(end),pt) >= params.progressForDone
+    if closestSegmentId == nSegments && ...
+            progressAlongSegment(desiredPath.pts(end-1:end,:),pt) >= params.progressForDone
         fprintf('Vehicle at last segment.\n');
         desiredSpeed = 0.0;
         desiredRadius = 1e6;
         return;
     end
     
-    % vec1 is from vehicle to lookahead 
-    vec1 = [lookaheadPt.x-pt.x lookaheadPt.y-pt.y];
-    yaw = vehicleState.yaw;
+    % vec1 is from vehicle to lookahead
+    vec1 = lookaheadPt-pt;
+    yaw = vehicleState(3);
     % vec2 is vec1 in vehicle frame
     vec2(1) = vec1(1)*cos(yaw)+vec1(2)*sin(yaw);
     vec2(2) = -vec1(1)*sin(yaw)+vec1(2)*cos(yaw);
@@ -47,5 +48,5 @@ function [desiredRadius,desiredSpeed] = computeControls(desiredPathSegments,vehi
     else
         desiredRadius = sum(vec2.^2)/(2*vec2(2));
     end
-    desiredSpeed = desiredPathSegments(closestSegmentId).speed;
+    desiredSpeed = desiredPath.speed(closestSegmentId);
 end

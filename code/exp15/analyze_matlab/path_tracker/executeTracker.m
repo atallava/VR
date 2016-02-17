@@ -1,4 +1,4 @@
-function [vehicleStateLog,tLog] = executeTracker(desiredPathSegments,vehicleStartState,simParams,pathTrackerParams)
+function [vehicleStateLog,tLog] = executeTracker(desiredPath,vehicleStartState,simParams,pathTrackerParams)
     duration = 200;
     simSteps = ceil(duration/simParams.updatePeriod)+1;
     controlScale = 5;
@@ -11,14 +11,14 @@ function [vehicleStateLog,tLog] = executeTracker(desiredPathSegments,vehicleStar
     
     % update logs first time
     logCount = 1;
-    vehicleStateLog(logCount) = vehicleState;
+    vehicleStateLog(logCount,:) = vehicleState;
     tLog(logCount) = 0;
     logCount = logCount+1;
     
     for i = 1:simSteps
         % update controls
         if mod(controlCount,controlScale) == 0
-            [desiredRadius,desiredSpeed] = computeControls(desiredPathSegments,vehicleState,pathTrackerParams);
+            [desiredRadius,desiredSpeed] = computeControls(desiredPath,vehicleState,pathTrackerParams);
             
             if desiredSpeed == 0
                 fprintf('End of tracking.\n');
@@ -34,7 +34,7 @@ function [vehicleStateLog,tLog] = executeTracker(desiredPathSegments,vehicleStar
         controlCount = controlCount+1;
         
         % update logs
-        vehicleStateLog(logCount) = vehicleState;
+        vehicleStateLog(logCount,:) = vehicleState;
         tLog(logCount) = (i-1)*simParams.updatePeriod;
         logCount = logCount+1;
     end

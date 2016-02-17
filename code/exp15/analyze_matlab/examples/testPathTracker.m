@@ -12,16 +12,14 @@ pathTrackerParams.lookaheadDist = 1.0;
 simParams.updatePeriod = 0.01;
 
 %% load some path
-pathFname = '../data/straight_line_path.txt';
+% pathFname = '../data/straight_line_path.txt';
+pathFname = '../data/path_1.txt';
 desiredPath = loadPath(pathFname);
-desiredPathSegments = pathToSegments(desiredPath,pathLocalizerParams);
 
 %% run tracker
-vehicleState.x = desiredPath(1).x;
-vehicleState.y = desiredPath(1).y;
-vehicleState.yaw = 0;
+vehicleState = [desiredPath.pts(1,:) 0];
 
-[vehicleStateLog,tLog] = executeTracker(desiredPathSegments,vehicleState,simParams,pathTrackerParams);
+[vehicleStateLog,tLog] = executeTracker(desiredPath,vehicleState,simParams,pathTrackerParams);
 
 %% plot
 hf = plotDesiredAndFollowedPaths(desiredPath,vehicleStateLog);

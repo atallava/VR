@@ -1,25 +1,23 @@
-function lookaheadPt = findLookaheadPt(segments,segmentId,closestPt,lookaheadDist)
-    closestSegment = segments(segmentId);
-    remDistOnSegment = norm([closestSegment.endPt.x-closestPt.x closestSegment.endPt.y-closestPt.y]);
-   
-    if remDistOnSegment <= lookaheadDist
+function lookaheadPt = findLookaheadPt(pathPts,segmentId,closestPt,lookaheadDist)
+    nSegments = size(pathPts,1)-1;
+    segmentEndPt = pathPts(segmentId+1,:);
+    remDistOnSegment = norm(segmentEndPt-closestPt);
+       
+    if remDistOnSegment > lookaheadDist
         % lookahead is on closest segment
-        th = atan2(closestSegment.endPt.y-closestSegment.startPt.y,...
-            closestSegment.endPt.x-closestSegment.startPt.x);
-        lookaheadPt.x = closestPt.x+lookaheadDist*cos(th);
-        lookaheadPt.y = closestPt.y+lookaheadDist*sin(th);
+        vec = pathPts(segmentId+1,:)-pathPts(segmentId,:);
+        th = atan2(vec(2),vec(1));
+        lookaheadPt = closestPt+lookaheadDist.*[cos(th) sin(th)];
         return;
     else
         % need to slide on to next segment
-        if segmentId == length(segments)
-            lookaheadPt = closestSegment.endPt;
+        if segmentId == nSegments
+            lookaheadPt = pathPts(segmentId+1,:);
             return;
         end
-        nextSegment = segments(segmentId+1);
         remLookaheadDist = lookaheadDist-remDistOnSegment;
-        th = atan2(nextSegment.endPt.y-nextSegment.startPt.y,...
-            nextSegment.endPt.x-nextSegment.startPt.x);
-        lookaheadPt.x = nextSegment.startPt.x+remLookaheadDist*cos(th);
-        lookaheadPt.y = nextSegment.startPt.y+remLookaheadDist*sin(th);
+        vec = pathPts(segmentId+2,:)-pathPts(segmentId+1,:);
+        th = atan2(vec(2),vec(1));
+        lookaheadPt = pathPts(segmentId+1,:)+lookaheadDist.*[cos(th) sin(th)];
     end
 end

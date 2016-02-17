@@ -1,5 +1,5 @@
-function [closestPt,closestPtDist,closestSegmentId,lookaheadPt] = localizer(segments,pt,lookaheadDist)
-    [closestPt,closestPtDist,closestSegmentId] = findClosestSegment(segments,pt);
-    lookaheadPt = findLookaheadPt(segments,closestSegmentId,closestPt,lookaheadDist);
+function [closestPt,closestPtDist,closestSegmentId,lookaheadPt] = localizer(pathPts,pt,lookaheadDist)
+    [closestPt,closestPtDist,closestSegmentId] = findClosestSegment(pathPts,pt);
+    lookaheadPt = findLookaheadPt(pathPts,closestSegmentId,closestPt,lookaheadDist);
 end
     

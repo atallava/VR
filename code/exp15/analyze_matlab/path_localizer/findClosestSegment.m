@@ -1,19 +1,14 @@
-function [closestPt,closestPtDist,segmentId] = findClosestSegment(segments,pt)
-    
-    nSegments = length(segments);
+function [closestPt,closestPtDist,segmentId] = findClosestSegment(pathPts,pt)
+    nSegments = size(pathPts,1)-1;
     closestPts = zeros(nSegments,2);
     
-    tmp = [segments.startPt];
-    startPts(:,1) = [tmp.x];
-    startPts(:,2) = [tmp.y];
-    tmp = [segments.endPt];
-    endPts(:,1) = [tmp.x];
-    endPts(:,2) = [tmp.y];
+    startPts = pathPts(1:end-1,:);
+    endPts = pathPts(2:end,:);
     
     segmentVecs = endPts-startPts;
     colNorm2 = sum(segmentVecs.^2,2);
-    ptVecs = repmat([pt.x pt.y],nSegments,1)-startPts;
-    alphas = dot(segmentVecs,ptVecs,2);
+    ptVecs = repmat(pt,nSegments,1)-startPts;
+    alphas = sum(segmentVecs.*ptVecs,2);
     alphas = bsxfun(@rdivide,alphas,colNorm2);
     
     % closest point is start
@@ -30,10 +25,8 @@ function [closestPt,closestPtDist,segmentId] = findClosestSegment(segments,pt)
     closestPts(flag3,:) = startPts(flag3,:)+bsxfun(@times,[cos(th(flag3)) sin(th(flag3))],th(flag3));
     
     % pick closest point
-    closestPtDists = closestPts-repmat([pt.x pt.y],nSegments,1);
+    closestPtDists = closestPts-repmat(pt,nSegments,1);
     closestPtDists = sqrt(sum(closestPtDists.^2,2));
     [closestPtDist,segmentId] = min(closestPtDists);
-    
-    closestPt = struct('x',closestPts(segmentId,1),'y',closestPts(segmentId,2));
-    
+    closestPt = closestPts(segmentId,:);
 end

@@ -1,7 +1,6 @@
 function stateOut = flatSim(stateIn,commandSpeed,commandCurvature,simParams)
-    stateOut = stateIn;
     ds = commandSpeed*simParams.updatePeriod;
-    stateOut.yaw = stateIn.yaw+commandCurvature*ds;
-    stateOut.x = stateIn.x+cos(stateOut.yaw)*ds;
-    stateOut.y = stateIn.y+sin(stateOut.yaw)*ds;
+    stateOut(3) = stateIn(3)+commandCurvature*ds;
+    stateOut(1) = stateIn(1)+cos(stateOut(3))*ds;
+    stateOut(2) = stateIn(2)+sin(stateOut(3))*ds;
 end
