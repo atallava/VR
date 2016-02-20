@@ -1,9 +1,15 @@
-% Setup Lidar 
-% % Configures Serial Communication and Updates Sensor Communication to
+function lidar = setupLidar(comName)
+% Setup Lidar
+% Configures Serial Communication and Updates Sensor Communication to
 % SCIP2.0 Protocol.
-% % Checks Version Information and switches on Laser.
+% Checks Version Information and switches on Laser.
 % Author- Shikhar Shrestha, IIT Bhubaneswar
-lidar=serial('COM3','baudrate',115200);
+
+if nargin < 1
+    comName = 'COM3';
+end
+
+lidar = serial(comName,'baudrate',115200);
 set(lidar,'Timeout',0.1);
 set(lidar,'InputBufferSize',40000);
 set(lidar,'Terminator','CR');
@@ -14,7 +20,8 @@ pause(0.1);
 fscanf(lidar);
 fprintf(lidar,'VV');
 pause(0.1);
-fscanf(lidar)
+fscanf(lidar);
 fprintf(lidar,'BM');
 pause(0.1);
-fscanf(lidar)
+fscanf(lidar);
+end

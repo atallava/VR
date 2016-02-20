@@ -3,6 +3,8 @@ classdef myHokuyo < handle
     
     properties
         laser
+        bearings
+        nBearings
         timerObj
         laserFreq = 0.5; %Hz
         ranges
@@ -16,6 +18,9 @@ classdef myHokuyo < handle
         function obj = myHokuyo(laser)
             warning('off');
             obj.laser = laser;
+            
+            obj.bearings = deg2rad(linspace(-120,120,682)); 
+            obj.nBearings = length(obj.bearings);
 			
 			obj.timerObj = timer;
 			obj.timerObj.Tag = 'myHokuyo';
