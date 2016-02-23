@@ -1,4 +1,16 @@
-function particles = initParticlesUniform(map,support,xyScale,thScale,bBox)
+function particles = initParticlesUniform(map,support,bBox,xyScale,thScale)
+    %INITPARTICLESUNIFORM 
+    %
+    % particles = INITPARTICLESUNIFORM(map,support,bBox,xyScale,thScale)
+    %
+    % map       - lineMap object.
+    % support   - Struct with fields ('xv','yv').
+    % bBox      - Struct with fields ('xv','yv').
+    % xyScale   - Scalar.
+    % thScale   - Scalar.
+    %
+    % particles - Struct array with fields ('pose').
+    
     xMax = max(support.xv);
     xMin = min(support.xv);
     yMax = max(support.yv);

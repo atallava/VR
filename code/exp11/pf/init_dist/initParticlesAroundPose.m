@@ -1,4 +1,4 @@
-function particles = initParticlesAroundPose(map,support,xyScale,thScale,bBox,pose)
+function particles = initParticlesAroundPose(map,support,bBox,xyScale,thScale,pose)
     
     xRange = 0.5;
     yRange = 0.5;

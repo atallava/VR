@@ -14,6 +14,7 @@ function [ranges,bearings] = subsampleRanges(ranges,bearings,skip)
         skip = 5;
     end
     ids = 1:skip:length(ranges);
+    ids = floor(ids);
     ranges = ranges(ids);
     bearings = bearings(ids);
 end

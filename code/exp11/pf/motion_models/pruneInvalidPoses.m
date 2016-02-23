@@ -1,4 +1,14 @@
 function particlesOut = pruneInvalidPoses(particlesIn,map,support,bBox)
+    %PRUNEINVALIDPOSES
+    %
+    % particlesOut = PRUNEINVALIDPOSES(particlesIn,map,support,bBox)
+    %
+    % particlesIn  - Struct array with fields ('pose').
+    % map          - lineMap object.
+    % support      - Struct with fields ('xv','yv').
+    % bBox         - Struct with fields ('xv','yv').
+    %
+    % particlesOut - Struct array with fields ('pose').
 
     % find particles at invalid poses
     P = length(particlesIn);
@@ -14,10 +24,10 @@ function particlesOut = pruneInvalidPoses(particlesIn,map,support,bBox)
     particlesOut = particlesIn;
     particlesOut(~flag) = [];
     if isempty(particlesOut)
-        error('correctInvalidPoses:noValidPoses','No valid poses among particles.');
+        error('pruneInvalidPoses:noValidPoses','No valid poses among particles.');
     end
     
-    % compensate
+    % compensate by creating copies of valid particles
     dP = P-length(particlesOut);
     ids = randsample(1:length(particlesOut),dP);
     particlesOut = [particlesOut particlesOut(ids)];

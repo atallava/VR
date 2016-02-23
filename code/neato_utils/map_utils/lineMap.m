@@ -56,56 +56,96 @@ classdef lineMap < handle
            hold off
         end
         
-        function [ranges,incidence_angles] = getRAlpha(obj,pose,max_range,ang_range)
-            sweep = pose(3) + ang_range;
-            
-            p0x = pose(1);
-            p0y = pose(2);
-            
-            p1x = p0x + max_range.*cos(sweep);
-            p1y = p0y + max_range.*sin(sweep);
-			
-            s1x = p1x - p0x;
-            s1y = p1y - p0y;
-            
-            lc = cell2mat({obj.objects(:).line_coords}');
-            
-            % start points of lines
-            p2x = lc(1:end-1,1);
-            p2y = lc(1:end-1,2);
-            
-            % end points of lines
-            p3x = lc(2:end,1);
-            p3y = lc(2:end,2);
-            
-            % line segments
-            s2x = p3x - p2x; 
-            s2y = p3y - p2y;
+        function [ranges,incidence_angles] = getRAlpha(obj,poses,max_range,ang_range)
+            %GETRALPHA
+            %
+            % [ranges,incidence_angles] = GETRALPHA(obj,poses,max_range,ang_range)
+            %
+            % poses            - [nPoses,3] array.
+            % max_range        - Scalar.
+            % ang_range        - Vector
+            %
+            % ranges           - [nPoses,nBearings] array.
+            % incidence_angles - [nPoses,nBearings] array.
 
+            nPoses = size(poses,1);
+            nBearings = length(ang_range);
+            nRays = nPoses*nBearings;
+            
+            ang_range = flipVecToColumn(ang_range);
+            
+            % start points of rays
+            rayStartX = repmat(poses(:,1),nBearings,1);
+            rayStartY = repmat(poses(:,2),nBearings,1);
+            sweeps = repmat(poses(:,3),nBearings,1)+...
+                repelem(ang_range,nPoses);
+            
+            % end points of rays
+            rayEndX = rayStartX+max_range.*cos(sweeps); % [nRays,1]
+            rayEndY = rayStartY+max_range.*sin(sweeps); % [nRays,1]
+            
+            % ray vectors
+            rayVecX = rayEndX - rayStartX; % [nRays,1] 
+            rayVecY = rayEndY - rayStartY; % [nRays,1]
+                        
+            lc = cell2mat({obj.objects(:).line_coords}');
+            nLines = size(lc,1)-1;
+            
+            % start points of map lines
+            lineStartX = lc(1:end-1,1); % [nLines,1]
+            lineStartY = lc(1:end-1,2); % [nLines,1]
+            
+            % end points of map lines
+            lineEndX = lc(2:end,1); % [nLines,1]
+            lineEndY = lc(2:end,2); % [nLines,1]
+            
+            % map line vectors
+            lineVecX = lineEndX - lineStartX; % [nLines,1]
+            lineVecY = lineEndY - lineStartY; % [nLines,1]
+            
             % s takes into account that the line segment is finite
-            s = ((p2x-p0x)*s1y + (p0y-p2y)*s1x)./...
-                (-s2x*s1y + s2y*s1x);
+            % for a ray-line pair 
+            % sNum = (lineStartX-rayStartX)*rayVecY -
+            % (lineStartY-rayStartY)*rayVecX
+            % sDenom = (lineVecY*rayVecX)-(lineVecX*rayVecY)
+            rayStartToLineStartX = repmat(lineStartX,nRays,1)-repelem(rayStartX,nLines);
+            rayStartToLineStartY = repmat(lineStartY,nRays,1)-repelem(rayStartY,nLines);
+            sNum = rayStartToLineStartX.*repelem(rayVecY,nLines)-...
+                rayStartToLineStartY.*repelem(rayVecX,nLines);
+            sDenom = repmat(lineVecY,nRays,1).*repelem(rayVecX,nLines) - ...
+                repmat(lineVecX,nRays,1).*repelem(rayVecY,nLines);
+            s = sNum./sDenom; 
+            % finally, reshape
+            s = reshape(s,nLines,nRays);
             
             % t takes into account that the rays are finite
-			t = repmat(( s2x.*(p0y-p2y) - s2y.*(p0x-p2x)),1,length(s1x))...
-                ./ (-s2x*s1y + s2y*s1x);
+            % for a ray-line pair
+            % tNum = lineVecX*(rayStartY-lineStartY) - 
+            % lineVecY*(rayStartX-lineStartX)
+            % tDenom = -(lineVecX*rayVecY)+(lineVecY*rayVecX)
+            tNum = -rayStartToLineStartY.*repmat(lineVecX,nRays,1) + ...
+                rayStartToLineStartX.*repmat(lineVecY,nRays,1);
+            tDenom = sDenom;
+            t = tNum./tDenom;
+            % finally, reshape
+            t = reshape(t,nLines,nRays);
 
             col = s >= 0 & s <= 1 & t >= 0 & t <= 1;
             t(~isfinite(t)) = 0;
-            cpx = (t .* repmat(s1x,length(s2x),1)) .* col;
-            cpy = (t .* repmat(s1y,length(s2x),1)) .* col;
-            r = (cpx.^2 + cpy.^2).^.5;
+            cpx = (t .* repmat(rayVecX',nLines,1)) .* col; % [nLines,nRays]
+            cpy = (t .* repmat(rayVecY',nLines,1)) .* col; % [nLines,nRays]
+            r = (cpx.^2 + cpy.^2).^.5;  % [nLines,nRays]
             
             r(~col) = nan;
             
             % angles of incidence to each line segment
             % currently has positive/ negative ambiguity
-            alpha = zeros(length(p2x),1);
-            for i = 1:length(p2x)
+            alpha = zeros(nLines,1); % [nLines,1]
+            for i = 1:length(lineStartX)
                 params = parametrizePts2ABC(lc(i,1:2),lc(i+1,1:2));
                 alpha(i) = atanLine2D(params(1),params(2));
             end
-            incidence_angles = repmat(alpha,1,length(ang_range))-repmat(mod(ang_range+pose(3),pi),length(alpha),1); 
+            incidence_angles = repmat(alpha,1,nRays)-repmat(mod(sweeps',pi),nLines,1); 
             incidence_angles(incidence_angles == 0) = pi;
             incidence_angles = incidence_angles-pi/2*ones(size(incidence_angles)).*sign(incidence_angles);
                                                 
@@ -117,19 +157,23 @@ classdef lineMap < handle
             
             % get minimum range and angle to that segment
             [ranges, min_sub] = min(r,[],1);
-            ids = sub2ind(size(incidence_angles),min_sub,1:length(ang_range));
+            ids = sub2ind(size(incidence_angles),min_sub,1:nRays);
             incidence_angles = incidence_angles(ids);
             incidence_angles(isnan(ranges)) = nan;
             % return absolute value of incidence angles
             incidence_angles = abs(incidence_angles);
+            
+            % finally, reshape ranges and incidence angles
+            ranges = reshape(ranges,nPoses,nBearings);
+            incidence_angles = reshape(incidence_angles,nPoses,nBearings);
         end
 		
-        function [ranges,incidence_angles] = raycast(obj, pose, max_range, ang_range)
+        function [ranges,incidence_angles] = raycast(obj, poses, max_range, ang_range)
             %RAYCAST
             %
             % [ranges,incidence_angles] = RAYCAST(obj, pose, max_range, ang_range)
             %
-            %  pose            - Length 3 array. Default: [0;0;0].
+            %  poses            - [nPoses,3] array. Default: [0;0;0].
             %  max_range       - In m. Default: 4.5. 
             %  ang_range       - Vector in radian. Default: deg2rad(0:359).
             %
@@ -145,7 +189,7 @@ classdef lineMap < handle
             if nargin < 2
                 pose = [0;0;0];
             end
-           [ranges,incidence_angles] = obj.getRAlpha(pose,max_range,ang_range);
+           [ranges,incidence_angles] = obj.getRAlpha(poses,max_range,ang_range);
 		   ranges(isnan(ranges)) = 0;
         end
         
