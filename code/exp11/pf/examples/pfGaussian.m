@@ -1,6 +1,6 @@
 % parameters
 % readings
-fnameReadings = '../data/pf_readings';
+fnameReadings = '../data/pf_readings_clean';
 
 % debug or not
 debugFlag = 1;
@@ -37,7 +37,7 @@ vizFlag = 0;
 
 % save
 saveRes = 1;
-fnameRes = '../data/pf_res';
+fnameRes = '../data/pf_gaussian_res';
 
 %% pack into struct
 % init dist

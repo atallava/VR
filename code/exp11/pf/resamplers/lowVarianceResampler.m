@@ -33,7 +33,7 @@ function particlesOut = lowVarianceResampler(particlesIn,weights)
     teethMat = repmat(teeth,1,P);
     
     flag = cWeightsMat < teethMat;
-    ids  = sum(flags,2)+1;
+    ids  = sum(flag,2)+1;
     ids(ids > P) = P;
     
     particlesOut = particlesIn(ids);

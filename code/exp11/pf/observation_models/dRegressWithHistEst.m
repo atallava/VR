@@ -12,9 +12,9 @@ N = size(XTrain,1);
 Q = size(X,1);
 
 % some resizing
-if isrow(X)
-    X = X';
-end
+% if isrow(X)
+%     X = X';
+% end
 
 throwCols = find(cellfun(@isempty,ZTrain));
 

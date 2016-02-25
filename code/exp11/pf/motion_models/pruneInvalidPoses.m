@@ -29,6 +29,6 @@ function particlesOut = pruneInvalidPoses(particlesIn,map,support,bBox)
     
     % compensate by creating copies of valid particles
     dP = P-length(particlesOut);
-    ids = randsample(1:length(particlesOut),dP);
+    ids = randsample(1:length(particlesOut),dP,'true');
     particlesOut = [particlesOut particlesOut(ids)];
 end

@@ -1,6 +1,6 @@
 % parameters
 % readings
-fnameReadings = '../data/pf_readings_clean';
+fnameReadings = '../data/pf_readings';
 
 % debug or not
 debugFlag = 1;
@@ -15,7 +15,7 @@ load(fnameRobotBBox,'robotBBox');
 load(fnameReadings,'poseHistory');
 initDistSampler = @(map,support,bBox,xyScale,thScale) ...
     initParticlesAroundPose(map,support,bBox,xyScale,thScale,poseHistory(:,1));
-PMax = 100;
+PMax = 50;
 
 % motion model params
 fnameMotionNoise = '../data/pf_motion_noise';
@@ -23,22 +23,25 @@ load(fnameMotionNoise,'etaV','etaW');
 
 % observation model params
 bearingSkip = 10;
-powerScale = 0.05;
+powerScale = 0.01;
 % npreg weights
 fnameNPRegPredictor = '../data/npreg_predictor';
 load(fnameNPRegPredictor,'npRegPredictor');
+% smoothing matrix
+fnameSmoothingMatrix = '../data/hist_smoothing_matrix';
+load(fnameSmoothingMatrix,'smoothingMatrix');
 obsModel = @(map,sensor,ranges,bearings,particles) ...
-    getWeightsNPReg(map,sensor,ranges,bearings,particles,npRegPredictor);
+    getWeightsNPReg(map,sensor,ranges,bearings,particles,npRegPredictor,smoothingMatrix);
 
 % resampler params
 resampler = @vanillaResampler;
 
 % viz pf progress
-vizFlag = 0;
+vizFlag = 1;
 
 % save
 saveRes = 1;
-fnameRes = '../data/pf_res';
+fnameRes = '../data/pf_npreg_res';
 
 %% pack into struct
 % init dist

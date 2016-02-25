@@ -13,7 +13,7 @@ function weights = getWeightsGaussian(map,sensor,ranges,bearings,particles)
 
     P = length(particles);
     B = length(bearings);
-    sigma = 0.1;
+    sigma = 0.03;
     truncateLw = -10;
     
     poses = [particles.pose];
