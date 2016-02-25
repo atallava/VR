@@ -1,12 +1,15 @@
 % from reference, generate states and readings to be used for pf
 
 %% load data of map and path
-fname = 'pf_reference_traj';
-load(fname);
+fnameRefTraj = '../data/pf_reference_traj';
+load(fnameRefTraj,'traj');
+fnameMap = '../data/l_corridor';
+load(fnameMap,'map');
 
 %% specify sensor model
 % laser gencal
-load sim_sep6_1.mat
+fnameSim = 'sim_sep6_1';
+load(fnameSim,'rsim');
 sensorModel = rsim;
 % scrub hacks
 sensorModel.laser = laserClass(struct());
@@ -15,19 +18,34 @@ nBearings = sensorModel.laser.nBearings;
 for i = 1:length(sensorModel.pxRegBundleArray)
     sensorModel.pxRegBundleArray(i).nBearings = nBearings;
 end
-sensorModel.setMap(map);
 
 %% specify readings period
 observationReadingPeriod = 1; % in s
 motionTPeriod = 0.01; % in s
 
-%% create readings struct
-load pf_motion_noise
-sensorModel.setMap(map);
+%% readings struct
+% motion model parameters
+load('../data/pf_motion_noise','etaV','etaW');
+
+% dynamic supports
+fnameDynSupp = [fnameMap '_dynamic_supports'];
+load(fnameDynSupp,'supports');
+
+% dynamic object parameters
+fnameDynObj = '../data/dynamic_object';
+load(fnameDynObj,'dynamicBBox');
+minDynamicObjects = 5;
+maxDynamicObjects = 10; % in each strip
+
+% robot bounding box
+fnameRobotBBox = '../data/robot_bbox';
+load(fnameRobotBBox,'robotBBox');
+
 numLaserReadings = floor(traj.getTrajectoryDuration/observationReadingPeriod)+1;
 readings = struct('data',{},'type',{});
 poseHistory = zeros(3,numLaserReadings);
 tHistory = zeros(1,numLaserReadings);
+dynamicMapList = cell(1,numLaserReadings);
 
 pose = traj.poseArray(:,1);
 poseHistory(:,1) = pose;
@@ -37,6 +55,13 @@ count = 1;
 
 % first laser reading
 readings(count).type = 'observation';
+% gen dynamic map
+dynamicMap = genDynamicMap(map,supports,dynamicBBox,minDynamicObjects,maxDynamicObjects);
+% set map for sensor
+sensorModel.setMap(dynamicMap);
+% log dynamic map
+dynamicMapList{1} = dynamicMap;
+% simulate observation
 observationData.ranges = sensorModel.simulate(pose);
 readings(count).data = observationData;
 count = count+1;
@@ -50,6 +75,7 @@ for i = 2:numLaserReadings
 	readings(count).type = 'motion';
 	tArray = prevTime:motionTPeriod:(currentTime-motionTPeriod);
 	[VArray,wArray] = traj.getControl(tArray);
+    % interpolate controls
 	dtArray = tArray(2:end)-tArray(1:end-1);
 	dtArray = [dtArray motionTPeriod];
 	motionData.VArray = VArray;
@@ -57,24 +83,35 @@ for i = 2:numLaserReadings
 	motionData.dtArray = dtArray;
 	readings(count).data = motionData;
 	count = count+1;
-	
+    % forward simulate pose
 	[VNoisy,wNoisy] = injectVelocityNoise(VArray,wArray,etaV,etaW);
 	pose = integrateVelocityArray(pose,VNoisy,wNoisy,dtArray);
 	poseHistory(:,i) = pose;
 	
 	% observation reading
 	readings(count).type = 'observation';
-	% set dynamic map in sensor model
+    % gen dynamic map
+    dynamicMap = genDynamicMap(map,supports,dynamicBBox,minDynamicObjects,maxDynamicObjects);
+    % set map for sensor
+    sensorModel.setMap(dynamicMap);
+    % log dynamic map
+    dynamicMapList{i} = dynamicMap;
+    % simulate observation
 	ranges = sensorModel.simulate(pose);
     ranges = floor(observationData.ranges);
     ranges(ranges < 0) = 0;
     observationData.ranges = ranges;
 	readings(count).data = observationData;
 	count = count+1;
+    
     prevTime = currentTime;
 end
 fprintf('Computation took %.2fs.\n',toc(clockLocal));
 
 %% save to file
-fname = 'pf_readings';
-save(fname,'map','support','sensor','traj','poseHistory','tHistory','readings');
+fnameSupport = [fnameMap '_support'];
+load(fnameSupport,'support');
+
+fname = '../data/pf_readings';
+save(fname,'map','dynamicMapList','support',...
+    'sensor','traj','poseHistory','tHistory','readings');
