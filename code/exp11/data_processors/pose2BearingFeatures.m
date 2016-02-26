@@ -4,7 +4,7 @@ function [X,bearingsX,pIds] = pose2BearingFeatures(poses,bearings,map,sensor)
 % 
 % [X,pIds] = POSE2BEARINGFEATURES(poses,bearings,map,maxRange)
 % 
-% poses    - Array of size dimPoses x nPoses.
+% poses    - Array of size nPoses x dimPoses
 % bearings - Vector of readings of bearings.
 % map      - lineMap object.
 % maxRange - Scalar. Defaults to 5m.
@@ -19,9 +19,10 @@ if iscolumn(bearings) bearings = bearings'; end
 nBearings = length(bearings);
 
 pIds = [];
-X = zeros(size(poses,2)*nBearings,2);
-for i = 1:size(poses,2)
-    pose = poses(:,i);
+nPoses = size(poses,1);
+X = zeros(nPoses*nBearings,2);
+for i = 1:nPoses
+    pose = poses(i,:);
     [r,alpha] = map.getRAlpha(pose,sensor.maxRange,bearings);
     X((i-1)*nBearings+1:i*nBearings,:) = [r' alpha'];
     pIds = [pIds; i*ones(nBearings,1)];
@@ -29,5 +30,5 @@ end
 if isrow(bearings)
     bearings = bearings';
 end
-bearingsX = repmat(bearings,size(poses,2),1);
+bearingsX = repmat(bearings,nPoses,1);
 end

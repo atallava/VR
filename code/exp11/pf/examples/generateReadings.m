@@ -98,8 +98,7 @@ for i = 2:numLaserReadings
     dynamicMapList{i} = dynamicMap;
     % simulate observation
 	ranges = sensorModel.simulate(pose);
-    ranges = floor(observationData.ranges);
-    ranges(ranges < 0) = 0;
+        
     observationData.ranges = ranges;
 	readings(count).data = observationData;
 	count = count+1;

@@ -1,5 +1,6 @@
 % test whether generated readings make sense
-load('pf_readings');
+fnameReadings = '../data/pf_readings';
+load(fnameReadings);
 
 %%
 % integrate velocities without noise

@@ -5,7 +5,7 @@
 H = 4501;
 
 % weights segment
-segmentLength = 51;
+segmentLength = 401;
 w = getWeightsSegment(segmentLength);
 
 smoothingMatrix = zeros(H);
@@ -28,5 +28,5 @@ for i = 1:segmentLength
 end
 
 %% save
-fnameSmoothingMatrix = '../data/hist_smoothing_matrix';
+fnameSmoothingMatrix = '../data/hist_smoothing_matrix_401';
 save(fnameSmoothingMatrix,'smoothingMatrix','segmentLength')

@@ -43,8 +43,8 @@ load(fnameDynSupp,'supports');
 % dynamic object parameters
 fnameDynObj = '../data/dynamic_object';
 load(fnameDynObj,'dynamicBBox');
-minDynamicObjects = 5;
-maxDynamicObjects = 10; % in each strip
+minDynamicObjects = 7;
+maxDynamicObjects = 15; % in each strip
 dynamicMapList = cell(1,N);
 
 % simulate sensor readings
@@ -80,9 +80,6 @@ end
 fprintf('Computation took %.2fs.\n',toc(clockLocal));
 
 %% save to file
-fname = '../data/npreg_train_data';
-save(fname,'fNameMap','map','bBox',...
-    'N','M','poses','trainIds','holdIds','testIds',...
-    'dynamicBBox','minDynamicObjects','maxDynamicObjects','dynamicPosesList',...
-    'sensorModel','sensor','obsArray');
+fname = '../data/npreg_obs_data';
+save(fname);
 

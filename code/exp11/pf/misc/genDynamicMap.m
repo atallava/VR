@@ -21,10 +21,10 @@ function [dynamicMap,dynamicPoses] = genDynamicMap(baseMap,supports,dynamicBBox,
         nDynamicObjects = randsample(minDynamicObjects:maxDynamicObjects,1);
         dynamicPoses = [dynamicPoses; ...
             uniformSamplesOnSupport(baseMap,support,dynamicBBox,nDynamicObjects)];
-        for i = 1:nDynamicObjects
-            tBBox = transformPolygon(dynamicPoses(i,:),dynamicBBox);
-            dynamicObject = vertexStructToLineObject(tBBox);
-            dynamicMap.addObject(dynamicObject);
-        end
+    end
+    for i = 1:size(dynamicPoses,1)
+        tBBox = transformPolygon(dynamicPoses(i,:),dynamicBBox);
+        dynamicObject = vertexStructToLineObject(tBBox);
+        dynamicMap.addObject(dynamicObject);
     end
 end

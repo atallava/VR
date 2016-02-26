@@ -25,7 +25,7 @@ function particlesOut = lowVarianceResampler(particlesIn,weights)
     % the 'comb'
     toothSepn = 1/P;
     tooth0 = rand()*toothSepn;
-    teeth = [1:P]*tooth0;
+    teeth = [0:(P-1)]*toothSepn+tooth0;
     
     cWeights = flipVecToRow(cWeights);
     cWeightsMat = repmat(cWeights,P,1);

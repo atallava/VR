@@ -1,7 +1,7 @@
 function res = ranges2Histogram(ranges,xcenters)
 %RANGES2HISTOGRAM 
 % 
-% res = RANGES2HISTOGRAM(ranges,laser)
+% res = RANGES2HISTOGRAM(ranges,xcenters)
 % 
 % ranges   - Length B cell array of ranges or array of ranges.
 % xcenters    - histogram bin centers

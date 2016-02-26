@@ -186,7 +186,7 @@ function outStruct = runParticleFilter(inputStruct)
         end
         if vizFlag
             vizParticles(map,particles,weights);
-            title(sprintf('t: %.4fs',tHistory(i)));
+            title(sprintf('i: %d',i));
             pause(1);
             close all;
         end

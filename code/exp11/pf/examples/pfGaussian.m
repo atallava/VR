@@ -30,7 +30,7 @@ powerScale = 0.05;
 obsModel = @getWeightsGaussian;
 
 % resampler params
-resampler = @vanillaResampler;
+resampler = @lowVarianceResampler;
 
 % viz pf progress
 vizFlag = 0;

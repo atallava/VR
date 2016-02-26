@@ -13,7 +13,7 @@ function weights = getWeightsNPReg(map,sensor,ranges,bearings,particles,predicto
     %
     % weights   -
     
-    truncateLw = -15;
+    truncateLw = -7;
     
     % don't care about ranges which are null
     invalidIds = ranges == sensor.nullReading;

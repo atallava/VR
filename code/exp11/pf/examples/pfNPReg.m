@@ -23,7 +23,7 @@ load(fnameMotionNoise,'etaV','etaW');
 
 % observation model params
 bearingSkip = 10;
-powerScale = 0.01;
+powerScale = 1e-3;
 % npreg weights
 fnameNPRegPredictor = '../data/npreg_predictor';
 load(fnameNPRegPredictor,'npRegPredictor');
@@ -34,10 +34,10 @@ obsModel = @(map,sensor,ranges,bearings,particles) ...
     getWeightsNPReg(map,sensor,ranges,bearings,particles,npRegPredictor,smoothingMatrix);
 
 % resampler params
-resampler = @vanillaResampler;
+resampler = @lowVarianceResampler;
 
 % viz pf progress
-vizFlag = 1;
+vizFlag = 0;
 
 % save
 saveRes = 1;
