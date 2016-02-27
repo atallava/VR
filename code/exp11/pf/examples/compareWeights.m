@@ -35,10 +35,12 @@ if length(particles) > PMax
     particles = particles(ids);
 end
 
-%% weights from gaussian
+%% weights from thrun
 bearingSkip = 10;
 powerScale = 0.05;
-obsModel = @getWeightsGaussian;
+thrunModelParams = [0.0229 0.9 0.8603];
+obsModel = @(map,sensor,ranges,bearings,particles) ...
+    getWeightsThrun(map,sensor,ranges,bearings,particles,thrunModelParams);
 
 ranges = readings(readingId).data.ranges;
 bearings = sensor.bearings;

@@ -1,5 +1,5 @@
-fnameRes = '../data/pf_npreg_res';
-% fnameRes = '../data/pf_gaussian_res';
+% fnameRes = '../data/pf_npreg_res';
+fnameRes = '../data/pf_thrun_res';
 load(fnameRes);
 
 %% plot trajectories
