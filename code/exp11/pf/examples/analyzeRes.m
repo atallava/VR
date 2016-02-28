@@ -1,8 +1,9 @@
-fnameRes = '../data/npreg_exp/pf_res_npreg_exp_4_trial_10';
+% fnameRes = '../data/npreg_exp/pf_res_npreg_exp_4_trial_10';
+fnameRes = '../data/pf_npreg_res';
 % fnameRes = '../data/pf_thrun_res';
 load(fnameRes);
 
-+%% plot trajectories
+%% plot trajectories
 map.plot();
 hold on;
 

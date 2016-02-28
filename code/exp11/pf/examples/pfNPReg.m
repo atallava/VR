@@ -6,7 +6,7 @@ fnameReadings = '../data/pf_readings_wide_corridor_s_traj';
 debugFlag = 1;
 
 % init dist params
-xyScale = 1;
+xyScale = 0.5;
 thScale = deg2rad(10); % in rad
 fnameRobotBBox = '../data/robot_bbox';
 load(fnameRobotBBox,'robotBBox');

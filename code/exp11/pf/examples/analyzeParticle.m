@@ -1,6 +1,6 @@
 % specify particle id
 B = length(obsModelStruct.ranges);
-id = 11;
+id = 1;
 
 %% extract particle information
 particlePose = obsModelStruct.poses(:,id);
