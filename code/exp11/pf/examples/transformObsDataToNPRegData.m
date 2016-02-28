@@ -1,5 +1,5 @@
 % convert obs data to npreg format
-fname = '../data/npreg_obs_data';
+fname = '../data/npreg_obs_data_wide_corridor';
 load(fname,'map','sensor','poses','obsArray');
 
 %% convert data
@@ -21,5 +21,5 @@ ZTrain = obsArray'; ZTrain = ZTrain(:);
 [XTrain,ZTrain,bearingsTrain,pIdsTrain] = cleanupDataForDRegress(XTrain,ZTrain,bearingsTrain,pIdsTrain);
 
 %% save data
-fname = '../data/npreg_train_data';
+fname = '../data/npreg_train_data_wide_corridor';
 save(fname);

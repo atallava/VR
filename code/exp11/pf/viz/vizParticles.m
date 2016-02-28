@@ -1,14 +1,15 @@
-function vizParticles(map,particles,weights)
-    %VIZPARTICLES
+function hf = vizParticles(map,particles,weights)
+    %VIZPARTICLES Visualize particles on map.
     %
     % hf = VIZPARTICLES(map,particles)
     %
     % map       - lineMap instance.
     % particles - Struct of particles.
             
-    map.plot();
+    hf = map.plot();
     hold on;
     poses = [particles.pose];
+    % particle poses
     scatter(poses(1,:),poses(2,:),15,'r','filled');
     
     % quiver most likely pose

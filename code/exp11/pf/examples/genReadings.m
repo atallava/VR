@@ -1,9 +1,9 @@
 % from reference, generate states and readings to be used for pf
 
 %% load data of map and path
-fnameRefTraj = '../data/pf_reference_traj';
+fnameRefTraj = '../data/wide_corridor_s_traj';
 load(fnameRefTraj,'traj');
-fnameMap = '../data/l_corridor';
+fnameMap = '../data/wide_corridor';
 load(fnameMap,'map');
 
 %% specify sensor model
@@ -111,6 +111,6 @@ fprintf('Computation took %.2fs.\n',toc(clockLocal));
 fnameSupport = [fnameMap '_support'];
 load(fnameSupport,'support');
 
-fname = '../data/pf_readings';
+fname = '../data/pf_readings_wide_corridor_s_traj';
 save(fname,'map','dynamicMapList','support',...
     'sensor','traj','poseHistory','tHistory','readings');

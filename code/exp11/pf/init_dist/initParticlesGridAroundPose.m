@@ -1,4 +1,16 @@
-function particles = initParticlesAroundPose(map,support,bBox,xyScale,thScale,pose)
+function particles = initParticlesGridAroundPose(map,support,bBox,xyScale,thScale,pose)
+    %INITPARTICLESGRIDAROUNDPOSE
+    %
+    % particles = INITPARTICLESGRIDAROUNDPOSE(map,support,bBox,xyScale,thScale,pose)
+    %
+    % map       - lineMap object.
+    % support   - Vertex struct.
+    % bBox      - Vertec struct.
+    % xyScale   - Scalar.
+    % thScale   - Scalar.
+    % pose      - Length 3 vector.
+    %
+    % particles - Struct array with fields ('pose').
     
     xRange = 0.5;
     yRange = 0.5;
@@ -14,7 +26,6 @@ function particles = initParticlesAroundPose(map,support,bBox,xyScale,thScale,po
     yGrid = yMin:xyScale:yMax;
     thGrid = thMin:thScale:thMax;
     particles = struct('pose',{});
-    
     
     count = 1;
     for i = 1:length(xGrid)

@@ -15,10 +15,30 @@ quiver(poseHistory(1,:),poseHistory(2,:),...
     
 % mle filter traj
 mleTraj = extractMleTraj(particlesLog,weightsLog);
+% every odd measurement is an observation
+ids = 2*(1:size(poseHistory,2))-1;
+mleTraj = mleTraj(:,ids);
+
 plot(mleTraj(1,:),mleTraj(2,:),'r');
 quiver(mleTraj(1,:),mleTraj(2,:),...
     quiverScale*cos(mleTraj(3,:)),quiverScale*sin(mleTraj(3,:)),...
     'r','autoscale','off');
+errVec = pose2D.poseNorm(poseHistory,mleTraj);
+
+% % mean filter traj
+% meanTraj = extractMeanTraj(particlesLog,weightsLog);
+% % every odd measurement is an observation
+% ids = 2*(1:size(poseHistory,2))-1;
+% meanTraj = meanTraj(:,ids);
+% 
+% plot(meanTraj(1,:),meanTraj(2,:),'r');
+% quiver(meanTraj(1,:),meanTraj(2,:),...
+%     quiverScale*cos(meanTraj(3,:)),quiverScale*sin(meanTraj(3,:)),...
+%     'r','autoscale','off');
+% errVec = pose2D.poseNorm(poseHistory,meanTraj);
+
+err = mean(errVec);
+fprintf('Mean mle traj err: %.3f.\n',err);
 
 %% sum of weights vs time
 sumWeights = zeros(1,length(weightsLog));
@@ -27,6 +47,8 @@ for i = 1:length(weightsLog)
 end
 
 plot(sumWeights);
+xlabel('time');
+ylabel('particle sum weights');
 
 %% particle diversity vs time
 nUniqueParticles = zeros(1,length(weightsLog));
@@ -35,3 +57,5 @@ for i = 1:length(weightsLog)
 end
 
 plot(nUniqueParticles,'-+');
+xlabel('time');
+ylabel('particle diversity');

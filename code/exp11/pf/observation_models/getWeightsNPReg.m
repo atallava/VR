@@ -1,4 +1,4 @@
-function weights = getWeightsNPReg(map,sensor,ranges,bearings,particles,predictor,smoothingMatrix)
+function [weights,outStruct] = getWeightsNPReg(map,sensor,ranges,bearings,particles,predictor,smoothingMatrix)
     %GETWEIGHTSNPREG
     %
     % weights = GETWEIGHTSNPREG(map,sensor,ranges,bearings,particles,predictor)
@@ -45,7 +45,7 @@ function weights = getWeightsNPReg(map,sensor,ranges,bearings,particles,predicto
     % log weights
     lw = log(probs); % [P*B,1]
     % don't count evidence if rangesNominal is null
-    lw(rangesNominal == sensor.nullReading) = 0;
+    lw(rangesNominal == sensor.nullReading) = truncateLw;
     lw(lw < truncateLw) = truncateLw;
     
     % mat sums relevant sections of lw
@@ -65,4 +65,15 @@ function weights = getWeightsNPReg(map,sensor,ranges,bearings,particles,predicto
     
     condn = ~any(isnan(weights));
     assert(condn,'weights are nan!');
+    
+    % pack variables into struct
+    outStruct.sensor = sensor;
+    outStruct.ranges = ranges;
+    outStruct.bearings = bearings;
+    outStruct.poses = poses;
+    outStruct.rangesNominal = rangesNominal;
+    outStruct.h = h;
+    outStruct.probs = probs;
+    outStruct.lw = lw;
+    outStruct.sumLw = sumLw;
 end

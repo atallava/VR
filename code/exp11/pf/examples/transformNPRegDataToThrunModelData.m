@@ -1,4 +1,4 @@
-fname = '../data/npreg_train_data';
+fname = '../data/npreg_train_data_wide_corridor';
 load(fname,'XTrain','ZTrain','sensor');
 
 %% 
@@ -13,5 +13,5 @@ end
 ZTrain = obs;
 
 %% save
-fname = '../data/thrun_model_train_data';
+fname = '../data/thrun_model_train_data_wide_corridor';
 save(fname,'XTrain','ZTrain','sensor');

@@ -1,21 +1,21 @@
 % parameters
 % readings
-fnameReadings = '../data/pf_readings';
+fnameReadings = '../data/pf_readings_wide_corridor_s_traj';
 
 % debug or not
 debugFlag = 1;
 
 % init dist params
-xyScale = 0.1;
-thScale = deg2rad(2); % in rad
+xyScale = 1;
+thScale = deg2rad(10); % in rad
 fnameRobotBBox = '../data/robot_bbox';
 load(fnameRobotBBox,'robotBBox');
 % sample around initial pose
 % needed for initial pose
 load(fnameReadings,'poseHistory');
 initDistSampler = @(map,support,bBox,xyScale,thScale) ...
-    initParticlesAroundPose(map,support,bBox,xyScale,thScale,poseHistory(:,1));
-PMax = 50;
+    initParticlesUniformAroundPose(map,support,bBox,xyScale,thScale,poseHistory(:,1));
+PMax = 200;
 
 % motion model params
 fnameMotionNoise = '../data/pf_motion_noise';

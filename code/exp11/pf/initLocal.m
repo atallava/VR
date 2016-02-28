@@ -1,3 +1,6 @@
+someUsefulPaths;
+addpath([pathToM '/WinOnTop']);
+
 exp11PfPath = pwd;
 addpath([exp11PfPath '/observation_models']);
 addpath([exp11PfPath '/resamplers']);

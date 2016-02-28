@@ -1,4 +1,4 @@
-function weights = getWeightsThrun(map,sensor,ranges,bearings,particles,params)
+function [weights,outStruct] = getWeightsThrun(map,sensor,ranges,bearings,particles,params)
     %GETWEIGHTSTHRUN
     %
     % weights = GETWEIGHTSTHRUN(map,sensor,ranges,bearings,particles,params)
@@ -35,14 +35,14 @@ function weights = getWeightsThrun(map,sensor,ranges,bearings,particles,params)
     alphasNominal = reshape(alphasNominal',numel(alphasNominal),1);
     X = [rangesNominal alphasNominal];
     % get probability histograms
-    h = thrunProbArray(rangesNominal,sensor,params);
+    [h,xc] = thrunProbArray(rangesNominal,sensor,params);
         
     ids = sub2ind(size(h),[1:P*B]',repmat(binIds,P,1));
     probs = h(ids); % [P*B,1]
     % log weights
     lw = log(probs); % [P*B,1]
-    % don't count evidence if rangesNominal is null
-    lw(rangesNominal == sensor.nullReading) = 0;
+    % if rangesNominal is null, assign lowest log weight to evidence
+    lw(rangesNominal == sensor.nullReading) = truncateLw;
     % truncate log weights
     lw(lw < truncateLw) = truncateLw;
     
@@ -63,4 +63,15 @@ function weights = getWeightsThrun(map,sensor,ranges,bearings,particles,params)
     
     condn = ~any(isnan(weights));
     assert(condn,'weights are nan!');
+    
+    % pack variables into struct
+    outStruct.sensor = sensor;
+    outStruct.ranges = ranges;
+    outStruct.bearings = bearings;
+    outStruct.poses = poses;
+    outStruct.rangesNominal = rangesNominal;
+    outStruct.h = h;
+    outStruct.probs = probs;
+    outStruct.lw = lw;
+    outStruct.sumLw = sumLw;
 end

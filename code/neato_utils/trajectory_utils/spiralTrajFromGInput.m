@@ -1,12 +1,23 @@
-function traj = spiralTrajFromGInput(tp)
-    % tp - trajPlanner object
-    
+function traj = spiralTrajFromGInput(tp,hf)
+    %SPIRALTRAJFROMGINPUT Construct trajectory from graphical input.
+    %
+    % traj = SPIRALTRAJFROMGINPUT(tp)
+    % traj = SPIRALTRAJFROMGINPUT(tp,hf)
+    %
+    % tp   - trajPlanner object.
+    % hf   - Figure handle. If none provided, empty plot created.
+    %
+    % traj - stitchedSpiral object.
+
+    % empty plot if no figure specified
+    if nargin < 2
+        hf = figure;
+        plot(1,1);
+        xlim([0 10]);
+        ylim([0 10]);
+        axis equal;
+    end
     % x,y from ginput
-    hf = figure;
-    plot(1,1);
-    xlim([0 10]);
-    ylim([0 10]);
-    axis equal;
     [x,y] = ginput;
     
     % fit curve

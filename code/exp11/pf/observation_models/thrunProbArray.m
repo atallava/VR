@@ -1,4 +1,4 @@
-function probArray = thrunProbArray(X,laser,params)
+function [probArray,xc] = thrunProbArray(X,laser,params)
     %THRUNPROBARRAY
     %
     % probArray = THRUNPROBARRAY(X,laser,params)
@@ -8,6 +8,7 @@ function probArray = thrunProbArray(X,laser,params)
     % params    - Length 3 vector, [sigma,lambda,alpha].
     %
     % probArray - [N,H]
+    % xc        - [1,H] histogram centers
         
     X = flipVecToColumn(X);
     N = length(X);
@@ -53,4 +54,6 @@ function probArray = thrunProbArray(X,laser,params)
     
     % finally, sum
     probArray = alpha*probArrayGaussian+(1-alpha)*probArrayExp;
+    % histogram bin values
+    xc = yValues;
 end

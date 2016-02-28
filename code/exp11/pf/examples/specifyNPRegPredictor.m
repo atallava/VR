@@ -1,10 +1,15 @@
 % load
-fname = '../data/npreg_train_data';
+fname = '../data/npreg_train_data_wide_corridor';
 load(fname,'XTrain','ZTrain','sensor');
 
 %% subsample training data
 % if there's too much
-ids = randsample(1:length(ZTrain),5000);
+maxData = 6000;
+if length(ZTrain) > maxData
+    ids = randsample(1:length(ZTrain),5000);
+else
+    ids = 1:length(ZTrain);
+end
 XTrain = XTrain(ids,:);
 ZTrain = ZTrain(ids);
 
@@ -19,7 +24,7 @@ iCenters = [0:nICenters-1]*iBinW-iBinW; % integration centers
 trainHistEst = ranges2Histogram(ZTrain,iCenters)'; % [N,R]
 
 %% build predictor
-bwX = [0.01 0.0644];
+bwX = [0.001 0.0644];
 npRegPredictor = @(X) estimateHistogramFast(XTrain,ZTrain,X,sensor,bwX,trainHistEst);
 
 %% save

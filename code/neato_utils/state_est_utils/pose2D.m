@@ -7,7 +7,7 @@ classdef pose2D < handle
     
     methods(Static = true)
         function res = poseNorm(p1,p2)
-            %POSENORM Weighted euclidean norm in (x,y,\theta).
+            %POSENORM Weighted euclidean norm in (x,y,theta).
             %
             % res = POSENORM(p1,p2)
             %

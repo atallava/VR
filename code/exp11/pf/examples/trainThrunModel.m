@@ -1,6 +1,6 @@
 % load
 % same data as npreg
-fname = '../data/thrun_model_train_data';
+fname = '../data/thrun_model_train_data_wide_corridor';
 load(fname,'XTrain','ZTrain','sensor');
 rangesNominalTrain = XTrain(:,1);
 
@@ -15,8 +15,7 @@ params0 = [0.05 2 0.6];
 clockLocal = tic();
 [paramsOptim,objOptim,exitflag,output] = fmincon(fun,params0,[],[],[],[],lb,ub,[]);
 
-if debugFlag
-    fprintf('trainObs:Computation took %.2fs.\n',toc(clockLocal));
-end
+fprintf('trainObs:Computation took %.2fs.\n',toc(clockLocal));
 
-% [0.0229 0.9 0.8603]
+% [0.0229 0.9 0.8603] l-corridor
+% [0.0331 1.0477 0.8575] wide corridor
