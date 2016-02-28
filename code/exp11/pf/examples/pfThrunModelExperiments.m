@@ -1,0 +1,119 @@
+% common paramters
+% parameters
+% readings
+fnameReadings = '../data/pf_readings_wide_corridor_s_traj';
+
+% debug or not
+debugFlag = 0;
+
+% init dist params
+fnameRobotBBox = '../data/robot_bbox';
+load(fnameRobotBBox,'robotBBox');
+% sample around initial pose
+% needed for initial pose
+load(fnameReadings,'poseHistory');
+initDistSampler = @(map,support,bBox,xyScale,thScale) ...
+    initParticlesUniformAroundPose(map,support,bBox,xyScale,thScale,poseHistory(:,1));
+
+% motion model params
+fnameMotionNoise = '../data/pf_motion_noise';
+load(fnameMotionNoise,'etaV','etaW');
+
+% observation model params
+bearingSkip = 10;
+powerScale = 1e-3;
+% thrun model params
+thrunModelParams = [0.2 1.0477 0.8575];
+obsModel = @(map,sensor,ranges,bearings,particles) ...
+    getWeightsThrun(map,sensor,ranges,bearings,particles,thrunModelParams);
+
+% resampler params
+resampler = @lowVarianceResampler;
+
+% viz pf progress
+vizFlag = 0;
+
+% save
+saveRes = 1;
+
+%% pack into struct
+% init dist
+initDistParams.robotBBox = robotBBox;
+initDistParams.initDistSampler = initDistSampler;
+
+% motion model
+motionModelParams.etaV = etaV;
+motionModelParams.etaW = etaW;
+
+% obs model
+obsModelParams.obsModel = obsModel;
+obsModelParams.powerScale = powerScale;
+obsModelParams.bearingSkip = bearingSkip;
+
+% resampler
+resamplerParams.resampler = resampler;
+
+% all
+inputStruct.fnameReadings = fnameReadings;
+inputStruct.debugFlag = debugFlag;
+inputStruct.initDistParams = initDistParams;
+inputStruct.motionModelParams = motionModelParams;
+inputStruct.obsModelParams = obsModelParams;
+inputStruct.resamplerParams = resamplerParams;
+inputStruct.vizFlag = vizFlag;
+inputStruct.saveRes = saveRes;
+
+%% build up input structs
+count = 1;
+
+% low init dist variance, low number of particles
+inputStructs{count} = inputStruct;
+inputStructs{count}.initDistParams.xyScale = 0.1;
+inputStructs{count}.initDistParams.thScale = deg2rad(5);
+inputStructs{count}.initDistParams.PMax = 100;
+inputStructs{count}.fnameRes = sprintf('../data/thrun_exp/pf_res_thrun_exp_%d',count);
+count = count+1;
+
+% low init dist variance, high number of particles
+inputStructs{count} = inputStruct;
+inputStructs{count}.initDistParams.xyScale = 0.1;
+inputStructs{count}.initDistParams.thScale = deg2rad(5);
+inputStructs{count}.initDistParams.PMax = 500;
+inputStructs{count}.fnameRes = sprintf('../data/thrun_exp/pf_res_thrun_exp_%d',count);
+count = count+1;
+
+% high init dist variance, low number of particles
+inputStructs{count} = inputStruct;
+inputStructs{count}.initDistParams.xyScale = 1;
+inputStructs{count}.initDistParams.thScale = deg2rad(10);
+inputStructs{count}.initDistParams.PMax = 100;
+inputStructs{count}.fnameRes = sprintf('../data/thrun_exp/pf_res_thrun_exp_%d',count);
+count = count+1;
+
+% high init dist variance, high number of particles
+inputStructs{count} = inputStruct;
+inputStructs{count}.initDistParams.xyScale = 1;
+inputStructs{count}.initDistParams.thScale = deg2rad(10);
+inputStructs{count}.initDistParams.PMax = 500;
+inputStructs{count}.fnameRes = sprintf('../data/thrun_exp/pf_res_thrun_exp_%d',count);
+count = count+1;
+
+nTrials = 10;
+
+%% run experiments
+runPfExperiments(inputStructs,nTrials);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
