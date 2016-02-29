@@ -1,6 +1,6 @@
 % npreg hist
-load ../data/npreg_didnt_2
-% load ../data/thrun_failed_2
+% load ../data/npreg_didnt_2
+load ../data/thrun_failed_2
 
 B = length(obsModelStruct.ranges);
 id = 1;
@@ -16,8 +16,8 @@ bar(xc,hParticle(bearingId,:));
 binObserved = 2.338;
 binNominal = 3.404;
 hold on;
-plot([binObserved binObserved],[0 2.5e-3],'r--','linewidth',1.5);
-plot([binNominal binNominal],[0 2.5e-3],'r--','linewidth',1.5);
+plot([binObserved binObserved],[0 2.5e-3],'--','linewidth',1.5,'color',[1 0 0]);
+plot([binNominal binNominal],[0 2.5e-3],'--','linewidth',1.5,'color',[0 0.7 0]);
 
 % axes font size
 fs = 15;

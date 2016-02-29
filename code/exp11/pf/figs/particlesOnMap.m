@@ -44,7 +44,7 @@ scatterPointArea = 60;
 quiverScale = 0.5;
 
 % true pose
-colorTruePose = [1 1 1]*0;
+colorTruePose = [1 0 0];
 scatter(pose(1),pose(2,:),scatterPointArea,'filled','MarkerFaceColor',colorTruePose);
 quiver(pose(1),pose(2),quiverScale*cos(pose(3)),quiverScale*sin(pose(3)),...
     'Color',colorTruePose,'LineWidth',2,'autoscale','off');
