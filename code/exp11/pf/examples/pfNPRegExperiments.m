@@ -102,7 +102,7 @@ inputStructs{count}.initDistParams.PMax = 500;
 inputStructs{count}.fnameRes = sprintf('../data/npreg_exp/pf_res_npreg_exp_%d',count);
 count = count+1;
 
-nTrials = 10;
+nTrials = 30;
 
 %% run experiments
 runPfExperiments(inputStructs,nTrials);
