@@ -1,4 +1,4 @@
-load ../data/npreg_didnt_2
+cload ../data/npreg_didnt_2
 
 %% environment
 % dynamic objects in a shade of grey

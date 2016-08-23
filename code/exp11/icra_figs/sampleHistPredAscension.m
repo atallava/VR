@@ -3,7 +3,7 @@ load sample_hist_pred_ascension
 %%
 hList = {hGt hDReg hPReg};
 xl = [-1 20];
-yl = [0 0.1];
+yl = [0 0.2];
 ylabels = {'$h$','$\hat{h}$','$\hat{h}$'};
 titles = {'true histogram','NP-Reg','P-Reg'};
 

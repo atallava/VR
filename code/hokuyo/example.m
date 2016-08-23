@@ -1,7 +1,8 @@
 % get serial object 
 % use instrfind to figure out comName
-comName = 'COM4';
-lidar = setupLidar(comName);
+% comName = 'COM4';
+comName = 'ttyACM0';
+lidar = SetupLidar(comName);
 
 %% get myHokuyo object
 hk = myHokuyo(lidar);

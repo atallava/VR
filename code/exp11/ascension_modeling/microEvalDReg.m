@@ -9,8 +9,9 @@ load(fname);
 
 %% estimate at one pose only
 % CHECK PARAMETERS BEFORE ESTIMATING!
+% pId: 31, 11 for figures
 % pId = randsample(1:length(XHold),1);
-pId = 11;%1:length(XHold);
+pId = 1:length(XHold);
 bwX = 0.1;
 bwZ = 0.05;
 

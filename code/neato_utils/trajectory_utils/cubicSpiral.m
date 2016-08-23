@@ -39,7 +39,8 @@ classdef cubicSpiral < handle & abstractTrajectory
                 warning('FAILED POSECHECK WHILE COMPUTING PATH.');
             end
             %obj.planVelocities(robotModel.VMax);
-            obj.planVelocities(0.1);
+%             obj.planVelocitiesMaxVel(5);
+            obj.planVelocitiesSmoothVel([5 5]);
         end
         
         function success = computePath(obj)
@@ -66,11 +67,13 @@ classdef cubicSpiral < handle & abstractTrajectory
             obj.finalPose = obj.poseArray(:,end);
         end
         
-        function planVelocities(obj,Vmax)
+        function planVelocitiesMaxVel(obj,Vmax)
             obj.tArray = zeros(size(obj.kArray));
+                        
             for i = 1:length(obj.kArray)
                 V = Vmax;
                 w = V*obj.kArray(i);
+
                 [vl,vr] = robotModel.Vw2vlvr(V,w);
                 
                 temp = max(abs([vl,vr]));
@@ -85,6 +88,14 @@ classdef cubicSpiral < handle & abstractTrajectory
                     obj.tArray(i) = obj.tArray(i-1)+(obj.sArray(i)-obj.sArray(i-1))/obj.VArray(i-1);
                 end
             end
+        end
+        
+        function planVelocitiesSmoothVel(obj,VLims)
+            
+            obj.VArray = randomSmoothFn(1:length(obj.kArray),VLims);
+            obj.wArray = obj.VArray.*obj.kArray;
+            dtArray = diff(obj.sArray)./obj.VArray(1:end-1);
+            obj.tArray = [0 cumsum(dtArray)];
         end
         
         function res = getTrajectoryDuration(obj)

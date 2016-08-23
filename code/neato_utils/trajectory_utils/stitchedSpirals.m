@@ -53,17 +53,6 @@ classdef stitchedSpirals < abstractTrajectory
             ids3 = ~(ids1 | ids2);
             x = interp1(obj.tArray,obj.poseArray',t(ids3)-obj.tIdle);
             poses(:,ids3) = x';
-            
-            % scalar version
-%             if t < obj.tIdle
-%                 poses = obj.startPose;
-%             elseif t > obj.tArray(end)+obj.tIdle
-%                 poses = obj.finalPose;
-%             else
-%                 t = t-obj.tIdle;
-%                 poses = interp1(obj.tArray,obj.poseArray',t);
-%                 poses = poses';
-%             end
 		end
         
 		function [V,w] = getControl(obj,t)
@@ -83,17 +72,6 @@ classdef stitchedSpirals < abstractTrajectory
 			t(ids3) = t(ids3)-obj.tIdle;
 			V(ids3) = interp1(obj.tArray,obj.VArray,t(ids3));
 			w(ids3) = interp1(obj.tArray,obj.wArray,t(ids3));
-			
-			% scalar version
-%             if t < obj.tIdle
-%                 V = 0; w = 0;
-%             elseif t > obj.tArray(end)+obj.tIdle
-%                 V = 0; w = 0;
-%             else
-%                 t = t-obj.tIdle;
-%                 V = interp1(obj.tArray,obj.VArray,t);
-%                 w = interp1(obj.tArray,obj.wArray,t);
-%             end
         end
         
          function hf = plot(obj)
