@@ -1,5 +1,8 @@
+% write range figures
+% paths may be broken
+
 runId = 7;
-load('b100_padded_corridor','map');
+load('../data/b100_padded_corridor','map');
 
 localizer = lineMapLocalizer(map.objects);
 vizer = vizRangesOnMap(struct('map',map,'laser',robotModel.laser));
@@ -12,7 +15,7 @@ for choice = choices
     choice = choice{1};
     srcName = [choice '_sensor_data'];
     load(srcName);
-    prefix = ['images/trajectory_snapshots_robot/' choice];
+    prefix = ['figs/trajectory_snapshots_robot/' choice];
     
     scans = sensorData(runId).scanArray;
     for i = 1:length(scans)
