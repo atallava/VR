@@ -1,15 +1,15 @@
-load map_motion_blur
+load ./map_for_blur_test.mat
 load sim_sep6_2
 rsim.setMap(map);
 
 %%
 th = -deg2rad(3);
-startPose = [0; 0; th];
-finalPose = [0; 0; 0];
+startPose = [2; 2; th];
+finalPose = [2; 2; 0];
 stages = 5;
 rangesMotion = zeros(stages,360);
 for i = 1:stages
-	pose = [0; 0; th-i/stages*th];
+	pose = [2; 2; th-i/stages*th];
 	rangesMotion(i,:) = rsim.simulate(pose);
 end
 
@@ -27,7 +27,7 @@ hold on;
 ri = rangeImage(struct('ranges',ranges));
 plot(ri.xArray,ri.yArray,'r.','markersize',10);
 for i = 1:stages
-	pose = [0; 0; th-i/stages*th];
+	pose = [2; 2; th-i/stages*th];
 	if i == stages
 		lc = [0 0 0];
 	else

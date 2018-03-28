@@ -27,6 +27,7 @@ figs/
 *.jpeg
 *.bmp
 *.fig
+*.svg
 
 *.pdf
 

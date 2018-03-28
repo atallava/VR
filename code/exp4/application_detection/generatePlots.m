@@ -1,4 +1,4 @@
-function [h1,h2] = generatePlots(perf,perfReal)
+function [hfig1,hfig2] = generatePlots(perf,perfReal)
 %GENERATEPLOTS 
 % 
 % [h1,h2] = GENERATEPLOTS(perf,perfReal)
@@ -19,25 +19,40 @@ for i = 1:nIter
     f1r(i) = computeF1(perfReal{i});
 end
 
-sCol = [1 0 0];
-rCol = [0 0 1];
-h1 = figure();
-hc1 = plot(rs,ps,'o','color',sCol,'linewidth',2); hold on;
+simCol = [1 0 0];
+realCol = [0 0 1];
+markerSize = 500;
+
+% precision vs recall
+hfig1 = figure(); hold on;
+
+hc1 = scatter(rs, ps, '.', ...
+    'markerFaceColor', simCol, 'markerEdgeColor', simCol, 'sizeData', markerSize);
 pts = fnplt(cscvn([rs; ps])); 
-plot(pts(1,:),pts(2,:),'color',sCol,'linewidth',3);
-hc2 = plot(rr,pr,'o','color',rCol,'linewidth',2);
+plot(pts(1,:),pts(2,:),'color',simCol,'linewidth',3);
+hc2 = scatter(rr, pr, '.', ...
+    'markerFaceColor', realCol, 'markerEdgeColor', realCol, 'sizeData', markerSize);
 pts = fnplt(cscvn([rr; pr]));
-plot(pts(1,:),pts(2,:),'color',rCol,'linewidth',3);
-hold off; 
+plot(pts(1,:),pts(2,:),'color',realCol,'linewidth',3);
+
 lVec = [-0.01 0.6];
 axis equal; xlim(lVec); ylim(lVec);
 xlabel('recall'); ylabel('precision'); 
-legend([hc1 hc2],{'simulated scans','real scans'});
+% legend([hc1 hc2],{'simulated scans','real scans'});
+set(gca, 'fontsize', 15);
 
-h2 = figure();
-plot(1:nIter,f1s,'-o','color',sCol,'linewidth',3); hold on;
-plot(1:nIter,f1r,'-o','color',rCol,'linewidth',3); hold off; 
+% f1 vs dev iter
+hfig2 = figure(); hold on;
+plot(1:nIter,f1s, 'color',simCol,'linewidth',3); 
+scatter(1:nIter, f1s, '.', ...
+    'markerFaceColor', simCol, 'markerEdgeColor', simCol, 'sizeData', markerSize);
+
+plot(1:nIter, f1r, 'color', realCol, 'linewidth', 3);
+scatter(1:nIter, f1r, '.', ...
+    'markerFaceColor', realCol, 'markerEdgeColor', realCol, 'sizeData', markerSize);
+
 ylim([0 0.5]);
-xlabel('Algorithm iteration.'); ylabel('F1 score'); 
-legend('simulated scans','real scans');
+xlabel('development iteration'); ylabel('F1 score'); 
+% legend('simulated scans','real scans');
+set(gca, 'fontsize', 15);
 end

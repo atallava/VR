@@ -201,7 +201,7 @@ classdef lineMap < handle
             [ranges,angles] = raycast(lm, pose, max_range, ang_range);
             
             K = 2e-3;
-			biasFactor = 0.02;
+			biasFactor = 0.0;
             for i = 1:length(ranges);
 %                 sigma = K*ranges(i)^2;
                 sigma = K*ranges(i)^2/cos(angles(i));

@@ -91,7 +91,7 @@ classdef rangeImage < handle
             ids = find(obj.rArray <= maxRange);
             hf = figure;
 
-            plot(x(ids),y(ids),'r.','markersize',10); hold on;
+            plot(x(ids),y(ids),'r.','markersize', 20); hold on;
 			hq = quiver(pose(1),pose(2),0.4*cos(pose(3)),0.4*sin(pose(3)),'k','LineWidth',2); hold off;
 % 			adjust_quiver_arrowhead_size(hq,4);
             axis equal; 
