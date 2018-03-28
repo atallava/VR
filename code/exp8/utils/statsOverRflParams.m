@@ -5,7 +5,8 @@ t = zeros(1,4);
 d = zeros(1,3);
 
 for i = 1:4
-   f(i) = load([choice '_reg_filters_' int2str(i)]); 
+%    f(i) = load([choice '_reg_filters_' int2str(i)]); 
+   f(i) = load(['../data/' choice '_reg_filters_' int2str(i)]); 
 end
 
 if nargin < 2
