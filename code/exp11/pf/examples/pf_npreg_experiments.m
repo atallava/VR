@@ -1,4 +1,6 @@
-% common paramters
+% run pf a bunch of times
+
+%% common paramters
 % parameters
 % readings
 fnameReadings = '../data/pf_readings_wide_corridor_s_traj';

@@ -3,6 +3,8 @@ if isempty(res)
     error('initLocal:scriptNotFound','someUsefulPaths not found.');
 end
 someUsefulPaths
+pathToNeatoM = '~/neato_matlab';
+
 addpath(genpath([pathToM '/at_utils_m']))
 addpath(genpath([pathToM '/neato_utils']))
 addpath(pathToNeatoM)

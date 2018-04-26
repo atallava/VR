@@ -1,4 +1,6 @@
-% parameters
+% run pf on one dataset
+
+%% parameters
 % readings
 fnameReadings = '../data/pf_readings_wide_corridor_s_traj';
 
@@ -6,7 +8,7 @@ fnameReadings = '../data/pf_readings_wide_corridor_s_traj';
 debugFlag = 1;
 
 % init dist params
-xyScale = 1;
+xyScale = 0.5;
 thScale = deg2rad(10); % in rad
 fnameRobotBBox = '../data/robot_bbox';
 load(fnameRobotBBox,'robotBBox');
@@ -15,7 +17,7 @@ load(fnameRobotBBox,'robotBBox');
 load(fnameReadings,'poseHistory');
 initDistSampler = @(map,support,bBox,xyScale,thScale) ...
     initParticlesUniformAroundPose(map,support,bBox,xyScale,thScale,poseHistory(:,1));
-PMax = 200;
+PMax = 100;
 
 % motion model params
 fnameMotionNoise = '../data/pf_motion_noise';
@@ -24,10 +26,14 @@ load(fnameMotionNoise,'etaV','etaW');
 % observation model params
 bearingSkip = 10;
 powerScale = 1e-3;
-% thrun model params
-thrunModelParams = [0.0229 0.9 0.8603];
+% npreg weights
+fnameNPRegPredictor = '../data/npreg_predictor';
+load(fnameNPRegPredictor,'npRegPredictor');
+% smoothing matrix
+fnameSmoothingMatrix = '../data/hist_smoothing_matrix';
+load(fnameSmoothingMatrix,'smoothingMatrix');
 obsModel = @(map,sensor,ranges,bearings,particles) ...
-    getWeightsThrun(map,sensor,ranges,bearings,particles,thrunModelParams);
+    getWeightsNPReg(map,sensor,ranges,bearings,particles,npRegPredictor,smoothingMatrix);
 
 % resampler params
 resampler = @lowVarianceResampler;
@@ -37,7 +43,7 @@ vizFlag = 0;
 
 % save
 saveRes = 1;
-fnameRes = '../data/pf_thrun_res';
+fnameRes = '../data/pf_npreg_res';
 
 %% pack into struct
 % init dist

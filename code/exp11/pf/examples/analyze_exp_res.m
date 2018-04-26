@@ -1,8 +1,10 @@
-fnamePre = '../data/npreg_exp/pf_res_npreg';
-% fnamePre = '../data/thrun_exp/pf_res_thrun';
+% stats for running pf experiments
+
+% fnamePre = '../data/npreg_exp/pf_res_npreg';
+fnamePre = '../data/thrun_exp/pf_res_thrun';
 
 nExp = 4;
-nTrialsList = [10 10 10 10 10];
+nTrialsList = [30 30 30 30];
 meanErrList = zeros(1,nExp);
 stdErrList = zeros(1,nExp);
 
